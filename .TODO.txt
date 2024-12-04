@@ -8,8 +8,8 @@ Preset CMake variables:
   CMAKE_CXX_STANDARD="20"
   CMAKE_CXX_STANDARD_REQUIRED="ON"
   CMAKE_EXPORT_COMPILE_COMMANDS="ON"
-  CMAKE_INSTALL_PREFIX:PATH="/Users/clausklein/Workspace/cpp/fmt-module/stagedir"
-  CMAKE_PREFIX_PATH:STRING="/Users/clausklein/Workspace/cpp/fmt-module/stagedir"
+  CMAKE_INSTALL_PREFIX:PATH="/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir"
+  CMAKE_PREFIX_PATH:STRING="/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir"
   FMT_DEVELOPER_MODE="ON"
 
 -- use ccache
@@ -34,43 +34,43 @@ Preset CMake variables:
 -- Module tests to be built: 
 -- Configuring done (1.9s)
 -- Generating done (0.0s)
--- Build files have been written to: /Users/clausklein/Workspace/cpp/fmt-module/build/dev
+-- Build files have been written to: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev
 
 Executing workflow step 2 of 5: build preset "dev"
 
-[1/4] Generating CXX dyndep file src/tests/CMakeFiles/header-only-test.dir/CXX.dd
+[1/4] Generating CXX dyndep file tests/CMakeFiles/header-only-test.dir/CXX.dd
 [1/2] Install the project...
 -- Install configuration: "Debug"
--- Installing: /Users/clausklein/Workspace/cpp/fmt-module/stagedir/lib/cmake/fmt/fmtTargets.cmake
+-- Installing: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/fmtTargets.cmake
 
 Executing workflow step 3 of 5: build preset "verify"
 
-[1/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/args.h.cxx.o
-[2/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/base.h.cxx.o
-[3/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/chrono.h.cxx.o
-[4/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/core.h.cxx.o
-[5/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/format-inl.h.cxx.o
-[6/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/format.h.cxx.o
-[7/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/printf.h.cxx.o
-[8/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/ranges.h.cxx.o
-[9/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/color.h.cxx.o
-[10/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/compile.h.cxx.o
-[11/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/os.h.cxx.o
-[12/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/ostream.h.cxx.o
-[13/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/std.h.cxx.o
-[14/14] Building CXX object CMakeFiles/fmt_header_verify_interface_header_sets.dir/fmt_header_verify_interface_header_sets/fmt/xchar.h.cxx.o
+[1/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/base.h.cxx.o
+[2/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/args.h.cxx.o
+[3/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/chrono.h.cxx.o
+[4/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/format.h.cxx.o
+[5/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/compile.h.cxx.o
+[6/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/os.h.cxx.o
+[7/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/color.h.cxx.o
+[8/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/format-inl.h.cxx.o
+[9/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/ostream.h.cxx.o
+[10/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/core.h.cxx.o
+[11/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/printf.h.cxx.o
+[12/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/ranges.h.cxx.o
+[13/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/std.h.cxx.o
+[14/14] Building CXX object CMakeFiles/fmt-header-only_verify_interface_header_sets.dir/fmt-header-only_verify_interface_header_sets/fmt/xchar.h.cxx.o
 
 Executing workflow step 4 of 5: test preset "dev"
 
-Test project /Users/clausklein/Workspace/cpp/fmt-module/build/dev
+Test project /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev
     Start 1: find-package-test
     Start 2: header-only-test
-1/2 Test #2: header-only-test .................   Passed    0.02 sec
-2/2 Test #1: find-package-test ................   Passed    2.93 sec
+1/2 Test #2: header-only-test .................   Passed    0.01 sec
+2/2 Test #1: find-package-test ................   Passed    3.02 sec
 
 100% tests passed, 0 tests failed out of 2
 
-Total Test time (real) =   2.94 sec
+Total Test time (real) =   3.02 sec
 
 Executing workflow step 5 of 5: package preset "dev"
 
@@ -78,27 +78,27 @@ CPack: Create package using TGZ
 CPack: Install projects
 CPack: - Install project: fmt []
 CPack: Create package
-CPack: - package: /Users/clausklein/Workspace/cpp/fmt-module/build/dev/fmt-11.0.2-Darwin.tar.gz generated.
+CPack: - package: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/fmt-11.0.2-Darwin.tar.gz generated.
 Enabled checks:
     misc-header-include-cycle
     misc-include-cleaner
 
 Running clang-tidy for 1 files out of 19 in compilation database ...
-[1/1][2.0s] /usr/local/opt/llvm/bin/clang-tidy -checks=-*,misc-header-*,misc-include-* -p=build/dev /Users/clausklein/Workspace/cpp/fmt-module/src/tests/header-only-test.cc
+[1/1][2.1s] /usr/local/opt/llvm/bin/clang-tidy -checks=-*,misc-header-*,misc-include-* -p=build/dev /Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc
 /Users/clausklein/.cache/CPM/fmt/cccb77ae9609d2768ed80dd42cec54f77b1f1455/include/fmt/format.h:41:10: warning: circular header file dependency detected while including 'base.h', please check the include path [misc-header-include-cycle]
    41 | #include "base.h"
       |          ^
 /Users/clausklein/.cache/CPM/fmt/cccb77ae9609d2768ed80dd42cec54f77b1f1455/include/fmt/base.h:3075:12: note: 'format.h' included from here
  3075 | #  include "format.h"
       |            ^
-/Users/clausklein/Workspace/cpp/fmt-module/src/tests/header-only-test.cc:3:10: note: 'base.h' included from here
+/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc:3:10: note: 'base.h' included from here
     3 | #include "fmt/base.h"
       |          ^
-/Users/clausklein/Workspace/cpp/fmt-module/src/tests/header-only-test.cc:4:1: warning: included header ostream.h is not used directly [misc-include-cleaner]
+/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc:4:1: warning: included header ostream.h is not used directly [misc-include-cleaner]
     4 | #include "fmt/ostream.h"
       | ^~~~~~~~~~~~~~~~~~~~~~~~
     5 | #include "gtest/gtest.h"
-/Users/clausklein/Workspace/cpp/fmt-module/src/tests/header-only-test.cc:11:49: warning: no header providing "fmt::format" is directly included [misc-include-cleaner]
+/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc:13:18: warning: no header providing "fmt::format" is directly included [misc-include-cleaner]
     4 | #include "fmt/ostream.h"
     5 | #include "gtest/gtest.h"
     6 | 
@@ -106,74 +106,15 @@ Running clang-tidy for 1 files out of 19 in compilation database ...
     8 | #  error "Not in the header-only mode."
     9 | #endif
    10 | 
-   11 | TEST(header_only_test, format) { EXPECT_EQ(fmt::format("foo"), "foo"); }
-      |                                                 ^
+   11 | TEST(header_only_test, format)
+   12 | {
+   13 |   EXPECT_EQ(fmt::format("foo"), "foo");
+      |                  ^
 4 warnings generated.
 Suppressed 1 warnings (1 in non-user code).
 Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
 
 ninja: Entering directory `build/dev'
-[1/1] Linting the code
-FAILED: CMakeFiles/format-check /Users/clausklein/Workspace/cpp/fmt-module/build/dev/CMakeFiles/format-check 
-cd /Users/clausklein/Workspace/cpp/fmt-module && /usr/local/bin/cmake -D FORMAT_COMMAND=clang-format -D "PATTERNS=*.json;*.cppm" -P /Users/clausklein/Workspace/cpp/fmt-module/cmake/lint.cmake
-The following files are badly formatted:
-
-.CMakeUserPresets.json
-CMakePresets.json
-CMakeUserPresets.json
-build/compile_commands.json
-build/dev/_CPack_Packages/Darwin/TGZ/fmt-11.0.2-Darwin/lib/cmake/fmt/module/fmt.cppm
-build/dev/compile_commands.json
-build/dev/src/tests/CMakeFiles/header-only-test.dir/CXXDependInfo.json
-build/dev/src/tests/CMakeFiles/header-only-test.dir/CXXModules.json
-build/dev/src/tests/find-package-test/CMakeFiles/fmt_module.dir/CXXDependInfo.json
-build/dev/src/tests/find-package-test/CMakeFiles/fmt_module.dir/CXXModules.json
-build/dev/src/tests/find-package-test/compile_commands.json
-build/src/tests/CMakeFiles/header-only-test.dir/CXXDependInfo.json
-build/src/tests/CMakeFiles/header-only-test.dir/CXXModules.json
-build/tests/CMakeFiles/header-only-test.dir/CXXDependInfo.json
-build/tests/CMakeFiles/header-only-test.dir/CXXModules.json
-build/tests/compile_commands.json
-module/fmt.cppm
-stagedir/lib/cmake/fmt/module/fmt.cppm
-
-CMake Error at cmake/lint.cmake:43 (message):
-  Run again with FIX=YES to fix these files.
-
-
-ninja: build stopped: subcommand failed.
-ninja: Entering directory `build/dev'
 [1/1] Checking spelling
-FAILED: CMakeFiles/spell-check /Users/clausklein/Workspace/cpp/fmt-module/build/dev/CMakeFiles/spell-check 
-cd /Users/clausklein/Workspace/cpp/fmt-module && /usr/local/bin/cmake -D SPELL_COMMAND=codespell -P /Users/clausklein/Workspace/cpp/fmt-module/cmake/spell.cmake
 Used config files:
     1: .codespellrc
-./stagedir/include/fmt/base.h:447: iff ==> if
-./stagedir/include/fmt/base.h:2403: pres ==> press
-./stagedir/include/fmt/base.h:2410: pres ==> press
-./stagedir/include/fmt/base.h:2493: pres ==> press
-./stagedir/include/fmt/base.h:2498: pres ==> press
-./stagedir/include/fmt/base.h:2500: pres ==> press
-./stagedir/include/fmt/base.h:2505: pres ==> press
-./stagedir/include/fmt/base.h:2510: pres ==> press
-./stagedir/include/fmt/base.h:2515: pres ==> press
-./stagedir/include/fmt/base.h:2520: pres ==> press
-./stagedir/include/fmt/base.h:2525: pres ==> press
-./stagedir/include/fmt/base.h:2528: pres ==> press
-./stagedir/include/fmt/base.h:2530: pres ==> press
-./stagedir/include/fmt/base.h:2533: pres ==> press
-./stagedir/include/fmt/base.h:2535: pres ==> press
-./stagedir/include/fmt/base.h:2681: iff ==> if
-./stagedir/include/fmt/format.h:821: copyable ==> copiable
-./stagedir/include/fmt/format.h:1553: iff ==> if
-./stagedir/include/fmt/format.h:1617: iff ==> if
-./stagedir/include/fmt/format.h:1765: iff ==> if
-./stagedir/include/fmt/os.h:243: WRONLY ==> WRONGLY
-./stagedir/include/fmt/os.h:337: WRONLY ==> WRONGLY
-./stagedir/include/fmt/os.h:422: WRONLY ==> WRONGLY
-./stagedir/include/fmt/printf.h:90: iff ==> if
-CMake Error at cmake/spell.cmake:27 (message):
-  Run again with FIX=YES to fix these errors.
-
-
-ninja: build stopped: subcommand failed.
