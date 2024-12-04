@@ -25,6 +25,7 @@ function(add_fmt_module NAME)
           ${FMT_ROOT}/lib/cmake/fmt/module/fmt.cppm
   )
   # cmake-format: on
+
 endfunction()
 
 include("${CMAKE_CURRENT_LIST_DIR}/fmtTargets.cmake")

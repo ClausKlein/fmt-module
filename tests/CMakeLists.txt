@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.25...3.31)
 
 project(fmt_test LANGUAGES CXX)
 
-include(../../cmake/folders.cmake OPTIONAL)
-include(../../cmake/windows-set-path.cmake OPTIONAL)
+include(../cmake/folders.cmake OPTIONAL)
+include(../cmake/windows-set-path.cmake OPTIONAL)
 
 # ---- Dependencies ----
 
@@ -11,7 +11,7 @@ if(PROJECT_IS_TOP_LEVEL)
   enable_testing()
 
   find_package(fmt 11.0.2.1 EXACT REQUIRED)
-  include(../../cmake/CPM.cmake)
+  include(../cmake/CPM.cmake)
 endif()
 
 # cmake-format: off
@@ -40,7 +40,7 @@ add_executable(header-only-test header-only-test.cc)
 if(TARGET fmt::fmt)
   target_link_libraries(header-only-test fmt::fmt)
 else()
-  target_link_libraries(header-only-test GTest::gtest_main fmt::fmt_header)
+  target_link_libraries(header-only-test GTest::gtest_main fmt::fmt-header-only)
 endif()
 
 if(NOT PROJECT_IS_TOP_LEVEL)

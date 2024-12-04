@@ -4,4 +4,4 @@ check-filenames =
 check-hidden =
 skip = */.git,*/build,*/prefix,*/stage,.TODO.txt
 quiet-level = 2
-ignore-words-list = claus,deque,endcode,keep-alives,nmake,stdio
+ignore-words-list = claus,deque,endcode,keep-alives,nmake,stdio,UInt

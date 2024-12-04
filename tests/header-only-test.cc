@@ -8,4 +8,7 @@
 #  error "Not in the header-only mode."
 #endif
 
-TEST(header_only_test, format) { EXPECT_EQ(fmt::format("foo"), "foo"); }
+TEST(header_only_test, format)
+{
+  EXPECT_EQ(fmt::format("foo"), "foo");
+}

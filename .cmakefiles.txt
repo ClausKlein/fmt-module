@@ -17,4 +17,4 @@
 ./cmake/variables.cmake
 ./cmake/windows-set-path.cmake
 ./module/tests/CMakeLists.txt
-./src/tests/CMakeLists.txt
+./tests/CMakeLists.txt

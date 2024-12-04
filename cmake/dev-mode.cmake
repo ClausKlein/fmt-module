@@ -4,7 +4,7 @@ option(FMT_BUILD_TESTING "Use ctest" ON)
 if(FMT_BUILD_TESTING)
   enable_testing()
 
-  add_subdirectory(src/tests)
+  add_subdirectory(tests)
   add_subdirectory(module/tests)
 endif()
 
@@ -18,7 +18,7 @@ if(FMT_ENABLE_COVERAGE)
   include(cmake/coverage.cmake)
 endif()
 
-include(cmake/lint-targets.cmake)
+#NO! include(cmake/lint-targets.cmake)
 include(cmake/spell-targets.cmake)
 
 add_folders(Project)

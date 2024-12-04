@@ -140,6 +140,7 @@ jobs:
       # see https://github.com/mathstuf/cxx-modules-sandbox/blob/master/.github/workflows/cmake.yml
       - name: Visual Studio toolchain environment
         uses: TheMrMilchmann/setup-msvc-dev@v1
+        if: matrix.os == 'windows-2022'
         with:
           arch: x64
 
