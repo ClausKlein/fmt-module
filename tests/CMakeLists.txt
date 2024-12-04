@@ -37,8 +37,8 @@ if(EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc AND NOT EXISTS ${PROJECT_SO
 endif()
 add_executable(header-only-test header-only-test.cc)
 
-if(TARGET fmt::fmt)
-  target_link_libraries(header-only-test fmt::fmt)
+if(FMT_USE_MODULES)
+  target_link_libraries(header-only-test GTest::gtest_main fmt::fmt)
 else()
   target_link_libraries(header-only-test GTest::gtest_main fmt::fmt-header-only)
 endif()

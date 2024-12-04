@@ -11,15 +11,20 @@ project(fmt
 
 include(cmake/variables.cmake)
 
+# XXX NO! set(CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 set(CPPdefinitions)
 
 set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 set(CMAKE_DEBUG_POSTFIX D)
 
 # TODO: option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" OFF)
+option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${FMT_SEPARATE_COMPILATION})
 option(FMT_IMPORT_STD "Import the CXX_MODULE std if possible" OFF)
 
+if(FMT_IMPORT_STD)
+  set(CPPdefinitions FMT_IMPORT_STD)
+endif()
+#
 # ---- add dependency libraries ----
 
 include(cmake/CPM.cmake)
