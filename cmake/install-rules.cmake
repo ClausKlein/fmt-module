@@ -15,10 +15,9 @@ set(FMT_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${_package}"
 )
 mark_as_advanced(FMT_INSTALL_CMAKEDIR)
 
-if(TARGET fmt_header)
-  install(TARGETS fmt_header EXPORT fmtTargets FILE_SET HEADERS)
-  install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
-endif()
+install(TARGETS fmt-header-only EXPORT fmtTargets FILE_SET HEADERS)
+install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
+
 if(FMT_USE_MODULES)
   install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers FILE_SET public_modules
           DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
