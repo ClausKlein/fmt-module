@@ -6,9 +6,12 @@ function(add_fmt_module NAME)
 
   add_library(${NAME})
   target_include_directories(${NAME} PRIVATE ${FMT_ROOT}/include)
-  target_compile_features(${NAME} PUBLIC cxx_std_23)
+  target_compile_features(
+    ${NAME} PUBLIC "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>" "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
+  )
+  target_compile_options(${NAME} PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
 
-  set(CPPdefinitions "@CPPdefinitions@")
+  list(APPEND CPPdefinitions "@CPPdefinitions@")
   if(CPPdefinitions)
     target_compile_definitions(${NAME} PUBLIC ${CPPdefinitions})
   endif()

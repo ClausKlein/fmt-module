@@ -61,18 +61,18 @@ cmake --install build --config Release
 This project exports a CMake package to be used with the [`find_package`][3]
 command of CMake:
 
-* Package name: `asio`
-* Target name: `asio::asio`
+* Package name: `fmt`
+* Target name: `fmt::fmt`
 
 Example usage:
 
 ```cmake
-find_package(asio REQUIRED)
+find_package(fmt REQUIRED)
 # Declare the imported target as a build requirement using PRIVATE, where
 # project_target is a target created in the consuming project
 target_link_libraries(
     project_target PRIVATE
-    asio::asio
+    fmt::fmt
 )
 ```
 

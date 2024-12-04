@@ -1,6 +1,12 @@
-# asio
+# fmt
 
-This is the asio project.
+## based on / use https://github.com/fmtlib/fmt
+
+### This is a cmake fmt adapter project to test the fmt c++22 module
+
+- https://crascit.com/2024/04/04/cxx-modules-cmake-shared-libraries
+- https://anarthal.github.io/cppblog/modules2
+- [ C++ Modules and cross platform  - Daniela Engert - Meeting C++ 2023](https://www.youtube.com/watch?v=iMNML689qlU)
 
 # Building and installing
 

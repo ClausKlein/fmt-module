@@ -3,14 +3,15 @@ cmake_minimum_required(VERSION 3.25...3.31)
 project(fmt_moddule_examples LANGUAGES CXX)
 
 if(PROJECT_IS_TOP_LEVEL)
+  enable_testing()
+
   # Find the fmt package containing the function to build the module
   find_package(fmt 11.0.2.1 EXACT REQUIRED HINT ../../stagedir/lib)
-  enable_testing()
 
   # Use modules?
   unset(USE_MODULES)
   set(CMAKE_CXX_STANDARD 23)
-  set(CMAKE_CXX_EXTENSIONS OFF)
+  set(CMAKE_CXX_EXTENSIONS ON)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.28.4 AND CMAKE_GENERATOR STREQUAL "Ninja")
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 17.0)
@@ -32,12 +33,10 @@ if(PROJECT_IS_TOP_LEVEL)
     # Build the fmt module
     add_fmt_module(fmt_module)
   endif()
-
 endif()
 
-# list(APPEND ALL_EXAMPLES module/tests/main.cpp)
+# TODO: list(APPEND ALL_EXAMPLES module/tests/main.cpp)
 set(ALL_EXAMPLES)
-
 message(STATUS "Module tests to be built: ${ALL_EXAMPLES}")
 
 foreach(example ${ALL_EXAMPLES})

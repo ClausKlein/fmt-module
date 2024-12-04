@@ -12,20 +12,16 @@ export hostSystemName=$(shell uname)
 all: .init
 	cmake --workflow --preset dev --fresh
 
-check:
-	-iwyu_tool -p build/dev \
-		build/dev/asio_verify_interface_header_sets/asio/basic_readable_pipe.hpp.cxx \
-		build/dev/asio_verify_interface_header_sets/asio/detail/reactive_socket_send_op.hpp.cxx \
-		-- -Xiwyu --cxx17ns #XXX -Xiwyu --transitive_includes_only
+check: all
 	run-clang-tidy -p build/dev -checks='-*,misc-header-*,misc-include-*' src/tests
-	# ninja -C build/dev spell-check
-	# ninja -C build/dev format-check
+	-ninja -C build/dev format-check
+	-ninja -C build/dev spell-check
 
 test:
 	cmake --preset ci-${hostSystemName}
 	cmake --build build
 	cmake --install build --prefix $(CURDIR)/stagedir
-	cmake -G Ninja -B build/tests -S src/tests -D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir/usr/local
+	cmake -G Ninja -B build/tests -S src/tests -D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
 	cmake --build build/tests
 	ctest --test-dir build/tests
 
