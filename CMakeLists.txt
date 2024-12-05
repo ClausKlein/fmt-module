@@ -16,7 +16,7 @@ set(CPPdefinitions)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
 option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the CXX_MODULE std if possible" NO)
+option(FMT_IMPORT_STD "Import the all std header needed" YES)
 
 if(FMT_IMPORT_STD)
   list(APPEND CPPdefinitions FMT_IMPORT_STD)
@@ -28,11 +28,14 @@ if(FMT_USE_MODULES)
   # FIXME: add_compile_options(-Wno-reserved-module-identifier -Wno-include-angled-in-module-purview)
 
   if(FMT_IMPORT_STD) # FIXME: clang++ only! AND $ENV{LLVM_ROOT})
-    set(CMAKE_CXX_COMPILER_IMPORT_STD 23)
-    add_compile_options(-fexperimental-library)
-    add_link_options(-lc++experimental)
-    add_compile_options(-stdlib=libc++)
-    add_link_options(-stdlib=libc++)
+
+    if(UNIX)
+      set(CMAKE_CXX_COMPILER_IMPORT_STD 23)
+      add_compile_options(-fexperimental-library)
+      add_link_options(-lc++experimental)
+      add_compile_options(-stdlib=libc++)
+      add_link_options(-stdlib=libc++)
+    endif()
 
     message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
   endif()
