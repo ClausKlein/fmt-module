@@ -53,7 +53,7 @@ include(cmake/CPM.cmake)
 cpmaddpackage(
   NAME fmt
   GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 11.0.2
+  GIT_TAG 47a66c5eccc0cce71ad81b4a681a2032d86ca951 # post 11.0.2
   VERSION 11.0.2
   DOWNLOAD_ONLY YES
 )
