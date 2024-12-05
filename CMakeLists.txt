@@ -11,20 +11,37 @@ project(fmt
 
 include(cmake/variables.cmake)
 
-# XXX NO! set(CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
+set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions)
 
-set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
-set(CMAKE_DEBUG_POSTFIX D)
-
-# TODO: option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${FMT_SEPARATE_COMPILATION})
-option(FMT_IMPORT_STD "Import the CXX_MODULE std if possible" OFF)
+option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
+option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
+# TODO: option(FMT_IMPORT_STD "Import the CXX_MODULE std if possible" ${FMT_USE_MODULES})
 
 if(FMT_IMPORT_STD)
-  set(CPPdefinitions FMT_IMPORT_STD)
+  list(APPEND CPPdefinitions FMT_IMPORT_STD)
 endif()
-#
+
+if(FMT_USE_MODULES)
+  list(APPEND CPPdefinitions FMT_MODULE)
+  # XXX NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
+  # FIXME: add_compile_options(-Wno-reserved-module-identifier -Wno-include-angled-in-module-purview)
+
+  if(FMT_IMPORT_STD) # FIXME: clang++ only! AND $ENV{LLVM_ROOT})
+    set(CMAKE_CXX_COMPILER_IMPORT_STD 23)
+    add_compile_options(-fexperimental-library)
+    add_link_options(-lc++experimental)
+    add_compile_options(-stdlib=libc++)
+    add_link_options(-stdlib=libc++)
+
+    message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
+  endif()
+
+  message(STATUS "CPPdefinitions=${CPPdefinitions}")
+else()
+  set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
+endif()
+
 # ---- add dependency libraries ----
 
 include(cmake/CPM.cmake)
@@ -66,7 +83,6 @@ target_compile_options(fmt-header-only INTERFACE $<$<AND:$<COMPILE_LANGUAGE:CXX>
 
 if(FMT_SEPARATE_COMPILATION)
   file(GLOB_RECURSE _fmt_all_sources "${fmt_SOURCE_DIR}/src/*.cc")
-  set(_fmt_sources ${fmt_SOURCE_DIR}/src/fmt.cc)
 
   add_library(fmt)
   add_library(fmt::fmt ALIAS fmt)
@@ -79,19 +95,22 @@ if(FMT_SEPARATE_COMPILATION)
   )
 
   if(FMT_USE_MODULES)
-    target_compile_definitions(fmt PUBLIC USE_MODULES ${CPPdefinitions})
+    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
     # cmake-format: off
     target_sources(fmt PUBLIC
         FILE_SET public_modules
         TYPE CXX_MODULES
-        BASE_DIRS ${PROJECT_SOURCE_DIR}
+        BASE_DIRS
+            #NO! ${fmt_SOURCE_DIR}
+            ${PROJECT_SOURCE_DIR}/module
         FILES
+            #NO! ${_fmt_all_sources}
             ${PROJECT_SOURCE_DIR}/module/fmt.cppm
     )
     # cmake-format: on
   else()
-    target_compile_definitions(fmt PUBLIC FMT_SEPARATE_COMPILATION ${CPPdefinitions})
-    target_sources(fmt PUBLIC ${_fmt_sources})
+    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
+    target_sources(fmt PUBLIC ${_fmt_all_sources})
   endif()
 
   if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)

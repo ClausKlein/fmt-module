@@ -8,6 +8,17 @@ MAKEFLAGS+= --warn-undefined-variables
 
 export hostSystemName=$(shell uname)
 
+ifeq (${hostSystemName},Darwin)
+  export LLVM_PREFIX:=$(shell brew --prefix llvm@19)
+  export LLVM_ROOT:=$(shell realpath ${LLVM_PREFIX})
+
+  export LDFLAGS?=-L${LLVM_ROOT}/lib/c++
+  export PATH:=${LLVM_ROOT}/bin:${PATH}
+  export CXX:=clang++
+else ifeq (${UNAME},Linux)
+  export LLVM_ROOT:=/usr/lib/llvm-19
+endif
+
 .PHONY: all check test format clean distclean
 all: .init
 	cmake --workflow --preset dev --fresh

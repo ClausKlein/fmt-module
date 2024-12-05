@@ -16,12 +16,14 @@ set(FMT_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/${_package}"
 mark_as_advanced(FMT_INSTALL_CMAKEDIR)
 
 install(TARGETS fmt-header-only EXPORT fmtTargets FILE_SET HEADERS)
-install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 
 if(FMT_USE_MODULES)
   install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers FILE_SET public_modules
           DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
   )
+  install(FILES ${_fmt_all_sources} DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
+else()
+  install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 endif()
 
 write_basic_package_version_file("${_package}ConfigVersion.cmake" COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)

@@ -1,6 +1,6 @@
 // Header-only configuration test
 
-#ifdef FMT_USE_MODULES
+#ifdef FMT_MODULE
 import fmt;
 #else
 #  include "fmt/base.h"
