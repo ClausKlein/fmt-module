@@ -15,7 +15,7 @@ set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-# FIXME: option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
+option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
 option(FMT_IMPORT_STD "Import the CXX_MODULE std if possible" NO)
 
 if(FMT_IMPORT_STD)

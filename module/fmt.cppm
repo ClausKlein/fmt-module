@@ -1,4 +1,6 @@
+#ifdef FMT_MODULE
 module;
+#endif
 
 // Put all implementation-provided headers into the global module fragment
 // to prevent attachment to this module.
@@ -79,10 +81,12 @@ module;
 #  include <windows.h>
 #endif
 
+#ifdef FMT_MODULE
 export module fmt;
 
-#ifdef FMT_IMPORT_STD
+#ifdef FMT_IMPORT_STD_MODULE
 import std;
+#endif
 #endif
 
 #define FMT_EXPORT export
@@ -122,9 +126,11 @@ extern "C++" {
 }
 #endif
 
+#ifdef FMT_MODULE
 // gcc doesn't yet implement private module fragments
 #if !FMT_GCC_VERSION
 module :private;
+#endif
 #endif
 
 #if FMT_HAS_INCLUDE("format.cc")
