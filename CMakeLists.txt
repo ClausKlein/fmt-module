@@ -15,8 +15,8 @@ set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
-# TODO: option(FMT_IMPORT_STD "Import the CXX_MODULE std if possible" ${FMT_USE_MODULES})
+# FIXME: option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
+option(FMT_IMPORT_STD "Import the CXX_MODULE std if possible" NO)
 
 if(FMT_IMPORT_STD)
   list(APPEND CPPdefinitions FMT_IMPORT_STD)
@@ -63,6 +63,10 @@ if(EXISTS ${fmt_SOURCE_DIR}/src/fmt.cc AND NOT EXISTS ${PROJECT_SOURCE_DIR}/modu
   configure_file(${fmt_SOURCE_DIR}/src/fmt.cc ${PROJECT_SOURCE_DIR}/module/fmt.cppm COPYONLY)
 endif()
 
+configure_file(${fmt_SOURCE_DIR}/src/format.cc ${PROJECT_SOURCE_DIR}/module/format.cc COPYONLY)
+configure_file(${fmt_SOURCE_DIR}/src/os.cc ${PROJECT_SOURCE_DIR}/module/os.cc COPYONLY)
+file(GLOB_RECURSE _fmt_all_sources "module/*.cc")
+
 # fmt interface library
 add_library(fmt-header-only INTERFACE)
 add_library(fmt::fmt-header-only ALIAS fmt-header-only)
@@ -82,7 +86,7 @@ target_compile_features(
 target_compile_options(fmt-header-only INTERFACE $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
 
 if(FMT_SEPARATE_COMPILATION)
-  file(GLOB_RECURSE _fmt_all_sources "${fmt_SOURCE_DIR}/src/*.cc")
+  # file(GLOB_RECURSE _fmt_all_sources "${fmt_SOURCE_DIR}/src/*.cc")
 
   add_library(fmt)
   add_library(fmt::fmt ALIAS fmt)
@@ -94,6 +98,8 @@ if(FMT_SEPARATE_COMPILATION)
     fmt INTERFACE "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>" "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
   )
 
+  target_compile_options(fmt PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
+
   if(FMT_USE_MODULES)
     target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
     # cmake-format: off
@@ -101,10 +107,8 @@ if(FMT_SEPARATE_COMPILATION)
         FILE_SET public_modules
         TYPE CXX_MODULES
         BASE_DIRS
-            #NO! ${fmt_SOURCE_DIR}
             ${PROJECT_SOURCE_DIR}/module
         FILES
-            #NO! ${_fmt_all_sources}
             ${PROJECT_SOURCE_DIR}/module/fmt.cppm
     )
     # cmake-format: on

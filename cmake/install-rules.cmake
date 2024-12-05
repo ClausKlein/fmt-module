@@ -21,10 +21,10 @@ if(FMT_USE_MODULES)
   install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers FILE_SET public_modules
           DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
   )
-  install(FILES ${_fmt_all_sources} DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 else()
   install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 endif()
+install(FILES ${_fmt_all_sources} DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 
 write_basic_package_version_file("${_package}ConfigVersion.cmake" COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
 
