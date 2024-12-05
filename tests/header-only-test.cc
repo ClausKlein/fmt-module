@@ -9,5 +9,5 @@ import fmt;
 
 auto main() -> int
 {
-   fmt::print("OK");
+  fmt::print("OK");
 }
