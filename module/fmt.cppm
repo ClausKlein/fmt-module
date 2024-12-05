@@ -2,6 +2,12 @@
 module;
 #endif
 
+#ifdef _MSVC_LANG
+#  define FMT_CPLUSPLUS _MSVC_LANG
+#else
+#  define FMT_CPLUSPLUS __cplusplus
+#endif
+
 #ifndef FMT_IMPORT_STD_MODULE
 
 // Put all implementation-provided headers into the global module fragment
@@ -19,7 +25,9 @@ module;
 #    include <cstring>
 #    include <ctime>
 #    include <exception>
-#    include <expected>
+#    if FMT_CPLUSPLUS > 202002L
+#      include <expected>
+#    endif
 #    include <filesystem>
 #    include <fstream>
 #    include <functional>
@@ -45,7 +53,8 @@ module;
 #    include <stdint.h>
 #    include <stdio.h>
 #    include <time.h>
-#  endif
+#  endif  // FMT_IMPORT_STD
+
 #  include <cerrno>
 #  include <climits>
 #  include <version>
@@ -82,7 +91,7 @@ module;
 #    define WIN32_LEAN_AND_MEAN
 #    include <windows.h>
 #  endif
-#endif
+#endif  // FMT_IMPORT_STD_MODULE
 
 #ifdef FMT_MODULE
 export module fmt;
@@ -90,12 +99,10 @@ export module fmt;
 #  ifdef FMT_IMPORT_STD_MODULE
 import std;
 #  endif
-#endif
+#endif  // FMT_MODULE
 
 #define FMT_EXPORT export
-#define FMT_BEGIN_EXPORT \
-  export \
-  {
+#define FMT_BEGIN_EXPORT export {
 #define FMT_END_EXPORT }
 
 // If you define FMT_ATTACH_TO_GLOBAL_MODULE
@@ -104,8 +111,7 @@ import std;
 //  - all library symbols are mangled traditionally
 //  - you can mix TUs with either importing or #including the {fmt} API
 #ifdef FMT_ATTACH_TO_GLOBAL_MODULE
-extern "C++"
-{
+extern "C++" {
 #endif
 
 #ifndef FMT_OS
@@ -139,9 +145,17 @@ module :private;
 #  endif
 #endif
 
+#ifdef FMT_ATTACH_TO_GLOBAL_MODULE
+extern "C++" {
+#endif
+
 #if FMT_HAS_INCLUDE("format.cc")
 #  include "format.cc"
 #endif
 #if FMT_OS && FMT_HAS_INCLUDE("os.cc")
 #  include "os.cc"
+#endif
+
+#ifdef FMT_ATTACH_TO_GLOBAL_MODULE
+}
 #endif
