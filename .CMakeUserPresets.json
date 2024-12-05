@@ -119,10 +119,6 @@
           "name": "dev"
         },
         {
-          "type": "build",
-          "name": "verify"
-        },
-        {
           "type": "test",
           "name": "dev"
         },

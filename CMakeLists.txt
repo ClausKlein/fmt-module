@@ -16,7 +16,7 @@ set(CPPdefinitions)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
 option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the all std header needed" YES)
+option(FMT_IMPORT_STD "Import the all std header needed" NO)
 
 if(FMT_IMPORT_STD)
   list(APPEND CPPdefinitions FMT_IMPORT_STD)

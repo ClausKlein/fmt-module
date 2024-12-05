@@ -38,9 +38,9 @@ endif()
 add_executable(header-only-test header-only-test.cc)
 
 if(FMT_USE_MODULES)
-  target_link_libraries(header-only-test GTest::gtest_main fmt::fmt)
+  target_link_libraries(header-only-test fmt::fmt)
 else()
-  target_link_libraries(header-only-test GTest::gtest_main fmt::fmt-header-only)
+  target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()
 
 if(NOT PROJECT_IS_TOP_LEVEL)

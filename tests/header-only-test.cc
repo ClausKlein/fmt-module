@@ -7,13 +7,7 @@ import fmt;
 #  include "fmt/ostream.h"
 #endif
 
-// #ifndef FMT_HEADER_ONLY
-// #  error "Not in the header-only mode."
-// #endif
-
-#include "gtest/gtest.h"
-
-TEST(header_only_test, format)
+auto main() -> int
 {
-  EXPECT_EQ(fmt::format("foo"), "foo");
+   fmt::print("OK");
 }

@@ -6,7 +6,7 @@ module;
 
 // Put all implementation-provided headers into the global module fragment
 // to prevent attachment to this module.
-#  ifndef FMT_IMPORT_STD
+#  if 1 // XXX ifndef FMT_IMPORT_STD
 #    include <algorithm>
 #    include <bitset>
 #    include <chrono>
