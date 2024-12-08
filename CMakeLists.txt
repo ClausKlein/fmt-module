@@ -15,8 +15,8 @@ set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the all std header needed" NO)
+#XXX option(FMT_USE_MODULES "Export a CXX_MODULE asio if possible" ${PROJECT_IS_TOP_LEVEL})
+#XXX option(FMT_IMPORT_STD "Import the all std header needed" NO)
 
 if(FMT_IMPORT_STD)
   list(APPEND CPPdefinitions FMT_IMPORT_STD)
@@ -53,7 +53,7 @@ include(cmake/CPM.cmake)
 cpmaddpackage(
   NAME fmt
   GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 11.0.2
+  GIT_TAG 4302d74293620fb6ef1f1b1ad700d1e6dfaa5545 # post 11.0.2
   VERSION 11.0.2
   DOWNLOAD_ONLY YES
 )
@@ -66,6 +66,7 @@ if(EXISTS ${fmt_SOURCE_DIR}/src/fmt.cc AND NOT EXISTS ${PROJECT_SOURCE_DIR}/modu
   configure_file(${fmt_SOURCE_DIR}/src/fmt.cc ${PROJECT_SOURCE_DIR}/module/fmt.cppm COPYONLY)
 endif()
 
+configure_file(${fmt_SOURCE_DIR}/src/fmt.cc ${PROJECT_SOURCE_DIR}/module/fmt.cc COPYONLY)
 configure_file(${fmt_SOURCE_DIR}/src/format.cc ${PROJECT_SOURCE_DIR}/module/format.cc COPYONLY)
 configure_file(${fmt_SOURCE_DIR}/src/os.cc ${PROJECT_SOURCE_DIR}/module/os.cc COPYONLY)
 file(GLOB_RECURSE _fmt_all_sources "module/*.cc")
