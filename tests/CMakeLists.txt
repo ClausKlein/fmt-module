@@ -10,7 +10,7 @@ include(../cmake/windows-set-path.cmake OPTIONAL)
 if(PROJECT_IS_TOP_LEVEL)
   enable_testing()
 
-  find_package(fmt 11.0.2.1 EXACT REQUIRED)
+  find_package(fmt 11.1.0.1 EXACT REQUIRED)
   include(../cmake/CPM.cmake)
 endif()
 
