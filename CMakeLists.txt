@@ -11,6 +11,8 @@ project(fmt
 
 include(cmake/variables.cmake)
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions)
 
@@ -18,14 +20,14 @@ option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
 option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
 option(FMT_IMPORT_STD "Import the all std header needed" NO)
 
-if(FMT_IMPORT_STD)
+if(FMT_IMPORT_STD AND NOT FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_IMPORT_STD)
 endif()
 
 if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
   # XXX NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
-  # FIXME: add_compile_options(-Wno-reserved-module-identifier -Wno-include-angled-in-module-purview)
+  # TODO: add_compile_options(-Wno-reserved-module-identifier -Wno-include-angled-in-module-purview)
 
   if(FMT_IMPORT_STD) # FIXME: clang++ only! AND $ENV{LLVM_ROOT})
     if(UNIX)
@@ -61,12 +63,12 @@ cpmaddpackage(
 # ---- Declare library ----
 
 # TODO: only if needed (compare) and possible!
-if(EXISTS ${fmt_SOURCE_DIR}/src/fmt.cc AND NOT EXISTS ${PROJECT_SOURCE_DIR}/module/fmt.cppm)
-  configure_file(${fmt_SOURCE_DIR}/src/fmt.cc ${PROJECT_SOURCE_DIR}/module/fmt.cppm COPYONLY)
+if(EXISTS ${fmt_SOURCE_DIR}/src/fmt.cc AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm)
+  configure_file(${fmt_SOURCE_DIR}/src/fmt.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm COPYONLY)
 endif()
 
-configure_file(${fmt_SOURCE_DIR}/src/format.cc ${PROJECT_SOURCE_DIR}/module/format.cc COPYONLY)
-configure_file(${fmt_SOURCE_DIR}/src/os.cc ${PROJECT_SOURCE_DIR}/module/os.cc COPYONLY)
+configure_file(${fmt_SOURCE_DIR}/src/format.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/format.cc COPYONLY)
+configure_file(${fmt_SOURCE_DIR}/src/os.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/os.cc COPYONLY)
 file(GLOB_RECURSE _fmt_all_sources "module/*.cc")
 
 # fmt interface library
@@ -109,9 +111,9 @@ if(FMT_SEPARATE_COMPILATION)
         FILE_SET public_modules
         TYPE CXX_MODULES
         BASE_DIRS
-            ${PROJECT_SOURCE_DIR}/module
+            ${CMAKE_CURRENT_SOURCE_DIR}/module
         FILES
-            ${PROJECT_SOURCE_DIR}/module/fmt.cppm
+            ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm
     )
     # cmake-format: on
   else()
