@@ -27,8 +27,8 @@ set(CPPdefinitions FMT_USE_FCNTL=0)
 set(ADD_STDLIB_MODULES)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
+#XXX option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
+#XXX option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
 
 if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
