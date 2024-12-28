@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.25...3.31)
 include(cmake/prelude.cmake)
 
 project(fmt
-        VERSION 11.1.0.2
+        VERSION 11.1.1.1
         DESCRIPTION "A modern formatting library"
         HOMEPAGE_URL https://fmt.dev/11.0/
         LANGUAGES CXX
