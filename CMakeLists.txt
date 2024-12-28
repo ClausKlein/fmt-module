@@ -5,7 +5,7 @@ include(cmake/prelude.cmake)
 
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
-# TODO: set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+# FIXME: set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
 
 project(fmt
         VERSION 11.1.1.1
@@ -41,7 +41,7 @@ if(FMT_USE_MODULES)
         message(STATUS "LLVM_ROOT=$ENV{LLVM_ROOT}")
         set(LLVM_LIBC_SOURCE $ENV{LLVM_ROOT}/share/libc++/v1)
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 18.0)
-          set(ADD_STDLIB_MODULES stdlib)
+          #XXX set(ADD_STDLIB_MODULES stdlib)
         endif()
       endif()
 

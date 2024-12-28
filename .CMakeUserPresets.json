@@ -12,7 +12,11 @@
       "generator": "Ninja",
       "inherits": [
         "dev-mode"
-      ]
+      ],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
     },
     {
       "name": "dev-Linux",
@@ -20,11 +24,7 @@
       "inherits": [
         "dev-common",
         "ci-Linux"
-      ],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-      }
+      ]
     },
     {
       "name": "dev-Darwin",
@@ -32,11 +32,7 @@
       "inherits": [
         "dev-common",
         "ci-Darwin"
-      ],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-      }
+      ]
     },
     {
       "name": "dev-Windows",
