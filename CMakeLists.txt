@@ -5,7 +5,7 @@ include(cmake/prelude.cmake)
 
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+# TODO: set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
 
 project(fmt
         VERSION 11.1.1.1
@@ -33,30 +33,31 @@ option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
 if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
   # XXX NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
-  # TODO: add_compile_options(-Wno-reserved-module-identifier -Wno-include-angled-in-module-purview)
 
   if(FMT_IMPORT_STD)
     if(UNIX)
-      # clang++-19 only!
+      # possible for clang++-18 or newer only!
       if(DEFINED ENV{LLVM_ROOT})
         message(STATUS "LLVM_ROOT=$ENV{LLVM_ROOT}")
         set(LLVM_LIBC_SOURCE $ENV{LLVM_ROOT}/share/libc++/v1)
-        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 18.0)
           set(ADD_STDLIB_MODULES stdlib)
-          # Tell CMake that we explicitly want `import std`.
-          # This will initialize the property on all targets declared after this to 1
-          if(CMAKE_CXX_COMPILER_IMPORT_STD)
-            set(CMAKE_CXX_MODULE_STD ON)
-          endif()
         endif()
+      endif()
+
+      # Tell CMake that we explicitly want `import std`.
+      # This will initialize the property on all targets declared after this to 1
+      if(CMAKE_CXX_COMPILER_IMPORT_STD)
+        set(CMAKE_CXX_MODULE_STD ON)
+      endif()
+      if(CMAKE_CXX_MODULE_STD OR ADD_STDLIB_MODULES)
+        list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
       endif()
 
       add_compile_options(-fexperimental-library)
       add_link_options(-lc++experimental)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
-
-      list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
     endif()
 
     message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
