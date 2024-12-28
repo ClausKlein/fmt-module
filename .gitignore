@@ -38,5 +38,4 @@ CMakeUserPresets.json
 tags
 *.swp
 *.bak
-module/format.cc
-module/os.cc
+module/*.cc
