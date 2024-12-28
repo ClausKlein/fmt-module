@@ -5,7 +5,7 @@ include(cmake/prelude.cmake)
 
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
-#TODO: set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
 
 project(fmt
         VERSION 11.1.1.1
@@ -21,7 +21,9 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 set(CMAKE_DEBUG_POSTFIX D)
-set(CPPdefinitions)
+# to prevent -Winclude-angled-in-module-purview in fmt/os.h
+# see /Users/clausklein/.cache/CPM/fmt/297020319ba1d5d14e1599714def59a1788711c5/include/fmt/os.h:33
+set(CPPdefinitions FMT_USE_FCNTL=0)
 set(ADD_STDLIB_MODULES)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
