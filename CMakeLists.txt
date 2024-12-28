@@ -1,6 +1,11 @@
-cmake_minimum_required(VERSION 3.25...3.31)
+# CMake 3.30 is required for C++23 `import std` support;
+cmake_minimum_required(VERSION 3.30...3.31)
 
 include(cmake/prelude.cmake)
+
+# Set experimental flag to enable `import std` support from CMake.
+# This must be enabled before C++ language support.
+#TODO: set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
 
 project(fmt
         VERSION 11.1.1.1
@@ -12,12 +17,12 @@ project(fmt
 include(cmake/variables.cmake)
 
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions)
-set(HAS_STDLIB_MODULES)
+set(ADD_STDLIB_MODULES)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
 option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
@@ -28,16 +33,19 @@ if(FMT_USE_MODULES)
   # XXX NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
   # TODO: add_compile_options(-Wno-reserved-module-identifier -Wno-include-angled-in-module-purview)
 
-  if(FMT_IMPORT_STD) # FIXME: clang++ only! AND $ENV{LLVM_ROOT})
+  if(FMT_IMPORT_STD)
     if(UNIX)
+      # clang++-19 only!
       if(DEFINED ENV{LLVM_ROOT})
         message(STATUS "LLVM_ROOT=$ENV{LLVM_ROOT}")
         set(LLVM_LIBC_SOURCE $ENV{LLVM_ROOT}/share/libc++/v1)
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
-          set(HAS_STDLIB_MODULES stdlib)
-          set(CMAKE_CXX_MODULE_STD ON)
-          set(CMAKE_CXX_COMPILER_IMPORT_STD 23)
-          set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD ON)
+          set(ADD_STDLIB_MODULES stdlib)
+          # Tell CMake that we explicitly want `import std`.
+          # This will initialize the property on all targets declared after this to 1
+          if(CMAKE_CXX_COMPILER_IMPORT_STD)
+            set(CMAKE_CXX_MODULE_STD ON)
+          endif()
         endif()
       endif()
 
@@ -46,7 +54,7 @@ if(FMT_USE_MODULES)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
 
-      list(APPEND CPPdefinitions FMT_IMPORT_STD)
+      list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
     endif()
 
     message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
@@ -103,7 +111,7 @@ target_compile_options(fmt-header-only INTERFACE $<$<AND:$<COMPILE_LANGUAGE:CXX>
 if(FMT_SEPARATE_COMPILATION)
   # file(GLOB_RECURSE _fmt_all_sources "${fmt_SOURCE_DIR}/src/*.cc")
 
-  add_library(fmt)
+  add_library(fmt STATIC)
   add_library(fmt::fmt ALIAS fmt)
   target_sources(
     fmt PUBLIC FILE_SET public_headers TYPE HEADERS BASE_DIRS ${fmt_SOURCE_DIR}/include FILES ${_fmt_public_header}

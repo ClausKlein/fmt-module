@@ -90,7 +90,7 @@ module;
 export module fmt;
 
 #ifdef FMT_IMPORT_STD
-import std;
+// FIXME: import std;
 #endif
 
 #define FMT_EXPORT export

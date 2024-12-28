@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25...3.31)
+cmake_minimum_required(VERSION 3.30...3.31)
 
 project(fmt_test LANGUAGES CXX)
 
@@ -14,26 +14,10 @@ if(PROJECT_IS_TOP_LEVEL)
   include(../cmake/CPM.cmake)
 endif()
 
-# cmake-format: off
-cpmaddpackage(
-  NAME googletest
-  GITHUB_REPOSITORY google/googletest
-  GIT_TAG v1.15.2
-  VERSION 1.15.2
-  EXCLUDE_FROM_ALL YES
-  OPTIONS "INSTALL_GTEST OFF" "gtest_force_shared_crt"
-)
-# cmake-format: on
-
 # ---- Tests ----
 
-if(NOT TARGET GTest::gtest)
-  message(WARNING "Missing alias for gtest!")
-  add_library(GTest::gtest ALIAS gtest)
-endif()
-
-if(EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc AND NOT EXISTS ${PROJECT_SOURCE_DIR}/header-only-test.cc)
-  configure_file(${fmt_SOURCE_DIR}/test/header-only-test.cc ${PROJECT_SOURCE_DIR}/header-only-test.cc COPYONLY)
+if(EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/header-only-test.cc)
+  configure_file(${fmt_SOURCE_DIR}/test/header-only-test.cc ${CMAKE_CURRENT_SOURCE_DIR}/header-only-test.cc COPYONLY)
 endif()
 add_executable(header-only-test header-only-test.cc)
 
@@ -59,11 +43,11 @@ if(FMT_USE_MODULES)
   # Build the stdlib modules if possible
   # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm
   # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm
-  if(HAS_STDLIB_MODULES)
-    message(STATUS "HAS_STDLIB_MODULES=${HAS_STDLIB_MODULES}")
-    add_stdlib_module(${HAS_STDLIB_MODULES})
+  if(NOT CMAKE_CXX_COMPILER_IMPORT_STD AND ADD_STDLIB_MODULES)
+    message(STATUS "ADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}")
+    add_stdlib_module(${ADD_STDLIB_MODULES})
   endif()
-  target_link_libraries(header-only-test ${HAS_STDLIB_MODULES} fmt::fmt)
+  target_link_libraries(header-only-test ${ADD_STDLIB_MODULES} fmt::fmt)
 else()
   target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()
@@ -73,7 +57,7 @@ if(NOT PROJECT_IS_TOP_LEVEL)
     set(CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
   endif()
 
-  # test if the targets are findable from the build directory
+  # test if the targets are findable from the install prefix directory
   # NOTE: For an INTERFACE library and multi config generators, we may always use
   # the -C Debug config type instead of  $<CONFIG> to prevent problems! CK
   # cmake-format: off
@@ -90,8 +74,12 @@ if(NOT PROJECT_IS_TOP_LEVEL)
         --build-options
           "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
           "-DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}"
+          "-DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}"
+          "-DCMAKE_CXX_STANDARD_REQUIRED=${CMAKE_CXX_STANDARD_REQUIRED}"
           "-DCMAKE_BUILD_TYPE=Debug"
           "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
+          "-DCMAKE_CXX_MODULE_STD=ON"
+          "-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
     )
   endif()
   # cmake-format: on

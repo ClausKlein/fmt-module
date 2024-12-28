@@ -1,12 +1,21 @@
 // Header-only configuration test
 
-#include <string_view>
-
 #ifdef FMT_MODULE
-import fmt;
+
+#ifdef HAS_STDLIB_MODULES
+import std;
+import std.compat;
 #else
+#  include <string_view>
+#endif
+
+import fmt;
+
+#else
+
 #  include "fmt/base.h"
 #  include "fmt/ostream.h"
+
 #endif
 
 auto main() -> int

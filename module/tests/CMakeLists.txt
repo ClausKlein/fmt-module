@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25...3.31)
+cmake_minimum_required(VERSION 3.30...3.31)
 
 project(fmt_moddule_examples LANGUAGES CXX)
 
@@ -10,12 +10,14 @@ if(PROJECT_IS_TOP_LEVEL)
 
   # Use modules?
   unset(USE_MODULES)
-  set(CMAKE_CXX_STANDARD 23)
-  set(CMAKE_CXX_EXTENSIONS ON)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.28.4 AND CMAKE_GENERATOR STREQUAL "Ninja")
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 17.0)
-      set(USE_MODULES TRUE)
+  if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_EXTENSIONS ON)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+  endif()
+  if(CMAKE_GENERATOR STREQUAL "Ninja")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
+      set(USE_MODULES ON)
       # see https://releases.llvm.org/15.0.0/projects/libcxx/docs/ReleaseNotes.html
       # Always use libc++
       add_compile_options(-fexperimental-library)
@@ -23,9 +25,9 @@ if(PROJECT_IS_TOP_LEVEL)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 14.0)
-      set(USE_MODULES TRUE)
+      set(USE_MODULES ON)
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-      set(USE_MODULES TRUE)
+      set(USE_MODULES ON)
     endif()
     message(STATUS "CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}")
   endif()
