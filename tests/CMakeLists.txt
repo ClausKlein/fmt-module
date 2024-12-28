@@ -37,8 +37,33 @@ if(EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc AND NOT EXISTS ${PROJECT_SO
 endif()
 add_executable(header-only-test header-only-test.cc)
 
+# Build the stdlib module
+function(add_stdlib_module NAME)
+    add_library(${NAME})
+    add_library(__CMAKE::CXX23 ALIAS ${NAME})
+    # cmake-format: off
+    target_sources(${NAME} PUBLIC
+        FILE_SET CXX_MODULES
+        BASE_DIRS ${LLVM_LIBC_SOURCE}
+        FILES
+            ${LLVM_LIBC_SOURCE}/std.cppm
+            ${LLVM_LIBC_SOURCE}/std.compat.cppm
+    )
+    # cmake-format: on
+    target_compile_features(${NAME} PUBLIC cxx_std_23)
+    target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
+    target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
+endfunction()
+
 if(FMT_USE_MODULES)
-  target_link_libraries(header-only-test fmt::fmt)
+  # Build the stdlib modules if possible
+  # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm
+  # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm
+  if(HAS_STDLIB_MODULES)
+      message(STATUS "HAS_STDLIB_MODULES=${HAS_STDLIB_MODULES}")
+      add_stdlib_module(${HAS_STDLIB_MODULES})
+  endif()
+  target_link_libraries(header-only-test ${HAS_STDLIB_MODULES} fmt::fmt)
 else()
   target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()

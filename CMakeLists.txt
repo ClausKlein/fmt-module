@@ -12,17 +12,16 @@ project(fmt
 include(cmake/variables.cmake)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
+
 set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions)
+set(HAS_STDLIB_MODULES)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
 option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the all std header needed" NO)
-
-if(FMT_IMPORT_STD AND NOT FMT_USE_MODULES)
-  list(APPEND CPPdefinitions FMT_IMPORT_STD)
-endif()
+option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
 
 if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
@@ -31,11 +30,23 @@ if(FMT_USE_MODULES)
 
   if(FMT_IMPORT_STD) # FIXME: clang++ only! AND $ENV{LLVM_ROOT})
     if(UNIX)
-      set(CMAKE_CXX_COMPILER_IMPORT_STD 23)
+      if(DEFINED ENV{LLVM_ROOT})
+        message(STATUS "LLVM_ROOT=$ENV{LLVM_ROOT}")
+        set(LLVM_LIBC_SOURCE $ENV{LLVM_ROOT}/share/libc++/v1)
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
+          set(HAS_STDLIB_MODULES stdlib)
+          set(CMAKE_CXX_MODULE_STD ON)
+          set(CMAKE_CXX_COMPILER_IMPORT_STD 23)
+          set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD ON)
+        endif()
+      endif()
+
       add_compile_options(-fexperimental-library)
       add_link_options(-lc++experimental)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
+
+      list(APPEND CPPdefinitions FMT_IMPORT_STD)
     endif()
 
     message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
@@ -117,6 +128,7 @@ if(FMT_SEPARATE_COMPILATION)
     )
     # cmake-format: on
   else()
+    set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
     target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
     target_sources(fmt PUBLIC ${_fmt_all_sources})
   endif()
