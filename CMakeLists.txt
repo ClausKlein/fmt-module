@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.25...3.31)
 include(cmake/prelude.cmake)
 
 project(fmt
-        VERSION 11.1.0.1
+        VERSION 11.1.0.2
         DESCRIPTION "A modern formatting library"
         HOMEPAGE_URL https://fmt.dev/11.0/
         LANGUAGES CXX
@@ -54,8 +54,8 @@ include(cmake/CPM.cmake)
 cpmaddpackage(
   NAME fmt
   GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 11.1.0
-  VERSION 11.1.0
+  GIT_TAG 11.1.1
+  VERSION 11.1.1
   DOWNLOAD_ONLY YES
 )
 # cmake-format: on
