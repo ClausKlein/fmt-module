@@ -25,7 +25,25 @@ function(add_fmt_module NAME)
           ${FMT_ROOT}/lib/cmake/fmt/module/fmt.cppm
   )
   # cmake-format: on
+endfunction()
 
+# Build the stdlib module
+function(add_stdlib_module NAME)
+  add_library(${NAME})
+  # cmake-format: off
+  target_sources(${NAME} PUBLIC
+    FILE_SET CXX_MODULES
+    BASE_DIRS ${LLVM_LIBC_SOURCE}
+    FILES
+      ${LLVM_LIBC_SOURCE}/std.cppm
+      ${LLVM_LIBC_SOURCE}/std.compat.cppm
+  )
+  # cmake-format: on
+  target_compile_features(
+    ${NAME} PUBLIC "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>" "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
+  )
+  target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
+  target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
 endfunction()
 
 include("${CMAKE_CURRENT_LIST_DIR}/fmtTargets.cmake")

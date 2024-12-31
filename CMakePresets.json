@@ -12,7 +12,7 @@
       "warnings": {
         "dev": true,
         "deprecated": true,
-        "uninitialized": true,
+        "uninitialized": false,
         "unusedCli": true,
         "systemVars": false
       },
@@ -40,7 +40,7 @@
       "name": "clang-tidy",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy-18;--header-filter=^${sourceDir}/"
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/"
       }
     },
     {
@@ -159,7 +159,6 @@
       "binaryDir": "${sourceDir}/build/sanitize",
       "inherits": [
         "gen-Linux",
-        "clang-tidy",
         "dev-mode"
       ],
       "cacheVariables": {

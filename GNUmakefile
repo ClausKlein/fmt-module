@@ -12,14 +12,14 @@ ifeq (${hostSystemName},Darwin)
   export LLVM_PREFIX:=$(shell brew --prefix llvm@19)
   export LLVM_ROOT:=$(shell realpath ${LLVM_PREFIX})
 
-  export LDFLAGS?=-L${LLVM_ROOT}/lib/c++
+  #XXX export LDFLAGS?=-L${LLVM_ROOT}/lib/c++
   export PATH:=${LLVM_ROOT}/bin:${PATH}
   export CXX:=clang++
 else ifeq (${UNAME},Linux)
   export LLVM_ROOT:=/usr/lib/llvm-19
 endif
 
-.PHONY: all check test format clean distclean
+.PHONY: all check test example format clean distclean
 all: .init
 	cmake --workflow --preset dev --fresh
 
@@ -38,6 +38,11 @@ test:
 	cmake -G Ninja -B build/tests -S tests -D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
 	cmake --build build/tests
 	ctest --test-dir build/tests
+
+example:
+	cmake -B build/example -S example -G Ninja
+	cmake --build build/example -- -v
+	ctest --test-dir build/example --verbose
 
 .init: requirements.txt .CMakeUserPresets.json
 	perl -p -e 's/<hostSystemName>/${hostSystemName}/;' .CMakeUserPresets.json > CMakeUserPresets.json

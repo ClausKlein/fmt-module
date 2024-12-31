@@ -2,12 +2,12 @@
 
 #ifdef FMT_MODULE
 
-#ifdef HAS_STDLIB_MODULES
+#  ifdef HAS_STDLIB_MODULES
 import std;
 import std.compat;
-#else
-#  include <string_view>
-#endif
+#  else
+#    include <string_view>
+#  endif
 
 import fmt;
 

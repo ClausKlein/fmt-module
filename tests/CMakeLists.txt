@@ -24,7 +24,6 @@ add_executable(header-only-test header-only-test.cc)
 # Build the stdlib module
 function(add_stdlib_module NAME)
   add_library(${NAME})
-  add_library(__CMAKE::CXX23 ALIAS ${NAME})
   # cmake-format: off
   target_sources(${NAME} PUBLIC
     FILE_SET CXX_MODULES
@@ -44,10 +43,10 @@ if(FMT_USE_MODULES)
   # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm
   # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm
   if(NOT CMAKE_CXX_COMPILER_IMPORT_STD AND ADD_STDLIB_MODULES)
-    message(STATUS "ADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}")
+    message(WARNING "ADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}")
     add_stdlib_module(${ADD_STDLIB_MODULES})
   endif()
-  target_link_libraries(header-only-test ${ADD_STDLIB_MODULES} fmt::fmt)
+  target_link_libraries(header-only-test ${ADD_STDLIB_MODULES} fmt::fmt-module)
 else()
   target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()
@@ -59,14 +58,14 @@ if(NOT PROJECT_IS_TOP_LEVEL)
 
   # test if the targets are findable from the install prefix directory
   # NOTE: For an INTERFACE library and multi config generators, we may always use
-  # the -C Debug config type instead of  $<CONFIG> to prevent problems! CK
+  # the -C Release config type instead of $<CONFIG> to prevent problems! CK
   # cmake-format: off
-  if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  if(CMAKE_BUILD_TYPE STREQUAL Release)
     add_test(
       NAME find-package-test
       COMMAND ${CMAKE_CTEST_COMMAND}
         --verbose
-        --output-on-failure -C Debug
+        --output-on-failure -C Release
         --build-and-test
           "${CMAKE_SOURCE_DIR}/module/tests" "${CMAKE_CURRENT_BINARY_DIR}/find-package-test"
         --build-generator ${CMAKE_GENERATOR}
@@ -76,10 +75,13 @@ if(NOT PROJECT_IS_TOP_LEVEL)
           "-DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}"
           "-DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}"
           "-DCMAKE_CXX_STANDARD_REQUIRED=${CMAKE_CXX_STANDARD_REQUIRED}"
-          "-DCMAKE_BUILD_TYPE=Debug"
+          "-DCMAKE_BUILD_TYPE=Release"
           "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
-          # "-DCMAKE_CXX_MODULE_STD=ON"
-          # "-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
+          "-DADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}"
+          "-DLLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}"
+          "-DLLVM_ROOT=${LLVM_ROOT}"
+          # TODO: "-DCMAKE_CXX_MODULE_STD=ON"
+          # TODO: "-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
     )
   endif()
   # cmake-format: on
