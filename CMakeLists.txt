@@ -179,7 +179,12 @@ if(FMT_SEPARATE_COMPILATION)
   else()
     add_library(fmt::fmt ALIAS fmt)
     set_target_properties(fmt PROPERTIES CXX_SCAN_FOR_MODULES OFF)
+<<<<<<< HEAD
     target_sources(fmt PRIVATE ${_fmt_all_sources})
+=======
+    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
+    target_sources(fmt PUBLIC ${_fmt_all_sources})
+>>>>>>> 48c0954 (Set FMT_USE_MODULES again)
   endif()
 
   if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
