@@ -21,7 +21,6 @@ if(FMT_USE_MODULES)
   install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers #
                                         FILE_SET public_modules DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
   )
-  install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 else()
   install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers)
 endif()
