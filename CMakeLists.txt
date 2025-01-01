@@ -27,8 +27,8 @@ set(CPPdefinitions FMT_USE_FCNTL=0)
 set(ADD_STDLIB_MODULES)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
+#XXX option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
+#XXX option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
 
 if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
@@ -102,6 +102,7 @@ endif()
 
 configure_file(${fmt_SOURCE_DIR}/src/format.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/format.cc COPYONLY)
 configure_file(${fmt_SOURCE_DIR}/src/os.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/os.cc COPYONLY)
+configure_file(${fmt_SOURCE_DIR}/src/fmt.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cc COPYONLY)
 file(GLOB_RECURSE _fmt_all_sources "module/*.cc")
 
 # fmt interface library
@@ -153,7 +154,7 @@ if(FMT_SEPARATE_COMPILATION)
     add_library(fmt::fmt ALIAS fmt)
     set_target_properties(fmt PROPERTIES CXX_SCAN_FOR_MODULES OFF)
     target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
-    target_sources(fmt PUBLIC ${_fmt_all_sources})
+    target_sources(fmt PRIVATE ${_fmt_all_sources})
   endif()
 
   if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
