@@ -16,10 +16,6 @@ project(fmt
 
 include(cmake/variables.cmake)
 
-if(CMAKE_BUILD_TYPE STREQUAL Release)
-  include(cmake/example.cmake)
-endif()
-
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -31,10 +27,8 @@ set(CPPdefinitions FMT_USE_FCNTL=0)
 set(ADD_STDLIB_MODULES)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-if(UNIX)
-  option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
-endif()
-# TODO: option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
+option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
+option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
 
 if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
@@ -79,6 +73,10 @@ if(FMT_USE_MODULES)
   message(STATUS "CPPdefinitions=${CPPdefinitions}")
 else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
+endif()
+
+if(ADD_STDLIB_MODULES AND CMAKE_BUILD_TYPE STREQUAL Release)
+  include(cmake/example.cmake)
 endif()
 
 # ---- add dependency libraries ----
@@ -153,13 +151,13 @@ if(FMT_SEPARATE_COMPILATION)
     # cmake-format: on
   else()
     add_library(fmt::fmt ALIAS fmt)
-    set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+    set_target_properties(fmt PROPERTIES CXX_SCAN_FOR_MODULES OFF)
     target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
     target_sources(fmt PUBLIC ${_fmt_all_sources})
   endif()
 
   if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
-    target_compile_options(fmt PUBLIC -Werror)
+    target_compile_options(fmt PRIVATE -Werror)
   endif()
 endif()
 

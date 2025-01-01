@@ -18,11 +18,12 @@ mark_as_advanced(FMT_INSTALL_CMAKEDIR)
 install(TARGETS fmt-header-only EXPORT fmtTargets FILE_SET HEADERS)
 
 if(FMT_USE_MODULES)
-  install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers FILE_SET public_modules
-          DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
+  install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers #
+                                        FILE_SET public_modules DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
   )
-else()
   install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
+else()
+  install(TARGETS fmt EXPORT fmtTargets FILE_SET public_headers)
 endif()
 install(FILES ${_fmt_all_sources} DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 
