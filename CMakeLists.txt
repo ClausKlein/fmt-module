@@ -60,7 +60,6 @@ if(FMT_USE_MODULES)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
     endif()
-  endif()
 
     # Build the stdlib module
     function(add_stdlib_module NAME)
