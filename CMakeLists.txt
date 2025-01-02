@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.30...3.31)
 
 include(cmake/prelude.cmake)
 
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
 if(CMAKE_CXX_SCAN_FOR_MODULES)
@@ -20,7 +22,6 @@ include(cmake/variables.cmake)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_DEBUG_POSTFIX D)
@@ -34,6 +35,7 @@ option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FO
 option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
 
 if(FMT_USE_MODULES)
+  set(CMAKE_CXX_SCAN_FOR_MODULES ON)
   list(APPEND CPPdefinitions FMT_MODULE)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
@@ -89,8 +91,20 @@ if(FMT_USE_MODULES)
     list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
   endif()
 
-  message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
+  # Tell CMake that we explicitly want `import std`.
+  # This will initialize the property on all targets declared after this to 1
+  if(CMAKE_CXX_COMPILER_IMPORT_STD)
+    set(CMAKE_CXX_MODULE_STD ON)
+  endif()
 
+  if(CMAKE_CXX_MODULE_STD OR ADD_STDLIB_MODULES)
+    # FIXME: NO! list(APPEND CPPdefinitions FMT_IMPORT_STD)
+    list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
+  endif()
+
+  message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
+  message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
+  message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
   message(STATUS "CPPdefinitions=${CPPdefinitions}")
 else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
@@ -158,6 +172,7 @@ if(FMT_SEPARATE_COMPILATION)
   )
 
   if(FMT_USE_MODULES)
+    message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
     add_library(fmt::fmt_module ALIAS fmt)
     # cmake-format: off
     target_sources(fmt PUBLIC

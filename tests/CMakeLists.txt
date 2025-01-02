@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.30...3.31)
 
+# Set experimental flag to enable `import std` support from CMake.
+# This must be enabled before C++ language support.
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+
 project(fmt_test LANGUAGES CXX)
 
 include(../cmake/folders.cmake OPTIONAL)
@@ -15,8 +19,10 @@ if(PROJECT_IS_TOP_LEVEL)
   set(CMAKE_CXX_SCAN_FOR_MODULES ON)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-  find_package(fmt 11.1.1.1 EXACT REQUIRED HINT ../stagedir/lib)
+  #XXX find_package(fmt 11.1.1.1 EXACT REQUIRED HINT ../stagedir/lib)
 
+  set(ADD_STDLIB_MODULES stdlib)
+  add_subdirectory(.. fmt_module)
   add_subdirectory(../module/tests module_test)
 endif()
 
@@ -74,8 +80,8 @@ if(NOT PROJECT_IS_TOP_LEVEL)
           "-DADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}"
           "-DLLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}"
           "-DLLVM_ROOT=${LLVM_ROOT}"
-          "-DCMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}"
-          "-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=${CMAKE_EXPERIMENTAL_CXX_IMPORT_STD}"
+          "-DCMAKE_CXX_MODULE_STD=ON"
+          "-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
     )
   endif()
   # cmake-format: on
