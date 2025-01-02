@@ -35,6 +35,7 @@ option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FO
 option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
 
 if(FMT_USE_MODULES)
+  set(CMAKE_CXX_SCAN_FOR_MODULES ON)
   list(APPEND CPPdefinitions FMT_MODULE)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
@@ -59,6 +60,7 @@ if(FMT_USE_MODULES)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
     endif()
+  endif()
 
     # Build the stdlib module
     function(add_stdlib_module NAME)
@@ -91,7 +93,8 @@ if(FMT_USE_MODULES)
   endif()
 
   message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
-
+  message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
+  message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
   message(STATUS "CPPdefinitions=${CPPdefinitions}")
 else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
@@ -159,6 +162,7 @@ if(FMT_SEPARATE_COMPILATION)
   )
 
   if(FMT_USE_MODULES)
+    message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
     add_library(fmt::fmt_module ALIAS fmt)
     # cmake-format: off
     target_sources(fmt PUBLIC
