@@ -60,6 +60,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
         set(ADD_STDLIB_MODULES stdlib)
       endif()
     endif()
+  endif()
 
     add_compile_options(-fexperimental-library)
     add_link_options(-L${LLVM_ROOT}/lib/c++ -lc++experimental)
@@ -180,11 +181,15 @@ if(FMT_SEPARATE_COMPILATION)
     add_library(fmt::fmt ALIAS fmt)
     set_target_properties(fmt PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 <<<<<<< HEAD
+<<<<<<< HEAD
     target_sources(fmt PRIVATE ${_fmt_all_sources})
 =======
     target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
     target_sources(fmt PUBLIC ${_fmt_all_sources})
 >>>>>>> 48c0954 (Set FMT_USE_MODULES again)
+=======
+    target_sources(fmt PRIVATE ${_fmt_all_sources})
+>>>>>>> b8eac3a (Try to refactory the CMakeLists.txt files)
   endif()
 
   if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
