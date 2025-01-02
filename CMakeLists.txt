@@ -5,7 +5,9 @@ include(cmake/prelude.cmake)
 
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
-# TODO: set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+if(CMAKE_CXX_SCAN_FOR_MODULES)
+  set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+endif()
 
 project(fmt
         VERSION 11.1.1.1
@@ -18,7 +20,8 @@ include(cmake/variables.cmake)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_DEBUG_POSTFIX D)
 # to prevent -Winclude-angled-in-module-purview in fmt/os.h
@@ -26,9 +29,9 @@ set(CMAKE_DEBUG_POSTFIX D)
 set(CPPdefinitions FMT_USE_FCNTL=0)
 set(ADD_STDLIB_MODULES)
 
-option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the module std" ${PROJECT_IS_TOP_LEVEL})
+option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${CMAKE_CXX_SCAN_FOR_MODULES})
+option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FOR_MODULES})
+option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
 
 if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
@@ -55,17 +58,17 @@ if(FMT_USE_MODULES)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
     endif()
+  endif()
 
-    # Tell CMake that we explicitly want `import std`.
-    # This will initialize the property on all targets declared after this to 1
-    if(CMAKE_CXX_COMPILER_IMPORT_STD)
-      set(CMAKE_CXX_MODULE_STD ON)
-    endif()
+  # Tell CMake that we explicitly want `import std`.
+  # This will initialize the property on all targets declared after this to 1
+  if(CMAKE_CXX_COMPILER_IMPORT_STD)
+    set(CMAKE_CXX_MODULE_STD ON)
+  endif()
 
-    if(CMAKE_CXX_MODULE_STD AND ADD_STDLIB_MODULES)
-      # FIXME: NO! list(APPEND CPPdefinitions FMT_IMPORT_STD)
-      list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
-    endif()
+  if(CMAKE_CXX_MODULE_STD OR ADD_STDLIB_MODULES)
+    # FIXME: NO! list(APPEND CPPdefinitions FMT_IMPORT_STD)
+    list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
   endif()
 
   message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
@@ -75,7 +78,7 @@ else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 endif()
 
-if(ADD_STDLIB_MODULES AND CMAKE_BUILD_TYPE STREQUAL Release)
+if(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD AND CMAKE_BUILD_TYPE STREQUAL Release)
   include(cmake/example.cmake)
 endif()
 
@@ -89,7 +92,7 @@ cpmaddpackage(
   GITHUB_REPOSITORY fmtlib/fmt
   GIT_TAG 11.1.1
   VERSION 11.1.1
-  DOWNLOAD_ONLY YES
+  DOWNLOAD_ONLY ON
 )
 # cmake-format: on
 
@@ -130,15 +133,14 @@ if(FMT_SEPARATE_COMPILATION)
     fmt PUBLIC FILE_SET public_headers TYPE HEADERS BASE_DIRS ${fmt_SOURCE_DIR}/include FILES ${_fmt_public_header}
   )
 
+  target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
+  target_compile_options(fmt PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
   target_compile_features(
     fmt INTERFACE "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>" "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
   )
 
-  target_compile_options(fmt PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
-
   if(FMT_USE_MODULES)
-    add_library(fmt::fmt-module ALIAS fmt)
-    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
+    add_library(fmt::fmt_module ALIAS fmt)
     # cmake-format: off
     target_sources(fmt PUBLIC
         FILE_SET public_modules
@@ -152,8 +154,7 @@ if(FMT_SEPARATE_COMPILATION)
   else()
     add_library(fmt::fmt ALIAS fmt)
     set_target_properties(fmt PROPERTIES CXX_SCAN_FOR_MODULES OFF)
-    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
-    target_sources(fmt PUBLIC ${_fmt_all_sources})
+    target_sources(fmt PRIVATE ${_fmt_all_sources})
   endif()
 
   if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
