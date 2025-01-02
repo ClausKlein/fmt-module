@@ -10,8 +10,14 @@ include(../cmake/windows-set-path.cmake OPTIONAL)
 if(PROJECT_IS_TOP_LEVEL)
   enable_testing()
 
-  find_package(fmt 11.1.1.1 EXACT REQUIRED)
-  include(../cmake/CPM.cmake)
+  set(CMAKE_CXX_STANDARD 23)
+  set(CMAKE_CXX_EXTENSIONS ON)
+  set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+  find_package(fmt 11.1.1.1 EXACT REQUIRED HINT ../stagedir/lib)
+
+  add_subdirectory(../module/tests module_test)
 endif()
 
 # ---- Tests ----
@@ -21,23 +27,6 @@ if(EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc AND NOT EXISTS ${CMAKE_CURR
 endif()
 add_executable(header-only-test header-only-test.cc)
 
-# Build the stdlib module
-function(add_stdlib_module NAME)
-  add_library(${NAME})
-  # cmake-format: off
-  target_sources(${NAME} PUBLIC
-    FILE_SET CXX_MODULES
-    BASE_DIRS ${LLVM_LIBC_SOURCE}
-    FILES
-      ${LLVM_LIBC_SOURCE}/std.cppm
-      ${LLVM_LIBC_SOURCE}/std.compat.cppm
-  )
-  # cmake-format: on
-  target_compile_features(${NAME} PUBLIC cxx_std_23)
-  target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
-  target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
-endfunction()
-
 if(FMT_USE_MODULES)
   # Build the stdlib modules if possible
   # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm
@@ -45,8 +34,13 @@ if(FMT_USE_MODULES)
   if(NOT CMAKE_CXX_COMPILER_IMPORT_STD AND ADD_STDLIB_MODULES)
     message(WARNING "ADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}")
     add_stdlib_module(${ADD_STDLIB_MODULES})
+    target_link_libraries(header-only-test ${ADD_STDLIB_MODULES})
   endif()
-  target_link_libraries(header-only-test ${ADD_STDLIB_MODULES} fmt::fmt-module)
+  if(TARGET fmt::fmt_module)
+    target_link_libraries(header-only-test fmt::fmt_module)
+  else()
+    target_link_libraries(header-only-test fmt::fmt)
+  endif()
 else()
   target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()
@@ -80,8 +74,8 @@ if(NOT PROJECT_IS_TOP_LEVEL)
           "-DADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}"
           "-DLLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}"
           "-DLLVM_ROOT=${LLVM_ROOT}"
-          # TODO: "-DCMAKE_CXX_MODULE_STD=ON"
-          # TODO: "-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
+          "-DCMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}"
+          "-DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=${CMAKE_EXPERIMENTAL_CXX_IMPORT_STD}"
     )
   endif()
   # cmake-format: on

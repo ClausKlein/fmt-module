@@ -5,7 +5,11 @@ if(FMT_BUILD_TESTING)
   enable_testing()
 
   add_subdirectory(tests)
-  add_subdirectory(module/tests)
+
+  if(CMAKE_CXX_MODULE_STD)
+    add_subdirectory(module/tests)
+  endif()
+
 endif()
 
 option(FMT_BUILD_MCSS_DOCS "Build documentation using Doxygen and m.css" OFF)
