@@ -39,9 +39,15 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
+<<<<<<< HEAD
   if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
     if(APPLE)
       execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@19 COMMAND_ECHO STDOUT)
+=======
+  if(APPLE)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 20.0)
+      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@20 COMMAND_ECHO STDOUT)
+>>>>>>> 98c866a (Fix build problems with test module fmt)
       string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
     elseif(LINUX)
       set(LLVM_PREFIX $ENV{LLVM_ROOT})
@@ -60,6 +66,24 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
         set(ADD_STDLIB_MODULES stdlib)
       endif()
     endif()
+
+    # Build the stdlib module
+    function(add_stdlib_module NAME)
+      add_library(${NAME})
+      # cmake-format: off
+      target_sources(${NAME} PUBLIC
+        FILE_SET CXX_MODULES
+        BASE_DIRS ${LLVM_LIBC_SOURCE}
+        FILES
+          ${LLVM_LIBC_SOURCE}/std.cppm
+          ${LLVM_LIBC_SOURCE}/std.compat.cppm
+      )
+      # cmake-format: on
+      target_compile_features(${NAME} PUBLIC cxx_std_23)
+      target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
+      target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
+    endfunction()
+
   endif()
 
     add_compile_options(-fexperimental-library)
