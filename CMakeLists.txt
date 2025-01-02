@@ -61,7 +61,6 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
         set(ADD_STDLIB_MODULES stdlib)
       endif()
     endif()
-  endif()
 
     # Build the stdlib module
     function(add_stdlib_module NAME)
