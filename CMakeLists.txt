@@ -91,6 +91,17 @@ if(FMT_USE_MODULES)
     list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
   endif()
 
+  # Tell CMake that we explicitly want `import std`.
+  # This will initialize the property on all targets declared after this to 1
+  if(CMAKE_CXX_COMPILER_IMPORT_STD)
+    set(CMAKE_CXX_MODULE_STD ON)
+  endif()
+
+  if(CMAKE_CXX_MODULE_STD OR ADD_STDLIB_MODULES)
+    # FIXME: NO! list(APPEND CPPdefinitions FMT_IMPORT_STD)
+    list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
+  endif()
+
   message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
   message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
   message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
