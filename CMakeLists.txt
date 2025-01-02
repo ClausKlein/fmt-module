@@ -40,15 +40,9 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
-<<<<<<< HEAD
   if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
     if(APPLE)
       execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@19 COMMAND_ECHO STDOUT)
-=======
-  if(APPLE)
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 20.0)
-      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@20 COMMAND_ECHO STDOUT)
->>>>>>> 98c866a (Fix build problems with test module fmt)
       string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
     elseif(LINUX)
       set(LLVM_PREFIX $ENV{LLVM_ROOT})
@@ -67,6 +61,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
         set(ADD_STDLIB_MODULES stdlib)
       endif()
     endif()
+  endif()
 
     # Build the stdlib module
     function(add_stdlib_module NAME)
@@ -123,7 +118,8 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
   endif()
 
   message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
-
+  message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
+  message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
   message(STATUS "CPPdefinitions=${CPPdefinitions}")
 else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
@@ -191,6 +187,7 @@ if(FMT_SEPARATE_COMPILATION)
   )
 
   if(FMT_USE_MODULES)
+    message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
     add_library(fmt::fmt_module ALIAS fmt)
     # cmake-format: off
     target_sources(fmt PUBLIC
@@ -204,17 +201,8 @@ if(FMT_SEPARATE_COMPILATION)
     # cmake-format: on
   else()
     add_library(fmt::fmt ALIAS fmt)
-    set_target_properties(fmt PROPERTIES CXX_SCAN_FOR_MODULES OFF)
-<<<<<<< HEAD
-<<<<<<< HEAD
-    target_sources(fmt PRIVATE ${_fmt_all_sources})
-=======
     target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
     target_sources(fmt PUBLIC ${_fmt_all_sources})
->>>>>>> 48c0954 (Set FMT_USE_MODULES again)
-=======
-    target_sources(fmt PRIVATE ${_fmt_all_sources})
->>>>>>> b8eac3a (Try to refactory the CMakeLists.txt files)
   endif()
 
   if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
