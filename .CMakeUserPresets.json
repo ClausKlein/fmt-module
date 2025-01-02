@@ -65,7 +65,8 @@
       "name": "dev",
       "configurePreset": "dev",
       "configuration": "Release",
-      "jobs": 12,
+      "jobs": 1,
+      "verbose": true,
       "targets": [
         "install"
       ]

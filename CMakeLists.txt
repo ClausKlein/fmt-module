@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.30...3.31)
 
 include(cmake/prelude.cmake)
 
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
 if(CMAKE_CXX_SCAN_FOR_MODULES)
@@ -20,7 +22,6 @@ include(cmake/variables.cmake)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_DEBUG_POSTFIX D)
