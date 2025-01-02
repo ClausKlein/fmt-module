@@ -38,8 +38,8 @@ if(FMT_USE_MODULES)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
   if(APPLE)
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
-      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@19 COMMAND_ECHO STDOUT)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 20.0)
+      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@20 COMMAND_ECHO STDOUT)
       string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
       message(STATUS "LLVM_PREFIX=${LLVM_PREFIX}")
 
@@ -58,6 +58,24 @@ if(FMT_USE_MODULES)
       add_compile_options(-stdlib=libc++)
       add_link_options(-stdlib=libc++)
     endif()
+
+    # Build the stdlib module
+    function(add_stdlib_module NAME)
+      add_library(${NAME})
+      # cmake-format: off
+      target_sources(${NAME} PUBLIC
+        FILE_SET CXX_MODULES
+        BASE_DIRS ${LLVM_LIBC_SOURCE}
+        FILES
+          ${LLVM_LIBC_SOURCE}/std.cppm
+          ${LLVM_LIBC_SOURCE}/std.compat.cppm
+      )
+      # cmake-format: on
+      target_compile_features(${NAME} PUBLIC cxx_std_23)
+      target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
+      target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
+    endfunction()
+
   endif()
 
   # Tell CMake that we explicitly want `import std`.
