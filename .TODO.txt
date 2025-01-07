@@ -1,133 +1,139 @@
-bash-5.2$ cd /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test
+C:\Users\KLEIN_CL\Workspace\cpp\fmt-module>cmake --workflow dev --fresh
+Executing workflow step 1 of 4: configure preset "dev"
 
-bash-5.2$ ninja
-[1/2] Building CXX object CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o
-FAILED: CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o
-/usr/local/Cellar/llvm/19.1.6/bin/clang++ -DFMT_MODULE -DFMT_USE_FCNTL=0 -DHAS_STDLIB_MODULES  -O3 -DNDEBUG -std=gnu++23 -fexperimental-library -stdlib=libc++ -MD -MT CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -MF CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.d @CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.modmap -o CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -c /Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc
-error: enable unstable and experimental library features was disabled in PCH file but is currently enabled
-error: module file CMakeFiles/__cmake_cxx23.dir/std.pcm cannot be loaded due to a configuration mismatch with the current compilation [-Wmodule-file-config-mismatch]
-2 errors generated.
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Release"
+  CMAKE_CXX_COMPILER="cl"
+  CMAKE_CXX_EXTENSIONS:BOOL="TRUE"
+  CMAKE_CXX_STANDARD="23"
+  CMAKE_CXX_STANDARD_REQUIRED:BOOL="TRUE"
+  CMAKE_EXPORT_COMPILE_COMMANDS="ON"
+  CMAKE_INSTALL_PREFIX:PATH="C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/stagedir"
+  CMAKE_PREFIX_PATH:STRING="C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/stagedir"
+  FMT_DEVELOPER_MODE:BOOL="TRUE"
+
+Preset environment variables:
+
+  EnforceProcessCountAcrossBuilds="true"
+  UseMultiToolTask="true"
+
+-- use ccache
+-- The CXX compiler identification is MSVC 19.41.34123.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.41.34120/bin/Hostx86/x86/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- CMAKE_CXX_COMPILER_IMPORT_STD=
+-- CPPdefinitions=FMT_USE_FCNTL=0;FMT_MODULE
+-- CPM: Adding package fmt@11.1.1 (11.1.1)
+-- Populating fmt
+-- Configuring done (0.2s)
+-- Generating done (0.5s)
+-- Build files have been written to: C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/build/dev/_deps/fmt-subbuild
+[0/7] Performing update step for 'fmt-populate'
+-- Already at requested tag: 11.1.1
+[1/7] No patch step for 'fmt-populate'
+[3/7] No configure step for 'fmt-populate'
+[4/7] No build step for 'fmt-populate'
+[5/7] No install step for 'fmt-populate'
+[6/7] No test step for 'fmt-populate'
+[7/7] Completed 'fmt-populate'
+-- Configuring done (36.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/build/dev
+
+Executing workflow step 2 of 4: build preset "dev"
+
+Change Dir: 'C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/build/dev'
+
+Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v -j 1 install
+
+[1/8]
+C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
+-DFMT_MODULE -DFMT_USE_FCNTL=0
+-IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
+/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
+C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\module\fmt.cppm -nologo -TP
+-showIncludes -scanDependencies CMakeFiles\fmt.dir\module\fmt.cppm.obj.ddi
+-FoCMakeFiles\fmt.dir\module\fmt.cppm.obj fmt.cppm
+
+[2/8] C:\RsPython\3.12\Lib\site-packages\cmake\data\bin\cmake.exe -E
+cmake_ninja_dyndep --tdi=CMakeFiles\fmt.dir\CXXDependInfo.json --lang=CXX
+--modmapfmt=msvc --dd=CMakeFiles\fmt.dir\CXX.dd @CMakeFiles\fmt.dir\CXX.dd.rsp
+
+[3/8] C:\ProgramData\chocolatey\bin\ccache.exe
+C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
+/nologo /TP -DFMT_MODULE -DFMT_USE_FCNTL=0
+-IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
+/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
+/showIncludes @CMakeFiles\fmt.dir\module\fmt.cppm.obj.modmap
+/FoCMakeFiles\fmt.dir\module\fmt.cppm.obj /FdCMakeFiles\fmt.dir\fmt.pdb /FS -c
+C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\module\fmt.cppm fmt.cppm
+
+C:\Program Files (x86)\Windows
+Kits\10\\include\10.0.22621.0\\um\winnt.h(1005): note: sorry: 'inline'
+function definition for 'ULONGLONG Int64ShllMod32(ULONGLONG,DWORD)' could not
+be written to module due to unrecognized expression or statement at
+'C:\Program Files (x86)\Windows
+Kits\10\\include\10.0.22621.0\\um\winnt.h(1010)'.
+
+If possible please provide a repro here: https://developercommunity.visualstudio.com
+
+C:\Program Files (x86)\Windows
+Kits\10\\include\10.0.22621.0\\um\winnt.h(1021): note: sorry: 'inline'
+function definition for 'LONGLONG Int64ShraMod32(LONGLONG,DWORD)' could not be
+written to module due to unrecognized expression or statement at 'C:\Program
+Files (x86)\Windows Kits\10\\include\10.0.22621.0\\um\winnt.h(1026)'.
+
+If possible please provide a repro here: https://developercommunity.visualstudio.com
+
+C:\Program Files (x86)\Windows
+Kits\10\\include\10.0.22621.0\\um\winnt.h(1037): note: sorry: 'inline'
+function definition for 'ULONGLONG Int64ShrlMod32(ULONGLONG,DWORD)' could not
+be written to module due to unrecognized expression or statement at
+'C:\Program Files (x86)\Windows
+Kits\10\\include\10.0.22621.0\\um\winnt.h(1042)'.
+
+If possible please provide a repro here: https://developercommunity.visualstudio.com
+
+[4/8] C:\RsPython\3.12\Lib\site-packages\cmake\data\bin\cmake.exe -E
+cmake_ninja_dyndep
+--tdi=tests\CMakeFiles\header-only-test.dir\CXXDependInfo.json --lang=CXX
+--modmapfmt=msvc --dd=tests\CMakeFiles\header-only-test.dir\CXX.dd
+@tests\CMakeFiles\header-only-test.dir\CXX.dd.rsp
+
+[5/8] C:\Windows\system32\cmd.exe /C "cd . &&
+C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\lib.exe
+/nologo /machine:X86 /out:fmt.lib CMakeFiles\fmt.dir\module\fmt.cppm.obj && cd
+."
+
+[6/8] C:\ProgramData\chocolatey\bin\ccache.exe
+C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
+/nologo /TP -DFMT_MODULE -DFMT_USE_FCNTL=0
+-IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
+/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
+/showIncludes
+@tests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj.modmap
+/Fotests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj
+/Fdtests\CMakeFiles\header-only-test.dir\ /FS -c
+C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\tests\header-only-test.cc
+
+FAILED: tests/CMakeFiles/header-only-test.dir/header-only-test.cc.obj
+
+C:\ProgramData\chocolatey\bin\ccache.exe
+C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
+/nologo /TP -DFMT_MODULE -DFMT_USE_FCNTL=0
+-IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
+/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
+/showIncludes
+@tests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj.modmap
+/Fotests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj
+/Fdtests\CMakeFiles\header-only-test.dir\ /FS -c
+C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\tests\header-only-test.cc
+
 ninja: build stopped: subcommand failed.
 
-bash-5.2$ ninja clean
-[1/1] Cleaning all built files...
-Cleaning... 26 files.
-bash-5.2$ ninja -j 1 -v
 
-[1/14] "/usr/local/Cellar/llvm/19.1.6/bin/clang-scan-deps" -format=p1689 -- /usr/local/Cellar/llvm/19.1.6/bin/clang++
--I/usr/local/Cellar/llvm/19.1.6/lib/clang/19/../../c++/../../share/libc++/v1 -O3 -DNDEBUG -std=gnu++23
--Wno-reserved-module-identifier -x c++ /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm -c -o
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o -resource-dir
-"/usr/local/Cellar/llvm/19.1.6/lib/clang/19" -MT
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o.ddi -MD -MF
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o.ddi.d >
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o.ddi.tmp && mv
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o.ddi.tmp
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o.ddi
-
-[2/14] "/usr/local/Cellar/llvm/19.1.6/bin/clang-scan-deps" -format=p1689 -- /usr/local/Cellar/llvm/19.1.6/bin/clang++
--I/usr/local/Cellar/llvm/19.1.6/lib/clang/19/../../c++/../../share/libc++/v1 -O3 -DNDEBUG -std=gnu++23
--Wno-reserved-module-identifier -x c++ /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm -c -o
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o -resource-dir
-"/usr/local/Cellar/llvm/19.1.6/lib/clang/19" -MT
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o.ddi -MD -MF
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o.ddi.d >
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o.ddi.tmp && mv
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o.ddi.tmp
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o.ddi
-
-[3/14] /usr/local/bin/cmake -E cmake_ninja_dyndep --tdi=CMakeFiles/__cmake_cxx23.dir/CXXDependInfo.json --lang=CXX
---modmapfmt=clang --dd=CMakeFiles/__cmake_cxx23.dir/CXX.dd @CMakeFiles/__cmake_cxx23.dir/CXX.dd.rsp
-
-[4/14] "/usr/local/Cellar/llvm/19.1.6/bin/clang-scan-deps" -format=p1689 -- /usr/local/Cellar/llvm/19.1.6/bin/clang++
--DFMT_MODULE -DFMT_USE_FCNTL=0 -DHAS_STDLIB_MODULES -I/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/include -O3
--DNDEBUG -std=gnu++23 -fexperimental-library -stdlib=libc++ -x c++
-/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm -c -o
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o
--resource-dir "/usr/local/Cellar/llvm/19.1.6/lib/clang/19" -MT
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o.ddi -MD
--MF
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o.ddi.d >
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o.ddi.tmp
-&& mv
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o.ddi.tmp
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o.ddi
-
-[5/14] /usr/local/Cellar/llvm/19.1.6/bin/clang++
--I/usr/local/Cellar/llvm/19.1.6/lib/clang/19/../../c++/../../share/libc++/v1 -O3 -DNDEBUG -std=gnu++23
--Wno-reserved-module-identifier -MD -MT
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o -MF
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o.d
-@CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o.modmap -o
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o -c
-/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm
-
-[6/14] /usr/local/Cellar/llvm/19.1.6/bin/clang++
--I/usr/local/Cellar/llvm/19.1.6/lib/clang/19/../../c++/../../share/libc++/v1 -O3 -DNDEBUG -std=gnu++23
--Wno-reserved-module-identifier -MD -MT
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o -MF
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o.d
-@CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o.modmap -o
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o -c
-/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm
-
-[7/14] /usr/local/bin/cmake -E cmake_ninja_dyndep --tdi=CMakeFiles/fmt_module.dir/CXXDependInfo.json --lang=CXX
---modmapfmt=clang --dd=CMakeFiles/fmt_module.dir/CXX.dd @CMakeFiles/fmt_module.dir/CXX.dd.rsp
-
-[8/14] "/usr/local/Cellar/llvm/19.1.6/bin/clang-scan-deps" -format=p1689 -- /usr/local/Cellar/llvm/19.1.6/bin/clang++
--DFMT_MODULE -DFMT_USE_FCNTL=0 -DHAS_STDLIB_MODULES  -O3 -DNDEBUG -std=gnu++23 -fexperimental-library -stdlib=libc++ -x c++
-/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc -c -o
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o
--resource-dir "/usr/local/Cellar/llvm/19.1.6/lib/clang/19" -MT
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.ddi -MD
--MF
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.ddi.d >
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.ddi.tmp
-&& mv
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.ddi.tmp
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.ddi
-
-[9/14] : && /usr/local/bin/cmake -E rm -f lib__cmake_cxx23.a && /usr/bin/ar qc lib__cmake_cxx23.a
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o &&
-/usr/local/Cellar/llvm/19.1.6/bin/llvm-ranlib lib__cmake_cxx23.a && /usr/local/bin/cmake -E touch lib__cmake_cxx23.a && :
-
-[10/14] /usr/local/Cellar/llvm/19.1.6/bin/clang++ -DFMT_MODULE -DFMT_USE_FCNTL=0 -DHAS_STDLIB_MODULES
--I/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/include -O3 -DNDEBUG -std=gnu++23 -fexperimental-library
--stdlib=libc++ -MD -MT
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o -MF
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o.d
-@CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o.modmap
--o CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o -c
-/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm
-
-[11/14] /usr/local/bin/cmake -E cmake_ninja_dyndep --tdi=CMakeFiles/module_header-only-test.dir/CXXDependInfo.json
---lang=CXX --modmapfmt=clang --dd=CMakeFiles/module_header-only-test.dir/CXX.dd
-@CMakeFiles/module_header-only-test.dir/CXX.dd.rsp
-
-[12/14] : && /usr/local/bin/cmake -E rm -f libfmt_module.a && /usr/bin/ar qc libfmt_module.a
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm.o
-CMakeFiles/__cmake_cxx23.dir/usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm.o
-CMakeFiles/fmt_module.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm.o &&
-/usr/local/Cellar/llvm/19.1.6/bin/llvm-ranlib libfmt_module.a && /usr/local/bin/cmake -E touch libfmt_module.a && :
-
-[13/14] /usr/local/Cellar/llvm/19.1.6/bin/clang++ -DFMT_MODULE -DFMT_USE_FCNTL=0 -DHAS_STDLIB_MODULES  -O3 -DNDEBUG
--std=gnu++23 -fexperimental-library -stdlib=libc++ -MD -MT
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -MF
-CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.d
-@CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.modmap
--o CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -c
-/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc
-
-FAILED: CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o
-
-/usr/local/Cellar/llvm/19.1.6/bin/clang++ -DFMT_MODULE -DFMT_USE_FCNTL=0 -DHAS_STDLIB_MODULES  -O3 -DNDEBUG -std=gnu++23 -fexperimental-library -stdlib=libc++ -MD -MT CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -MF CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.d @CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o.modmap -o CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -c /Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc
-
-error: enable unstable and experimental library features was disabled in PCH file but is currently enabled
-error: module file CMakeFiles/__cmake_cxx23.dir/std.pcm cannot be loaded due to a configuration mismatch with the current compilation [-Wmodule-file-config-mismatch]
-2 errors generated.
-ninja: build stopped: subcommand failed.
-bash-5.2$
-
-
-
+C:\Users\KLEIN_CL\Workspace\cpp\fmt-module>
