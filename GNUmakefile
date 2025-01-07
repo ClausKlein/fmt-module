@@ -34,9 +34,9 @@ check: all
 	-ninja -C build/dev spell-check
 
 test:
-	cmake --preset ci-${hostSystemName}
-	cmake --build build -- -v -j 1
-	cmake --install build --prefix $(CURDIR)/stagedir
+	# cmake --preset ci-${hostSystemName} --fresh
+	# cmake --build build
+	# cmake --install build --prefix $(CURDIR)/stagedir
 	cmake -G Ninja -B build/tests -S tests -D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
 	cmake --build build/tests -- -v -j 1
 	ctest --test-dir build/tests

@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.30...3.31)
 
 include(cmake/prelude.cmake)
 
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
 if(CMAKE_CXX_SCAN_FOR_MODULES)
@@ -20,7 +22,6 @@ include(cmake/variables.cmake)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_DEBUG_POSTFIX D)
@@ -48,13 +49,16 @@ if(FMT_USE_MODULES)
     message(STATUS "LLVM_PREFIX=${LLVM_PREFIX}")
 
     # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-    set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1)
+    # /usr/lib/llvm-19/share/libc++/v1/std.cppm
+    set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
     file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
+    set(LLVM_ROOT ${LLVM_ROOT} CACHE PATH "")
     message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
 
     if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
       message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
-      set(ADD_STDLIB_MODULES stdlib)
+      set(ADD_STDLIB_MODULES __CMAKE::CXX23)
+      list(APPEND CMAKE_CXX_COMPILER_IMPORT_STD 23)
     endif()
 
     add_compile_options(-fexperimental-library)
@@ -83,7 +87,7 @@ if(FMT_USE_MODULES)
 
   # Tell CMake that we explicitly want `import std`.
   # This will initialize the property on all targets declared after this to 1
-  if(CMAKE_CXX_COMPILER_IMPORT_STD)
+  if(26 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
     set(CMAKE_CXX_MODULE_STD ON)
   endif()
 
@@ -93,13 +97,14 @@ if(FMT_USE_MODULES)
   endif()
 
   message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
-
+  message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
+  message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
   message(STATUS "CPPdefinitions=${CPPdefinitions}")
 else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 endif()
 
-if(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD AND CMAKE_BUILD_TYPE STREQUAL Release)
+if(CMAKE_CXX_MODULE_STD AND CMAKE_BUILD_TYPE STREQUAL Release)
   include(cmake/example.cmake)
 endif()
 
@@ -161,6 +166,7 @@ if(FMT_SEPARATE_COMPILATION)
   )
 
   if(FMT_USE_MODULES)
+    message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
     add_library(fmt::fmt_module ALIAS fmt)
     # cmake-format: off
     target_sources(fmt PUBLIC
