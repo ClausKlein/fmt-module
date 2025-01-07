@@ -15,8 +15,10 @@ ifeq (${hostSystemName},Darwin)
   #XXX export LDFLAGS?=-L${LLVM_ROOT}/lib/c++
   export PATH:=${LLVM_ROOT}/bin:${PATH}
   export CXX:=clang++
-else ifeq (${UNAME},Linux)
+else ifeq (${hostSystemName},Linux)
   export LLVM_ROOT:=/usr/lib/llvm-19
+  export PATH:=${LLVM_ROOT}/bin:${PATH}
+  export CXX:=clang++-19
 endif
 
 .PHONY: all check test example format clean distclean

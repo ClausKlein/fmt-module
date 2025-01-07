@@ -37,27 +37,30 @@ if(FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
-  if(APPLE)
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 20.0)
-      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@20 COMMAND_ECHO STDOUT)
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
+    if(APPLE)
+      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@19 COMMAND_ECHO STDOUT)
       string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
-      message(STATUS "LLVM_PREFIX=${LLVM_PREFIX}")
-
-      # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-      set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1)
-      file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
-      message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
-
-      if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
-        message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
-        set(ADD_STDLIB_MODULES stdlib)
-      endif()
-
-      add_compile_options(-fexperimental-library)
-      add_link_options(-L${LLVM_ROOT}/lib/c++ -lc++experimental)
-      add_compile_options(-stdlib=libc++)
-      add_link_options(-stdlib=libc++)
+    elseif(LINUX)
+      set(LLVM_PREFIX $ENV{LLVM_ROOT})
     endif()
+
+    message(STATUS "LLVM_PREFIX=${LLVM_PREFIX}")
+
+    # /usr/local/opt/llvm/share/libc++/v1/std.cppm
+    set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1)
+    file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
+    message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
+
+    if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
+      message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
+      set(ADD_STDLIB_MODULES stdlib)
+    endif()
+
+    add_compile_options(-fexperimental-library)
+    add_link_options(-L${LLVM_ROOT}/lib/c++ -lc++experimental)
+    add_compile_options(-stdlib=libc++)
+    add_link_options(-stdlib=libc++)
 
     # Build the stdlib module
     function(add_stdlib_module NAME)
