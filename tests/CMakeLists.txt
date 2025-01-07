@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.30...4.0)
 # This must be enabled before C++ language support.
 set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
 
+# Set experimental flag to enable `import std` support from CMake.
+# This must be enabled before C++ language support.
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+
 project(fmt_test LANGUAGES CXX)
 
 include(../cmake/folders.cmake OPTIONAL)
@@ -51,7 +55,9 @@ else()
   target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()
 
-if(NOT PROJECT_IS_TOP_LEVEL)
+if(PROJECT_IS_TOP_LEVEL)
+  add_subdirectory(../module/tests module_test)
+else()
   if(NOT DEFINED CMAKE_PREFIX_PATH)
     set(CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
   endif()

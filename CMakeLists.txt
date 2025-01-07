@@ -49,17 +49,16 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
     endif()
 
     # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-    if(LLVM_PREFIX)
-      message(STATUS "LLVM_PREFIX=${LLVM_PREFIX}")
-      file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
-      message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
-      set(LLVM_ROOT ${LLVM_ROOT} CACHE PATH "")
+    # or /usr/lib/llvm-19/share/libc++/v1/std.cppm
+    set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
+    file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
+    set(LLVM_ROOT ${LLVM_ROOT} CACHE PATH "")
+    message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
 
-      set(LLVM_LIBC_SOURCE ${LLVM_ROOT}/share/libc++/v1 CACHE PATH "")
-      if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
-        message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
-        set(ADD_STDLIB_MODULES stdlib)
-      endif()
+    if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
+      message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
+      set(ADD_STDLIB_MODULES __CMAKE::CXX23)
+      list(APPEND CMAKE_CXX_COMPILER_IMPORT_STD 23)
     endif()
 
     # Build the stdlib module
@@ -107,7 +106,7 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
 
   # Tell CMake that we explicitly want `import std`.
   # This will initialize the property on all targets declared after this to 1
-  if(CMAKE_CXX_COMPILER_IMPORT_STD)
+  if(26 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
     set(CMAKE_CXX_MODULE_STD ON)
   endif()
 
@@ -124,7 +123,11 @@ else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 endif()
 
+<<<<<<< HEAD
 if(MSVC)
+=======
+if(CMAKE_CXX_MODULE_STD AND CMAKE_BUILD_TYPE STREQUAL Release)
+>>>>>>> ba624a8 (Try to refactory the CMakeLists.txt files)
   include(cmake/example.cmake)
 endif()
 
