@@ -67,7 +67,7 @@
             "-Wl,--allow-shlib-undefined,--as-needed,-z,noexecstack,-z,relro,-z,now"
       },
       "environment": {
-        "CXX": "clang++-19",
+        "CXX": "clang++",
         "LLVM_ROOT": "/usr/lib/llvm-19",
         "PATH": "$env{LLVM_ROOT}/bin:$penv{PATH}"
       },

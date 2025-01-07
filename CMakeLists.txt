@@ -33,11 +33,11 @@ option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${CMAKE_CXX_SCAN_FOR_MODULES
 option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FOR_MODULES})
 option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
 
-if(FMT_USE_MODULES)
+if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
     if(APPLE)
       execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@19 COMMAND_ECHO STDOUT)
       string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
@@ -45,16 +45,18 @@ if(FMT_USE_MODULES)
       set(LLVM_PREFIX $ENV{LLVM_ROOT})
     endif()
 
-    message(STATUS "LLVM_PREFIX=${LLVM_PREFIX}")
-
     # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-    set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1)
-    file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
-    message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
+    if(LLVM_PREFIX)
+      message(STATUS "LLVM_PREFIX=${LLVM_PREFIX}")
+      file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
+      message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
+      set(LLVM_ROOT ${LLVM_ROOT} CACHE PATH "")
 
-    if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
-      message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
-      set(ADD_STDLIB_MODULES stdlib)
+      set(LLVM_LIBC_SOURCE ${LLVM_ROOT}/share/libc++/v1 CACHE PATH "")
+      if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
+        message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
+        set(ADD_STDLIB_MODULES stdlib)
+      endif()
     endif()
 
     add_compile_options(-fexperimental-library)
