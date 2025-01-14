@@ -10,7 +10,7 @@ if(CMAKE_CXX_SCAN_FOR_MODULES)
 endif()
 
 project(fmt
-        VERSION 11.1.1.1
+        VERSION 11.1.1.2
         DESCRIPTION "A modern formatting library"
         HOMEPAGE_URL https://fmt.dev/11.0/
         LANGUAGES CXX
