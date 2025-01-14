@@ -30,8 +30,10 @@ set(CPPdefinitions FMT_USE_FCNTL=0)
 set(ADD_STDLIB_MODULES)
 
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${CMAKE_CXX_SCAN_FOR_MODULES})
-option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FOR_MODULES})
-option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
+if(NOT MSVC)
+  option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FOR_MODULES})
+  option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
+endif()
 
 if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
@@ -101,7 +103,7 @@ else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 endif()
 
-if(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD AND CMAKE_BUILD_TYPE STREQUAL Release)
+if(MSVC)
   include(cmake/example.cmake)
 endif()
 
@@ -113,8 +115,8 @@ include(cmake/CPM.cmake)
 cpmaddpackage(
   NAME fmt
   GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 11.1.1
-  VERSION 11.1.1
+  GIT_TAG 11.1.2
+  VERSION 11.1.2
   DOWNLOAD_ONLY ON
 )
 # cmake-format: on
