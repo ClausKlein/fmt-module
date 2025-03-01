@@ -78,30 +78,10 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
       target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
     endfunction()
 
-  endif()
-
     add_compile_options(-fexperimental-library)
     add_link_options(-L${LLVM_ROOT}/lib/c++ -lc++experimental)
     add_compile_options(-stdlib=libc++)
     add_link_options(-stdlib=libc++)
-
-    # Build the stdlib module
-    function(add_stdlib_module NAME)
-      add_library(${NAME})
-      # cmake-format: off
-      target_sources(${NAME} PUBLIC
-        FILE_SET CXX_MODULES
-        BASE_DIRS ${LLVM_LIBC_SOURCE}
-        FILES
-          ${LLVM_LIBC_SOURCE}/std.cppm
-          ${LLVM_LIBC_SOURCE}/std.compat.cppm
-      )
-      # cmake-format: on
-      target_compile_features(${NAME} PUBLIC cxx_std_23)
-      target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
-      target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
-    endfunction()
-
   endif()
 
   # Tell CMake that we explicitly want `import std`.
@@ -123,11 +103,7 @@ else()
   set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
 endif()
 
-<<<<<<< HEAD
 if(MSVC)
-=======
-if(CMAKE_CXX_MODULE_STD AND CMAKE_BUILD_TYPE STREQUAL Release)
->>>>>>> ba624a8 (Try to refactory the CMakeLists.txt files)
   include(cmake/example.cmake)
 endif()
 
