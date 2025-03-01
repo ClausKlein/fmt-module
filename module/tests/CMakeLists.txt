@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30...3.31)
+cmake_minimum_required(VERSION 3.30...4.0)
 
 project(fmt_moddule_examples LANGUAGES CXX)
 
@@ -6,7 +6,7 @@ if(PROJECT_IS_TOP_LEVEL)
   enable_testing()
 
   # Find the fmt package containing the function to build the module
-  find_package(fmt 11.1.1.2 EXACT REQUIRED HINT ../../stagedir/lib)
+  find_package(fmt 11.1.4.2 EXACT REQUIRED HINT ../../stagedir/lib)
 
   # Use modules?
   unset(USE_MODULES)

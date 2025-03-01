@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30...3.31)
+cmake_minimum_required(VERSION 3.30...4.0)
 
 project(fmt_test LANGUAGES CXX)
 
@@ -15,7 +15,7 @@ if(PROJECT_IS_TOP_LEVEL)
   set(CMAKE_CXX_SCAN_FOR_MODULES ON)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-  find_package(fmt 11.1.1.2 EXACT REQUIRED HINT ../stagedir/lib)
+  find_package(fmt 11.1.4.2 EXACT REQUIRED HINT ../stagedir/lib)
 
   add_subdirectory(../module/tests module_test)
 endif()
