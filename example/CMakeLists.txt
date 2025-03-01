@@ -1,13 +1,13 @@
 # CMake 3.30 is required for C++23 `import std` support; we use 3.29.20240416
 # here so that in-development versions satisfy it.
-cmake_minimum_required(VERSION 3.30...4.0 )
+cmake_minimum_required(VERSION 4.0)
 
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
 set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD # This specific value changes as experimental support evolves. See
     # `Help/dev/experimental.rst` in the CMake source corresponding to
     # your CMake build for the exact value to use.
-    "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
+    "a9e1cf81-9932-4810-974b-6eccaf14e457"
 )
 
 # C++ needs to be enabled.
