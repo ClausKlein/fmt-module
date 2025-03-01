@@ -1,5 +1,5 @@
 # CMake 3.30 is required for C++23 `import std` support;
-cmake_minimum_required(VERSION 3.30...3.31)
+cmake_minimum_required(VERSION 3.30...4.0)
 
 include(cmake/prelude.cmake)
 
@@ -115,8 +115,8 @@ include(cmake/CPM.cmake)
 cpmaddpackage(
   NAME fmt
   GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 11.1.2
-  VERSION 11.1.2
+  GIT_TAG 11.1.4
+  VERSION 11.1.4
   DOWNLOAD_ONLY ON
 )
 # cmake-format: on
