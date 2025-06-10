@@ -9,12 +9,12 @@ MAKEFLAGS+= --warn-undefined-variables
 export hostSystemName=$(shell uname)
 
 ifeq (${hostSystemName},Darwin)
-  export LLVM_PREFIX:=$(shell brew --prefix llvm@19)
+  export LLVM_PREFIX:=$(shell brew --prefix llvm@20)
   export LLVM_ROOT:=$(shell realpath ${LLVM_PREFIX})
 
   #XXX export LDFLAGS?=-L${LLVM_ROOT}/lib/c++
   export PATH:=${LLVM_ROOT}/bin:${PATH}
-  export CXX:=clang++
+  export CXX?=clang++
 else ifeq (${hostSystemName},Linux)
   export LLVM_ROOT:=/usr/lib/llvm-19
   export PATH:=${LLVM_ROOT}/bin:${PATH}

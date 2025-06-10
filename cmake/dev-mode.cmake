@@ -6,7 +6,7 @@ if(FMT_BUILD_TESTING)
 
   add_subdirectory(tests)
 
-  if(NOT CMAKE_CXX_COMPILER_IMPORT_STD)
+  if(FMT_USE_MODULES)
     add_subdirectory(module/tests)
   endif()
 

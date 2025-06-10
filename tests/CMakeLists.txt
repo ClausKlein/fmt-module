@@ -1,12 +1,4 @@
-cmake_minimum_required(VERSION 3.30...4.0)
-
-# Set experimental flag to enable `import std` support from CMake.
-# This must be enabled before C++ language support.
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
-
-# Set experimental flag to enable `import std` support from CMake.
-# This must be enabled before C++ language support.
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+cmake_minimum_required(VERSION 4.0)
 
 project(fmt_test LANGUAGES CXX)
 
@@ -41,11 +33,11 @@ if(FMT_USE_MODULES)
   # Build the stdlib modules if possible
   # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.cppm
   # /usr/local/Cellar/llvm/19.1.6/share/libc++/v1/std.compat.cppm
-  if(NOT CMAKE_CXX_COMPILER_IMPORT_STD AND ADD_STDLIB_MODULES)
-    message(WARNING "ADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}")
-    add_stdlib_module(${ADD_STDLIB_MODULES})
-    target_link_libraries(header-only-test ${ADD_STDLIB_MODULES})
-  endif()
+  # if(NOT CMAKE_CXX_COMPILER_IMPORT_STD AND ADD_STDLIB_MODULES)
+  #   message(WARNING "ADD_STDLIB_MODULES=${ADD_STDLIB_MODULES}")
+  #   add_stdlib_module(${ADD_STDLIB_MODULES})
+  #   target_link_libraries(header-only-test ${ADD_STDLIB_MODULES})
+  # endif()
   if(TARGET fmt::fmt_module)
     target_link_libraries(header-only-test fmt::fmt_module)
   else()

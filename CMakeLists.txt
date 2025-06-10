@@ -1,5 +1,5 @@
 # CMake 3.30 is required for C++23 `import std` support;
-cmake_minimum_required(VERSION 3.30...4.0)
+cmake_minimum_required(VERSION 4.0)
 
 include(cmake/prelude.cmake)
 
@@ -8,7 +8,7 @@ set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
 if(CMAKE_CXX_SCAN_FOR_MODULES)
-  set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD 0e5b6991-d74f-4b3d-a41c-cf096e0b2508)
+  set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
 endif()
 
 project(fmt
@@ -20,7 +20,7 @@ project(fmt
 
 include(cmake/variables.cmake)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -33,53 +33,56 @@ set(ADD_STDLIB_MODULES)
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${CMAKE_CXX_SCAN_FOR_MODULES})
 if(NOT MSVC)
   option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FOR_MODULES})
-  option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
+  # XXX option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
 endif()
 
 if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
   list(APPEND CPPdefinitions FMT_MODULE)
   # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 20.0)
     if(APPLE)
-      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@19 COMMAND_ECHO STDOUT)
+      execute_process(OUTPUT_VARIABLE LLVM_PREFIX COMMAND brew --prefix llvm@20 COMMAND_ECHO STDOUT)
       string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
     elseif(LINUX)
       set(LLVM_PREFIX $ENV{LLVM_ROOT})
     endif()
 
     # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-    # or /usr/lib/llvm-19/share/libc++/v1/std.cppm
+    # or /usr/lib/llvm-20/share/libc++/v1/std.cppm
     set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
     file(REAL_PATH ${LLVM_PREFIX} LLVM_ROOT)
     set(LLVM_ROOT ${LLVM_ROOT} CACHE PATH "")
     message(STATUS "LLVM_ROOT=${LLVM_ROOT}")
 
     if(EXISTS ${LLVM_LIBC_SOURCE}/std.cppm)
-      message(STATUS "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
-      set(ADD_STDLIB_MODULES __CMAKE::CXX23)
-      list(APPEND CMAKE_CXX_COMPILER_IMPORT_STD 23)
+      message(DEBUG "LLVM_LIBC_SOURCE=${LLVM_LIBC_SOURCE}")
+      # set(ADD_STDLIB_MODULES __CMAKE::CXX26)
+      # list(APPEND CMAKE_CXX_COMPILER_IMPORT_STD 26)
     endif()
 
     # Build the stdlib module
-    function(add_stdlib_module NAME)
-      add_library(${NAME})
-      # cmake-format: off
-      target_sources(${NAME} PUBLIC
-        FILE_SET CXX_MODULES
-        BASE_DIRS ${LLVM_LIBC_SOURCE}
-        FILES
-          ${LLVM_LIBC_SOURCE}/std.cppm
-          ${LLVM_LIBC_SOURCE}/std.compat.cppm
-      )
-      # cmake-format: on
-      target_compile_features(${NAME} PUBLIC cxx_std_23)
-      target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
-      target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
-    endfunction()
+    # function(add_stdlib_module NAME)
+    #   add_library(${NAME})
+    #   # cmake-format: off
+    #   target_sources(${NAME} PUBLIC
+    #     FILE_SET CXX_MODULES
+    #     BASE_DIRS ${LLVM_LIBC_SOURCE}
+    #     FILES
+    #       ${LLVM_LIBC_SOURCE}/std.cppm
+    #       ${LLVM_LIBC_SOURCE}/std.compat.cppm
+    #   )
+    #   # cmake-format: on
+    #   target_compile_features(${NAME} PUBLIC cxx_std_26)
+    #   target_compile_definitions(${NAME} PUBLIC _LIBCPP_HAS_NO_LOCALIZATION)
+    #   target_compile_options(${NAME} PRIVATE -Wno-reserved-module-identifier)
+    # endfunction()
 
     add_compile_options(-fexperimental-library)
     add_link_options(-L${LLVM_ROOT}/lib/c++ -lc++experimental)
+    add_compile_options(-stdlib=libc++)
+    add_link_options(-stdlib=libc++)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15.0)
     add_compile_options(-stdlib=libc++)
     add_link_options(-stdlib=libc++)
   endif()
@@ -87,13 +90,13 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
   # Tell CMake that we explicitly want `import std`.
   # This will initialize the property on all targets declared after this to 1
   if(26 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
-    set(CMAKE_CXX_MODULE_STD ON)
+    # NO! set(CMAKE_CXX_MODULE_STD ON)
   endif()
 
-  if(CMAKE_CXX_MODULE_STD OR ADD_STDLIB_MODULES)
-    # FIXME: NO! list(APPEND CPPdefinitions FMT_IMPORT_STD)
-    list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
-  endif()
+  # if(CMAKE_CXX_MODULE_STD OR ADD_STDLIB_MODULES)
+  #   list(APPEND CPPdefinitions FMT_IMPORT_STD)
+  #   list(APPEND CPPdefinitions HAS_STDLIB_MODULES)
+  # endif()
 
   message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
   message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
@@ -115,8 +118,8 @@ include(cmake/CPM.cmake)
 cpmaddpackage(
   NAME fmt
   GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 11.1.4
-  VERSION 11.1.4
+  GIT_TAG 11.2.0
+  VERSION 11.2.0
   DOWNLOAD_ONLY ON
 )
 # cmake-format: on
@@ -142,10 +145,7 @@ target_sources(
 )
 
 target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY)
-target_compile_features(
-  fmt-header-only INTERFACE "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>"
-                            "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
-)
+target_compile_features(fmt-header-only INTERFACE cxx_std_26)
 
 # Unicode support requires compiling with /utf-8.
 target_compile_options(fmt-header-only INTERFACE $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
@@ -160,9 +160,7 @@ if(FMT_SEPARATE_COMPILATION)
 
   target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
   target_compile_options(fmt PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
-  target_compile_features(
-    fmt INTERFACE "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>" "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
-  )
+  target_compile_features(fmt INTERFACE cxx_std_26)
 
   if(FMT_USE_MODULES)
     message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
