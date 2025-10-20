@@ -9,16 +9,16 @@ MAKEFLAGS+= --warn-undefined-variables
 export hostSystemName=$(shell uname)
 
 ifeq (${hostSystemName},Darwin)
-  export LLVM_PREFIX:=$(shell brew --prefix llvm@20)
+  export LLVM_PREFIX:=$(shell brew --prefix llvm@21)
   export LLVM_ROOT:=$(shell realpath ${LLVM_PREFIX})
 
   #XXX export LDFLAGS?=-L${LLVM_ROOT}/lib/c++
   export PATH:=${LLVM_ROOT}/bin:${PATH}
-  export CXX?=clang++
+  export CXX:=clang++
 else ifeq (${hostSystemName},Linux)
-  export LLVM_ROOT:=/usr/lib/llvm-19
+  export LLVM_ROOT:=/usr/lib/llvm-22
   export PATH:=${LLVM_ROOT}/bin:${PATH}
-  export CXX:=clang++-19
+  export CXX:=clang++-22
 endif
 
 .PHONY: all check test example format clean distclean
@@ -26,7 +26,7 @@ all: .init
 	cmake --workflow --preset dev --fresh
 
 format:
-	git ls-files ::*.cmake ::*CMakeLists.txt | xargs cmake-format -i
+	git ls-files ::*.cmake ::*CMakeLists.txt | xargs gersemi -i
 	git clang-format master
 
 check: all
