@@ -6,7 +6,7 @@ if(PROJECT_IS_TOP_LEVEL)
     enable_testing()
 
     # Find the fmt package containing the function to build the module
-    find_package(fmt 12.0.0.1 EXACT REQUIRED HINT ../../stagedir/lib)
+    find_package(fmt 12.0.0.2 EXACT REQUIRED HINT ../../stagedir/lib)
 
     # Use modules?
     unset(USE_MODULES)
