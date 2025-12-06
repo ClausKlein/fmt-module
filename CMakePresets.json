@@ -112,6 +112,7 @@
     {
       "name": "gen-Linux",
       "generator": "Ninja",
+      "description": "This build is only available on Linux",
       "hidden": true,
       "inherits": [
         "flags-Linux",
@@ -121,6 +122,7 @@
     {
       "name": "gen-Darwin",
       "generator": "Ninja",
+      "description": "This build is only available on Darwin",
       "hidden": true,
       "inherits": [
         "flags-Darwin",
@@ -130,6 +132,7 @@
     {
       "name": "gen-win64",
       "generator": "Ninja",
+      "description": "This build is only available on Windows",
       "hidden": true,
       "inherits": [
         "flags-Windows",
@@ -140,6 +143,7 @@
       "name": "coverage-Linux",
       "binaryDir": "${sourceDir}/build/coverage",
       "inherits": "gen-Linux",
+      "description": "This build is only available on Linux",
       "hidden": true,
       "cacheVariables": {
         "FMT_ENABLE_COVERAGE": true,
@@ -168,11 +172,15 @@
         "gen-Linux",
         "dev-mode"
       ],
+      "description": "This build is only available on Linux",
       "cacheVariables": {
+        "CMAKE_SKIP_INSTALL_RULES": true,
         "CMAKE_BUILD_TYPE": "Sanitize",
         "CMAKE_CONFIGURATION_TYPES": "Sanitize",
         "CMAKE_CXX_FLAGS_SANITIZE":
-            "-O2 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-common"
+            "-O2 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-common",
+        "CMAKE_MAP_IMPORTED_CONFIG_SANITIZE":
+            "Sanitize;RelWithDebInfo;Release;Debug"
       }
     },
     {
@@ -183,7 +191,8 @@
         "CMAKE_PREFIX_PATH": {
           "type": "path",
           "value": "${sourceDir}/stagedir"
-        }
+        },
+        "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Release;Debug"
       },
       "hidden": true
     },

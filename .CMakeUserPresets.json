@@ -13,33 +13,39 @@
       "inherits": [
         "dev-mode"
       ],
+      "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "BUILD_MCSS_DOCS": false,
+        "BUILD_SHARED_LIBS": false
+      },
+      "environment": {
+        "CPM_USE_LOCAL_PACKAGES": "OFF"
       }
     },
     {
       "name": "dev-Linux",
-      "binaryDir": "${sourceDir}/build/${presetName}",
       "inherits": [
         "dev-common",
         "ci-Linux"
-      ]
+      ],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
     },
     {
       "name": "dev-Darwin",
-      "binaryDir": "${sourceDir}/build/${presetName}",
       "inherits": [
         "dev-common",
         "ci-Darwin"
       ],
       "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_STDLIB_MODULES_JSON": "$env{CMAKE_CXX_STDLIB_MODULES_JSON}"
       }
     },
     {
       "name": "dev-Windows",
-      "binaryDir": "${sourceDir}/build/${presetName}",
       "inherits": [
         "dev-common",
         "ci-windows"
@@ -51,7 +57,6 @@
     },
     {
       "name": "dev",
-      "binaryDir": "${sourceDir}/build/dev",
       "inherits": "dev-<hostSystemName>"
     },
     {
@@ -68,7 +73,6 @@
     },
     {
       "name": "dev-coverage",
-      "binaryDir": "${sourceDir}/build/coverage",
       "inherits": [
         "dev-mode",
         "coverage-Linux"
@@ -113,6 +117,9 @@
     {
       "name": "dev",
       "configurePreset": "dev",
+      "configurations": [
+        "Reelase"
+      ],
       "generators": [
         "TGZ"
       ]

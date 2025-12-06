@@ -32,14 +32,9 @@ else ifeq (${hostSystemName},Linux)
   export CXX=clang++-20
 endif
 
-.PHONY: all check test example format clean distclean
+.PHONY: all check test example clean distclean
 all: .init
 	cmake --workflow --preset dev
-
-format: distclean
-	codespell -w
-	git ls-files ::*CMakeLists.txt ::*.cmake ::*.cmake.in | xargs gersemi -i
-	git ls-files ::*.cxx ::*.cpp ::*.hpp ::*.cppm  ::*.json | xargs clang-format -i
 
 check: all
 	run-clang-tidy -p build/dev -checks='-*,misc-header-*,misc-include-*' tests
@@ -69,7 +64,8 @@ clean:
 	rm -rf build
 
 distclean: clean
-	rm -rf stagedir .init tags *.bak
+	rm -rf stagedir .init CMakeUserPresets.json tags
+	# XXX NO! git clean -xdf
 
 GNUmakefile :: ;
 *.txt :: ;
