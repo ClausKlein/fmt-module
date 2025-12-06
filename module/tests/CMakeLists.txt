@@ -27,8 +27,8 @@ if(PROJECT_IS_TOP_LEVEL)
             set(USE_MODULES ON)
             # see https://releases.llvm.org/15.0.0/projects/libcxx/docs/ReleaseNotes.html
             # Always use libc++
-            add_compile_options(-fexperimental-library)
-            add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
+            # add_compile_options(-fexperimental-library)
+            # add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
             add_compile_options(-stdlib=libc++)
             add_link_options(-stdlib=libc++)
         elseif(

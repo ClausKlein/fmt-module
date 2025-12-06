@@ -67,15 +67,15 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
             set(LLVM_PREFIX $ENV{LLVM_DIR})
         endif()
 
-        # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-        # or /usr/lib/llvm-19/share/libc++/v1/std.cppm
-        set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
-        file(REAL_PATH ${LLVM_PREFIX} LLVM_DIR)
-        set(LLVM_DIR ${LLVM_DIR} CACHE PATH "")
-        message(STATUS "LLVM_DIR=${LLVM_DIR}")
+        # # /usr/local/opt/llvm/share/libc++/v1/std.cppm
+        # # or /usr/lib/llvm-19/share/libc++/v1/std.cppm
+        # set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
+        # file(REAL_PATH ${LLVM_PREFIX} LLVM_DIR)
+        # set(LLVM_DIR ${LLVM_DIR} CACHE PATH "")
+        # message(STATUS "LLVM_DIR=${LLVM_DIR}")
 
-        add_compile_options(-fexperimental-library)
-        add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
+        # add_compile_options(-fexperimental-library)
+        # add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
         add_compile_options(-stdlib=libc++)
         add_link_options(-stdlib=libc++)
     elseif(
