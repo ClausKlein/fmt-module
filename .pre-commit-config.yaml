@@ -5,7 +5,7 @@ repos:
     rev: v6.0.0
     hooks:
     -   id: trailing-whitespace
-        exclude: ^fmt\.(patch|diff)$
+        exclude: ^(fmt|\.bumpversion)\.(patch|diff|cfg)$
     -   id: end-of-file-fixer
     -   id: check-yaml
         exclude: ^\.clang-(format|tidy)$
