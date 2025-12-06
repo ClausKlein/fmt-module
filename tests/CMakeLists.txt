@@ -20,8 +20,9 @@ if(PROJECT_IS_TOP_LEVEL)
     #XXX add_subdirectory(.. fmt_module)
 endif()
 
-# ---- Tests ----
-
+# -------------------------------------------
+# -- OPTIONAL: Collect the fmt test sources --
+# -------------------------------------------
 if(
     EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc
     AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/header-only-test.cc
@@ -32,16 +33,22 @@ if(
         COPYONLY
     )
 endif()
+
+# ---- Tests ----
+
 add_executable(header-only-test header-only-test.cc)
 
 if(CMAKE_CXX_SCAN_FOR_MODULES)
     if(TARGET fmt::fmt)
         target_link_libraries(header-only-test fmt::fmt)
+        # FIXME: message(WARNING "Add to header-only-test CPPdefinitions=${CPPdefinitions}")
+        # FIXME: target_compile_definitions(header-only-test PRIVATE ${CPPdefinitions})
     else()
         message(FATAL_ERROR "NOT TARGET fmt::fmt!")
         target_link_libraries(header-only-test fmt::fmt)
     endif()
 else()
+    message(WARNING "Missing or disabled support for CXX_MODULES!")
     target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()
 
@@ -69,6 +76,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
             "-D CMAKE_CXX_STANDARD_REQUIRED=${CMAKE_CXX_STANDARD_REQUIRED}"
             "-D CMAKE_BUILD_TYPE=Release"
             "-D CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
+            "-D CPPdefinitions=${CPPdefinitions}"
             "-D CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}"
             "-D CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}"
             "-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON}"

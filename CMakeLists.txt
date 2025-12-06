@@ -191,6 +191,7 @@ target_compile_options(
 #
 if(FMT_SEPARATE_COMPILATION)
     add_library(fmt)
+    add_library(fmt::fmt ALIAS fmt)
     target_sources(
         fmt
         PUBLIC
@@ -209,7 +210,6 @@ if(FMT_SEPARATE_COMPILATION)
 
     if(FMT_USE_MODULES)
         message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
-        add_library(fmt::fmt ALIAS fmt)
         target_sources(
             fmt
             PUBLIC
@@ -218,11 +218,8 @@ if(FMT_SEPARATE_COMPILATION)
                     BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/module
                     FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm
         )
-        target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
     else()
         message(WARNING "Missing or disabled support for CXX_MODULES!")
-        add_library(fmt::fmt ALIAS fmt)
-        target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
         target_sources(fmt PRIVATE ${_fmt_all_sources})
     endif()
 

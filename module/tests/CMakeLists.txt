@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30...4.2)
 
 project(fmt_moddule_examples LANGUAGES CXX)
 
-set(USE_MODULES)
+set(USE_MODULES ON)
 
 if(PROJECT_IS_TOP_LEVEL)
     enable_testing()
@@ -11,6 +11,8 @@ if(PROJECT_IS_TOP_LEVEL)
     find_package(fmt 12.1.0.1 EXACT REQUIRED HINT ../../stagedir/lib)
 
     # Use modules?
+    unset(USE_MODULES)
+
     if(NOT CMAKE_CXX_STANDARD)
         set(CMAKE_CXX_STANDARD 23)
         set(CMAKE_CXX_EXTENSIONS ON)
@@ -58,9 +60,13 @@ foreach(_file ${ALL_TESTS})
     target_sources(module_${_file} PRIVATE ../../tests/${_file}.cc)
     if(USE_MODULES)
         target_link_libraries(module_${_file} fmt::fmt)
+        # FIXME: message(WARNING "Add to module_${_file} CPPdefinitions=${CPPdefinitions}")
+        # FIXME: target_compile_definitions(module_${_file} PRIVATE ${CPPdefinitions})
     else()
-        message(WARNING "Missing or disabled support for CXX_MODULES!")
-        target_link_libraries(module_${_file} fmt::fmt-header-only)
+        message(FATAL_ERROR "Missing or disabled support for CXX_MODULES!")
+        return()
+
+        # TODO(CK): target_link_libraries(module_${_file} fmt::fmt-header-only)
     endif()
     add_test(NAME module_${_file} COMMAND echo Test | ${_file})
 endforeach()
