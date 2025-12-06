@@ -6,6 +6,16 @@ potential contributor.
 If you plan to contribute, please read the [CONTRIBUTING](CONTRIBUTING.md)
 guide.
 
+## Prerequisites
+
+### Install pre-commit and update cmake
+
+```sh
+pipx install cmake
+pipx install pre-commit
+pre-commit install --install-hooks
+```
+
 ## Developer mode
 
 Build system targets that are only useful for developers of this project are

@@ -2,7 +2,7 @@
 
 #ifdef FMT_MODULE
 
-#  ifdef HAS_STDLIB_MODULES
+#  ifdef FMT_IMPORT_STD
 import std;
 import std.compat;
 #  else
@@ -18,8 +18,9 @@ import fmt;
 
 #endif
 
+// NOLINTNEXTLINE(bugprone-exception-escape)
 auto main() -> int
 {
-  constexpr std::string_view text{"constexpr"};
+  constexpr std::string_view text {"constexpr"};
   fmt::print(text);
 }

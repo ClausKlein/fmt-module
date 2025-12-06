@@ -1,5 +1,9 @@
 module;
 
+#ifndef FMT_MODULE
+#  define FMT_MODULE
+#endif
+
 #ifdef _MSVC_LANG
 #  define FMT_CPLUSPLUS _MSVC_LANG
 #else
@@ -48,6 +52,8 @@ module;
 #  include <limits.h>
 #  include <stdint.h>
 #  include <stdio.h>
+#  include <stdlib.h>
+#  include <string.h>
 #  include <time.h>
 #endif
 #include <cerrno>
@@ -103,7 +109,8 @@ import std;
 //  - all library symbols are mangled traditionally
 //  - you can mix TUs with either importing or #including the {fmt} API
 #ifdef FMT_ATTACH_TO_GLOBAL_MODULE
-extern "C++" {
+extern "C++"
+{
 #endif
 
 #ifndef FMT_OS
@@ -136,7 +143,8 @@ module :private;
 #endif
 
 #ifdef FMT_ATTACH_TO_GLOBAL_MODULE
-extern "C++" {
+extern "C++"
+{
 #endif
 
 #if FMT_HAS_INCLUDE("format.cc")

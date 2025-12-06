@@ -1,0 +1,14 @@
+diff --git a/module/fmt.cppm b/module/fmt.cppm
+index 67c6b82..45973f7 100644
+--- a/module/fmt.cppm
++++ b/module/fmt.cppm
+@@ -1,6 +1,8 @@
+ module;
+ 
+-#define FMT_MODULE
++#ifndef FMT_MODULE
++#  define FMT_MODULE
++#endif
+ 
+ #ifdef _MSVC_LANG
+ #  define FMT_CPLUSPLUS _MSVC_LANG

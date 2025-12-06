@@ -1,139 +1,109 @@
-C:\Users\KLEIN_CL\Workspace\cpp\fmt-module>cmake --workflow dev --fresh
-Executing workflow step 1 of 4: configure preset "dev"
+UpdateCTestConfiguration  from :/Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/DartConfiguration.tcl
+Test project /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: find-package-test
 
-Preset CMake variables:
+1: Test command: /Users/clausklein/.local/bin/ctest "-C" "Release" "--build-and-test" "/Users/clausklein/Workspace/cpp/cxx20/fmt-module/module/tests" "/Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test" "--build-generator" "Ninja" "--build-makeprogram" "/Users/clausklein/.local/bin/ninja" "--build-options" "-D CMAKE_CXX_COMPILER=/usr/local/bin/g++-15" "-D CMAKE_CXX_STANDARD=23" "-D CMAKE_CXX_EXTENSIONS=ON" "-D CMAKE_CXX_STANDARD_REQUIRED=ON" "-D CMAKE_BUILD_TYPE=Release" "-D CMAKE_PREFIX_PATH=/Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir" "-D ADD_STDLIB_MODULES=" "-D LLVM_LIBC_SOURCE=" "-D LLVM_DIR=" "-D CMAKE_CXX_MODULE_STD=ON" "-D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444"
+1: Working Directory: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests
+1: Test timeout computed to be: 10000000
+1: Internal cmake changing into directory: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test
+1: ======== CMake output     ======
+1: CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=/usr/local/Cellar/gcc/15.2.0/include/c++/15;/usr/local/Cellar/gcc/15.2.0/include/c++/15/x86_64-apple-darwin23;/usr/local/Cellar/gcc/15.2.0/include/c++/15/backward;/usr/local/Cellar/gcc/15.2.0/lib/gcc/current/gcc/x86_64-apple-darwin23/15/include;/usr/local/Cellar/gcc/15.2.0/lib/gcc/current/gcc/x86_64-apple-darwin23/15/include-fixed;/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include;/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/System/Library/Frameworks
+1: Module tests to be built: header-only-test
+1: Configuring done (0.1s)
+1: CMake Warning (dev) in CMakeLists.txt:
+1:   CMake's support for `import std;` in C++23 and newer is experimental.  It
+1:   is meant only for experimentation and feedback to CMake developers.
+1: This warning is for project developers.  Use -Wno-dev to suppress it.
+1:
+1: Generating done (0.0s)
+1: Build files have been written to: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test
+1: ======== End CMake output ======
+1: Change Dir: '/Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test'
+1:
+1: Run Clean Command: /Users/clausklein/.local/bin/ninja clean
+1: [1/1] Cleaning all built files...
+1: Cleaning... 22 files.
+1:
+1: Run Build Command(s): /Users/clausklein/.local/bin/ninja
+1: [1/12] Scanning /usr/local/Cellar/gcc/15.2.0/include/c++/15/bits/std.compat.cc for CXX dependencies
+1: [2/12] Scanning /usr/local/Cellar/gcc/15.2.0/include/c++/15/bits/std.cc for CXX dependencies
+1: [3/12] Generating CXX dyndep file 'CMakeFiles/__CMAKE__CXX23@synth_439f33eb51e5.dir/CXX.dd'
+1: [4/12] Scanning /Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm for CXX dependencies
+1: [5/12] Generating CXX dyndep file 'CMakeFiles/fmt__fmt@synth_439f33eb51e5.dir/CXX.dd'
+1: [6/12] Scanning /Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc for CXX dependencies
+1: [7/12] Generating CXX dyndep file CMakeFiles/module_header-only-test.dir/CXX.dd
+1: [8/12] Building CXX object 'CMakeFiles/__CMAKE__CXX23@synth_439f33eb51e5.dir/67f69854274c.bmi'
+1: [9/12] Building CXX object 'CMakeFiles/__CMAKE__CXX23@synth_439f33eb51e5.dir/1ccb32d972a2.bmi'
+1: [10/12] Building CXX object 'CMakeFiles/fmt__fmt@synth_439f33eb51e5.dir/f6569b67b774.bmi'
+1: [11/12] Building CXX object CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o
+1: [12/12] Linking CXX executable module_header-only-test
+1: FAILED: [code=1] module_header-only-test
+1: : && /usr/local/bin/g++-15 -stdlib=libstdc++ -O3 -DNDEBUG -Wl,-search_paths_first -Wl,-headerpad_max_install_names -stdlib=libstdc++ CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -o module_header-only-test  /Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/libfmt.a && :
+1: Undefined symbols for architecture x86_64:
+1:   "initializer for module std", referenced from:
+1:       initializer for module fmt in libfmt.a[2](fmt.cppm.o)
+1:   "initializer for module std.compat", referenced from:
+1:       __GLOBAL__sub_I_header_only_test.cc in header-only-test.cc.o
+1: ld: symbol(s) not found for architecture x86_64
+1: collect2: error: ld returned 1 exit status
+1: ninja: build stopped: subcommand failed.
+1:
+1/1 Test #1: find-package-test ................***Failed    9.90 sec
+Internal cmake changing into directory: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test
+======== CMake output     ======
+CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=/usr/local/Cellar/gcc/15.2.0/include/c++/15;/usr/local/Cellar/gcc/15.2.0/include/c++/15/x86_64-apple-darwin23;/usr/local/Cellar/gcc/15.2.0/include/c++/15/backward;/usr/local/Cellar/gcc/15.2.0/lib/gcc/current/gcc/x86_64-apple-darwin23/15/include;/usr/local/Cellar/gcc/15.2.0/lib/gcc/current/gcc/x86_64-apple-darwin23/15/include-fixed;/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/usr/include;/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/System/Library/Frameworks
+Module tests to be built: header-only-test
+Configuring done (0.1s)
+CMake Warning (dev) in CMakeLists.txt:
+  CMake's support for `import std;` in C++23 and newer is experimental.  It
+  is meant only for experimentation and feedback to CMake developers.
+This warning is for project developers.  Use -Wno-dev to suppress it.
 
-  CMAKE_BUILD_TYPE="Release"
-  CMAKE_CXX_COMPILER="cl"
-  CMAKE_CXX_EXTENSIONS:BOOL="TRUE"
-  CMAKE_CXX_STANDARD="23"
-  CMAKE_CXX_STANDARD_REQUIRED:BOOL="TRUE"
-  CMAKE_EXPORT_COMPILE_COMMANDS="ON"
-  CMAKE_INSTALL_PREFIX:PATH="C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/stagedir"
-  CMAKE_PREFIX_PATH:STRING="C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/stagedir"
-  FMT_DEVELOPER_MODE:BOOL="TRUE"
+Generating done (0.0s)
+Build files have been written to: /Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test
+======== End CMake output ======
+Change Dir: '/Users/clausklein/Workspace/cpp/cxx20/fmt-module/build/dev/tests/find-package-test'
 
-Preset environment variables:
+Run Clean Command: /Users/clausklein/.local/bin/ninja clean
+[1/1] Cleaning all built files...
+Cleaning... 22 files.
 
-  EnforceProcessCountAcrossBuilds="true"
-  UseMultiToolTask="true"
-
--- use ccache
--- The CXX compiler identification is MSVC 19.41.34123.0
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Professional/VC/Tools/MSVC/14.41.34120/bin/Hostx86/x86/cl.exe - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- CMAKE_CXX_COMPILER_IMPORT_STD=
--- CPPdefinitions=FMT_USE_FCNTL=0;FMT_MODULE
--- CPM: Adding package fmt@11.1.1 (11.1.1)
--- Populating fmt
--- Configuring done (0.2s)
--- Generating done (0.5s)
--- Build files have been written to: C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/build/dev/_deps/fmt-subbuild
-[0/7] Performing update step for 'fmt-populate'
--- Already at requested tag: 11.1.1
-[1/7] No patch step for 'fmt-populate'
-[3/7] No configure step for 'fmt-populate'
-[4/7] No build step for 'fmt-populate'
-[5/7] No install step for 'fmt-populate'
-[6/7] No test step for 'fmt-populate'
-[7/7] Completed 'fmt-populate'
--- Configuring done (36.7s)
--- Generating done (0.1s)
--- Build files have been written to: C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/build/dev
-
-Executing workflow step 2 of 4: build preset "dev"
-
-Change Dir: 'C:/Users/KLEIN_CL/Workspace/cpp/fmt-module/build/dev'
-
-Run Build Command(s): C:/Strawberry/c/bin/ninja.exe -v -j 1 install
-
-[1/8]
-C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
--DFMT_MODULE -DFMT_USE_FCNTL=0
--IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
-/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
-C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\module\fmt.cppm -nologo -TP
--showIncludes -scanDependencies CMakeFiles\fmt.dir\module\fmt.cppm.obj.ddi
--FoCMakeFiles\fmt.dir\module\fmt.cppm.obj fmt.cppm
-
-[2/8] C:\RsPython\3.12\Lib\site-packages\cmake\data\bin\cmake.exe -E
-cmake_ninja_dyndep --tdi=CMakeFiles\fmt.dir\CXXDependInfo.json --lang=CXX
---modmapfmt=msvc --dd=CMakeFiles\fmt.dir\CXX.dd @CMakeFiles\fmt.dir\CXX.dd.rsp
-
-[3/8] C:\ProgramData\chocolatey\bin\ccache.exe
-C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
-/nologo /TP -DFMT_MODULE -DFMT_USE_FCNTL=0
--IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
-/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
-/showIncludes @CMakeFiles\fmt.dir\module\fmt.cppm.obj.modmap
-/FoCMakeFiles\fmt.dir\module\fmt.cppm.obj /FdCMakeFiles\fmt.dir\fmt.pdb /FS -c
-C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\module\fmt.cppm fmt.cppm
-
-C:\Program Files (x86)\Windows
-Kits\10\\include\10.0.22621.0\\um\winnt.h(1005): note: sorry: 'inline'
-function definition for 'ULONGLONG Int64ShllMod32(ULONGLONG,DWORD)' could not
-be written to module due to unrecognized expression or statement at
-'C:\Program Files (x86)\Windows
-Kits\10\\include\10.0.22621.0\\um\winnt.h(1010)'.
-
-If possible please provide a repro here: https://developercommunity.visualstudio.com
-
-C:\Program Files (x86)\Windows
-Kits\10\\include\10.0.22621.0\\um\winnt.h(1021): note: sorry: 'inline'
-function definition for 'LONGLONG Int64ShraMod32(LONGLONG,DWORD)' could not be
-written to module due to unrecognized expression or statement at 'C:\Program
-Files (x86)\Windows Kits\10\\include\10.0.22621.0\\um\winnt.h(1026)'.
-
-If possible please provide a repro here: https://developercommunity.visualstudio.com
-
-C:\Program Files (x86)\Windows
-Kits\10\\include\10.0.22621.0\\um\winnt.h(1037): note: sorry: 'inline'
-function definition for 'ULONGLONG Int64ShrlMod32(ULONGLONG,DWORD)' could not
-be written to module due to unrecognized expression or statement at
-'C:\Program Files (x86)\Windows
-Kits\10\\include\10.0.22621.0\\um\winnt.h(1042)'.
-
-If possible please provide a repro here: https://developercommunity.visualstudio.com
-
-[4/8] C:\RsPython\3.12\Lib\site-packages\cmake\data\bin\cmake.exe -E
-cmake_ninja_dyndep
---tdi=tests\CMakeFiles\header-only-test.dir\CXXDependInfo.json --lang=CXX
---modmapfmt=msvc --dd=tests\CMakeFiles\header-only-test.dir\CXX.dd
-@tests\CMakeFiles\header-only-test.dir\CXX.dd.rsp
-
-[5/8] C:\Windows\system32\cmd.exe /C "cd . &&
-C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\lib.exe
-/nologo /machine:X86 /out:fmt.lib CMakeFiles\fmt.dir\module\fmt.cppm.obj && cd
-."
-
-[6/8] C:\ProgramData\chocolatey\bin\ccache.exe
-C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
-/nologo /TP -DFMT_MODULE -DFMT_USE_FCNTL=0
--IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
-/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
-/showIncludes
-@tests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj.modmap
-/Fotests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj
-/Fdtests\CMakeFiles\header-only-test.dir\ /FS -c
-C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\tests\header-only-test.cc
-
-FAILED: tests/CMakeFiles/header-only-test.dir/header-only-test.cc.obj
-
-C:\ProgramData\chocolatey\bin\ccache.exe
-C:\PROGRA~1\MIB055~1\2022\PROFES~1\VC\Tools\MSVC\1441~1.341\bin\Hostx86\x86\cl.exe
-/nologo /TP -DFMT_MODULE -DFMT_USE_FCNTL=0
--IC:\Users\KLEIN_CL\Workspace\cpp\fmt-module\build\dev\_deps\fmt-src\include
-/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++latest -MD /utf-8
-/showIncludes
-@tests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj.modmap
-/Fotests\CMakeFiles\header-only-test.dir\header-only-test.cc.obj
-/Fdtests\CMakeFiles\header-only-test.dir\ /FS -c
-C:\Users\KLEIN_CL\Workspace\cpp\fmt-module\tests\header-only-test.cc
-
+Run Build Command(s): /Users/clausklein/.local/bin/ninja
+[1/12] Scanning /usr/local/Cellar/gcc/15.2.0/include/c++/15/bits/std.compat.cc for CXX dependencies
+[2/12] Scanning /usr/local/Cellar/gcc/15.2.0/include/c++/15/bits/std.cc for CXX dependencies
+[3/12] Generating CXX dyndep file 'CMakeFiles/__CMAKE__CXX23@synth_439f33eb51e5.dir/CXX.dd'
+[4/12] Scanning /Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/cmake/fmt/module/fmt.cppm for CXX dependencies
+[5/12] Generating CXX dyndep file 'CMakeFiles/fmt__fmt@synth_439f33eb51e5.dir/CXX.dd'
+[6/12] Scanning /Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc for CXX dependencies
+[7/12] Generating CXX dyndep file CMakeFiles/module_header-only-test.dir/CXX.dd
+[8/12] Building CXX object 'CMakeFiles/__CMAKE__CXX23@synth_439f33eb51e5.dir/67f69854274c.bmi'
+[9/12] Building CXX object 'CMakeFiles/__CMAKE__CXX23@synth_439f33eb51e5.dir/1ccb32d972a2.bmi'
+[10/12] Building CXX object 'CMakeFiles/fmt__fmt@synth_439f33eb51e5.dir/f6569b67b774.bmi'
+[11/12] Building CXX object CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o
+[12/12] Linking CXX executable module_header-only-test
+FAILED: [code=1] module_header-only-test
+: && /usr/local/bin/g++-15 -stdlib=libstdc++ -O3 -DNDEBUG -Wl,-search_paths_first -Wl,-headerpad_max_install_names -stdlib=libstdc++ CMakeFiles/module_header-only-test.dir/Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc.o -o module_header-only-test  /Users/clausklein/Workspace/cpp/cxx20/fmt-module/stagedir/lib/libfmt.a && :
+Undefined symbols for architecture x86_64:
+  "initializer for module std", referenced from:
+      initializer for module fmt in libfmt.a[2](fmt.cppm.o)
+  "initializer for module std.compat", referenced from:
+      __GLOBAL__sub_I_header_only_test.cc in header-only-test.cc.o
+ld: symbol(s) not found for architecture x86_64
+collect2: error: ld returned 1 exit status
 ninja: build stopped: subcommand failed.
 
 
-C:\Users\KLEIN_CL\Workspace\cpp\fmt-module>
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   9.91 sec
+
+The following tests FAILED:
+	  1 - find-package-test (Failed)
