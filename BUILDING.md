@@ -33,6 +33,13 @@ variable to provide them to CMake during configuration.
 CMake supports building on Apple Silicon properly since 3.20.1. Make sure you
 have the [latest version][1] installed.
 
+```sh
+CXX=c++ cmake -S . -B build -G Ninja -D CMAKE_CXX_SCAN_FOR_MODULES=NO -D CMAKE_BUILD_TYPE=Release -D FMT_DEVELOPER_MODE=YES --fresh
+ninja -C build all_verify_interface_header_sets
+ninja -C build build install
+ninja -C build build tests
+```
+
 ## Install
 
 This project doesn't require any special command-line flags to install to keep

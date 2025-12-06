@@ -1,8 +1,8 @@
 {
-  "version": 4,
+  "version": 8,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 23,
+    "minor": 28,
     "patch": 0
   },
   "configurePresets": [
@@ -12,13 +12,13 @@
       "warnings": {
         "dev": true,
         "deprecated": true,
-        "uninitialized": false,
+        "uninitialized": true,
         "unusedCli": true,
         "systemVars": false
       },
       "errors": {
         "dev": false,
-        "deprecated": true
+        "deprecated": false
       }
     },
     {
@@ -26,6 +26,9 @@
       "hidden": true,
       "inherits": "cmake-pedantic",
       "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_MESSAGE_LOG_LEVEL": "VERBOSE",
+        "CMAKE_VERIFY_INTERFACE_HEADER_SETS": true,
         "FMT_DEVELOPER_MODE": true
       }
     },
@@ -68,8 +71,8 @@
       },
       "environment": {
         "CXX": "clang++",
-        "LLVM_ROOT": "/usr/lib/llvm-19",
-        "PATH": "$env{LLVM_ROOT}/bin:$penv{PATH}"
+        "LLVM_DIR": "/usr/lib/llvm-20",
+        "PATH": "$env{LLVM_DIR}/bin:$penv{PATH}"
       },
       "condition": {
         "type": "equals",
@@ -95,10 +98,11 @@
       "description":
           "Note that all the flags after /W3 are required for MSVC to conform to the language standard",
       "hidden": true,
-        "cacheVariables": {
-            "CMAKE_CXX_COMPILER": "cl",
-            "CMAKE_CXX_FLAGS_RELEASE": "/W3 /permissive- /volatile:iso /Zc:inline /Zc:preprocessor /Zc:enumTypes /Zc:lambda /Zc:__cplusplus /Zc:externConstexpr /Zc:throwingNew /EHsc"
-        },
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl",
+        "CMAKE_CXX_FLAGS_RELEASE":
+            "/W3 /permissive- /volatile:iso /Zc:inline /Zc:preprocessor /Zc:enumTypes /Zc:lambda /Zc:__cplusplus /Zc:externConstexpr /Zc:throwingNew /EHsc"
+      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
