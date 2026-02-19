@@ -15,7 +15,7 @@ ifeq (${hostSystemName},Darwin)
 
   export CMAKE_CXX_STDLIB_MODULES_JSON=${LLVM_DIR}/lib/c++/libc++.modules.json
   export CXX=clang++
-  export LDFLAGS=-L$(LLVM_DIR)/lib/c++ -lc++abi -lc++ -lc++experimental
+  export LDFLAGS=-L$(LLVM_DIR)/lib/c++ -lc++abi # XXX -lc++ -lc++experimental
   export GCOV="llvm-cov gcov"
 
   ### TODO: to test g++-15:
@@ -32,7 +32,7 @@ else ifeq (${hostSystemName},Linux)
   export CXX=clang++-20
 endif
 
-.PHONY: all check test example clean distclean
+.PHONY: all check test example clean format distclean
 all: .init
 	cmake --workflow --preset dev
 
@@ -62,6 +62,10 @@ example:
 
 clean:
 	rm -rf build
+
+format:
+	pre-commit autoupdate
+	pre-commit run --all
 
 distclean: clean
 	rm -rf stagedir .init CMakeUserPresets.json tags

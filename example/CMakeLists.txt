@@ -3,7 +3,7 @@
 #
 # from https://www.kitware.com/import-std-in-cmake-3-30/
 #
-cmake_minimum_required(VERSION 4.0...4.2)
+cmake_minimum_required(VERSION 4.0...4.3)
 
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.

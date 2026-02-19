@@ -1,5 +1,5 @@
 # CMake 3.30 is required for C++23 `import std` support;
-cmake_minimum_required(VERSION 3.30...4.2)
+cmake_minimum_required(VERSION 3.30...4.3)
 
 include(cmake/prelude.cmake)
 

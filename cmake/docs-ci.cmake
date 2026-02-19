@@ -64,8 +64,7 @@ endmacro()
 
 function(docs_project name)
     cmake_parse_arguments(
-        PARSE_ARGV
-        1
+        PARSE_ARGV 1
         ""
         ""
         "VERSION;DESCRIPTION;HOMEPAGE_URL"
