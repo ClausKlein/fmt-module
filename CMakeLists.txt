@@ -3,21 +3,6 @@ cmake_minimum_required(VERSION 3.30...4.3)
 
 include(cmake/prelude.cmake)
 
-option(
-    CMAKE_CXX_SCAN_FOR_MODULES
-    "Whether to scan C++ source files for module dependencies"
-    ON
-)
-option(BUILD_SHARED_LIBS "Build using shared libraries" NO)
-
-# Set experimental flag to enable `import std` support from CMake.
-# This must be enabled before C++ language support.
-if(CMAKE_CXX_SCAN_FOR_MODULES)
-    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
-        "d0edc3af-4c50-42ea-a356-e2862fe7a444"
-    )
-endif()
-
 #==================================================
 project(
     fmt
@@ -28,69 +13,24 @@ project(
 )
 #==================================================
 
+include(cmake/cxx-modules-rules.cmake)
+
+option(BUILD_SHARED_LIBS "Build using shared libraries" NO)
+
 include(cmake/variables.cmake)
-
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_EXTENSIONS ON)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(CMAKE_DEBUG_POSTFIX D)
-set(CMAKE_SKIP_TEST_ALL_DEPENDENCY OFF)
 
 # FIXME: to prevent -Winclude-angled-in-module-purview in fmt/os.h
 # see /Users/clausklein/.cache/CPM/fmt/6226dc0d560c5dca8bcd81db09f7e2752ccb8cef/include/fmt/os.h:33
 set(CPPdefinitions FMT_USE_FCNTL=0)
+
 option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(
-    FMT_USE_MODULES
-    "Export a CXX_MODULE fmt if possible"
-    ${CMAKE_CXX_SCAN_FOR_MODULES}
-)
-option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
+
+#XXX option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${CMAKE_CXX_SCAN_FOR_MODULES})
+option(FMT_IMPORT_STD "Import the module std" ${CMAKE_CXX_MODULE_STD})
 
 if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
     list(APPEND CPPdefinitions FMT_MODULE)
     # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
-
-    if(
-        CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
-        AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0
-    )
-        if(APPLE)
-            execute_process(
-                OUTPUT_VARIABLE LLVM_PREFIX
-                COMMAND brew --prefix llvm
-                COMMAND_ECHO STDOUT
-            )
-            string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
-        elseif(LINUX)
-            set(LLVM_PREFIX $ENV{LLVM_DIR})
-        endif()
-
-        # # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-        # # or /usr/lib/llvm-19/share/libc++/v1/std.cppm
-        # set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
-        # file(REAL_PATH ${LLVM_PREFIX} LLVM_DIR)
-        # set(LLVM_DIR ${LLVM_DIR} CACHE PATH "")
-        # message(STATUS "LLVM_DIR=${LLVM_DIR}")
-
-        # add_compile_options(-fexperimental-library)
-        # add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
-        add_compile_options(-stdlib=libc++)
-        add_link_options(-stdlib=libc++)
-    elseif(
-        CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
-        AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15.0
-    )
-        add_compile_options(-stdlib=libstdc++)
-        add_link_options(-stdlib=libstdc++)
-    endif()
-
-    # Tell CMake that we explicitly want `import std`.
-    # This will initialize the property on all targets declared after this to 1
-    if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
-        set(CMAKE_CXX_MODULE_STD ON)
-    endif()
 
     if(CMAKE_CXX_MODULE_STD)
         list(APPEND CPPdefinitions FMT_IMPORT_STD)

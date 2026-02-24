@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.30...4.3)
 
-project(fmt_moddule_examples LANGUAGES CXX)
+include(../../cmake/prelude.cmake)
 
-set(USE_MODULES ON)
+project(fmt_module_examples LANGUAGES CXX)
 
 if(PROJECT_IS_TOP_LEVEL)
     enable_testing()
@@ -10,46 +10,16 @@ if(PROJECT_IS_TOP_LEVEL)
     # Find the fmt package containing the function to build the module
     find_package(fmt 12.1.0.2 EXACT REQUIRED HINT ../../stagedir/lib)
 
-    # Use modules?
-    unset(USE_MODULES)
+    include(../../cmake/cxx-modules-rules.cmake)
 
-    if(NOT CMAKE_CXX_STANDARD)
-        set(CMAKE_CXX_STANDARD 23)
-        set(CMAKE_CXX_EXTENSIONS ON)
-        set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    endif()
+    option(FMT_IMPORT_STD "Import the module std" ${CMAKE_CXX_MODULE_STD})
 
-    if(CMAKE_GENERATOR STREQUAL "Ninja")
-        if(
-            CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
-            AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0
-        )
-            set(USE_MODULES ON)
-            # see https://releases.llvm.org/15.0.0/projects/libcxx/docs/ReleaseNotes.html
-            # Always use libc++
-            # add_compile_options(-fexperimental-library)
-            # add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
-            add_compile_options(-stdlib=libc++)
-            add_link_options(-stdlib=libc++)
-        elseif(
-            CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
-            AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15.0
-        )
-            set(USE_MODULES ON)
-            add_compile_options(-stdlib=libstdc++)
-            add_link_options(-stdlib=libstdc++)
-        elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-            set(USE_MODULES ON)
-        endif()
-        message(
-            STATUS
-            "CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES}"
-        )
-    endif()
+    message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
+    message(
+        STATUS
+        "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}"
+    )
 endif()
-
-message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
-message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
 
 # TODO: list(APPEND ALL_TESTS ../../tests/header-only-test.cc)
 set(ALL_TESTS header-only-test)
@@ -58,7 +28,7 @@ message(STATUS "Module tests to be built: ${ALL_TESTS}")
 foreach(_file ${ALL_TESTS})
     add_executable(module_${_file})
     target_sources(module_${_file} PRIVATE ../../tests/${_file}.cc)
-    if(USE_MODULES)
+    if(FMT_USE_MODULES)
         target_link_libraries(module_${_file} fmt::fmt)
         # FIXME: message(WARNING "Add to module_${_file} CPPdefinitions=${CPPdefinitions}")
         # FIXME: target_compile_definitions(module_${_file} PRIVATE ${CPPdefinitions})

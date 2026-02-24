@@ -9,8 +9,8 @@ MAKEFLAGS+= --no-builtin-rules  # Disable the built-in implicit rules.
 export hostSystemName=$(shell uname)
 
 ifeq (${hostSystemName},Darwin)
-  export LLVM_PREFIX=$(shell brew --prefix llvm)
-  export LLVM_DIR=$(shell realpath ${LLVM_PREFIX})
+	export LLVM_PREFIX:=$(shell brew --prefix llvm)
+	export LLVM_DIR:=$(shell realpath ${LLVM_PREFIX})
   export PATH:=${LLVM_DIR}/bin:${PATH}
 
   export CMAKE_CXX_STDLIB_MODULES_JSON=${LLVM_DIR}/lib/c++/libc++.modules.json
@@ -19,8 +19,8 @@ ifeq (${hostSystemName},Darwin)
   export GCOV="llvm-cov gcov"
 
   ### TODO: to test g++-15:
-  export GCC_PREFIX=$(shell brew --prefix gcc)
-  export GCC_DIR=$(shell realpath ${GCC_PREFIX})
+  export GCC_PREFIX:=$(shell brew --prefix gcc)
+  export GCC_DIR:=$(shell realpath ${GCC_PREFIX})
 
   # export CMAKE_CXX_STDLIB_MODULES_JSON=${GCC_DIR}/lib/gcc/current/libstdc++.modules.json
   # export CXX:=g++-15
@@ -55,7 +55,7 @@ example:
 
 .init: requirements.txt .CMakeUserPresets.json CMakeLists.txt GNUmakefile
 	perl -p -e 's/<hostSystemName>/${hostSystemName}/;' .CMakeUserPresets.json > CMakeUserPresets.json
-	-pip3 install --user --upgrade -r requirements.txt
+	-pip3 install --upgrade -r requirements.txt
 	cmake --preset dev --fresh --log-level=VERBOSE
 	ln -sf build/dev/compile_commands.json .
 	touch .init
@@ -68,7 +68,8 @@ format:
 	pre-commit run --all
 
 distclean: clean
-	rm -rf stagedir .init CMakeUserPresets.json tags
+	rm -rf stagedir .init CMakeUserPresets.json tags compile_commands.json
+	find . -name '*~' -delete
 	# XXX NO! git clean -xdf
 
 GNUmakefile :: ;
