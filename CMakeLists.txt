@@ -1,5 +1,5 @@
 # CMake 3.30 is required for C++23 `import std` support;
-cmake_minimum_required(VERSION 3.30...4.2)
+cmake_minimum_required(VERSION 3.30...4.4)
 
 include(cmake/prelude.cmake)
 
@@ -13,15 +13,35 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" NO)
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
 if(CMAKE_CXX_SCAN_FOR_MODULES)
-    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
-        "d0edc3af-4c50-42ea-a356-e2862fe7a444"
-    )
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL "4.3.0")
+        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
+            "451f2fe2-a8a2-47c3-bc32-94786d8fc91b"
+        )
+    elseif(CMAKE_VERSION VERSION_GREATER_EQUAL "3.30.0")
+        if(CMAKE_VERSION VERSION_LESS "3.31.8")
+            set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
+                "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
+            )
+        elseif(CMAKE_VERSION VERSION_LESS "4.0.0")
+            set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
+                "d0edc3af-4c50-42ea-a356-e2862fe7a444"
+            )
+        elseif(CMAKE_VERSION VERSION_LESS "4.0.3")
+            set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
+                "a9e1cf81-9932-4810-974b-6eccaf14e457"
+            )
+        elseif(CMAKE_VERSION VERSION_LESS "4.3.0")
+            set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
+                "d0edc3af-4c50-42ea-a356-e2862fe7a444"
+            )
+        endif()
+    endif()
 endif()
 
 #==================================================
 project(
     fmt
-    VERSION 12.1.0.1
+    VERSION 12.2.0.1
     DESCRIPTION "A modern formatting library"
     HOMEPAGE_URL https://fmt.dev/12.0/
     LANGUAGES CXX
@@ -30,8 +50,8 @@ project(
 
 include(cmake/variables.cmake)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_DEBUG_POSTFIX D)
@@ -114,8 +134,8 @@ include(cmake/CPM.cmake)
 cpmaddpackage(
     NAME fmt
     GITHUB_REPOSITORY fmtlib/fmt
-    GIT_TAG 12.1.0
-    VERSION 12.1.0
+    GIT_TAG 12.2.0
+    VERSION 12.2.0
     DOWNLOAD_ONLY ON
     # NO! PATCH_COMMAND git apply -p 1 ${CMAKE_CURRENT_SOURCE_DIR}/fmt.patch
 )
@@ -178,7 +198,7 @@ target_sources(
 )
 
 target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY)
-target_compile_features(fmt-header-only INTERFACE cxx_std_23)
+target_compile_features(fmt-header-only INTERFACE cxx_std_26)
 
 # Unicode support requires compiling with /utf-8.
 target_compile_options(
@@ -206,7 +226,7 @@ if(FMT_SEPARATE_COMPILATION)
         fmt
         PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
     )
-    target_compile_features(fmt INTERFACE cxx_std_23)
+    target_compile_features(fmt INTERFACE cxx_std_26)
 
     if(FMT_USE_MODULES)
         message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")

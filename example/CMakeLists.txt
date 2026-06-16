@@ -3,7 +3,7 @@
 #
 # from https://www.kitware.com/import-std-in-cmake-3-30/
 #
-cmake_minimum_required(VERSION 4.0...4.2)
+cmake_minimum_required(VERSION 4.0...4.4)
 
 # Set experimental flag to enable `import std` support from CMake.
 # This must be enabled before C++ language support.
@@ -26,7 +26,7 @@ add_library(uses_std STATIC)
 # Add sources.
 target_sources(uses_std PRIVATE uses_std.cxx)
 # Tell CMake we're using C++23 but only C++20 is needed to consume it.
-target_compile_features(uses_std PRIVATE cxx_std_23 INTERFACE cxx_std_20)
+target_compile_features(uses_std PRIVATE cxx_std_26 INTERFACE cxx_std_20)
 
 # Make an executable.
 add_executable(main)
