@@ -16,8 +16,8 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
-    # find_package(fmt 12.2.0.1 EXACT REQUIRED HINT ../stagedir/lib)
-    find_package(fmt 12.2.0.1 REQUIRED)
+    # find_package(fmt 12.2.0.2 EXACT REQUIRED HINT ../stagedir/lib)
+    find_package(fmt 12.2.0.2 REQUIRED)
 
     #XXX add_subdirectory(.. fmt_module)
 endif()
