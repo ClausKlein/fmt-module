@@ -177,14 +177,14 @@ jobs:
         run: cmake --preset=ci-ubuntu
 
       - name: Build
-        run: cmake --build build --config Debug -j 4
+        run: cmake --build build --config Release -j 4
 
       - name: Install
-        run: cmake --install build --config Debug  # see CMakePresets.json! --prefix stagedir
+        run: cmake --install build --config Release  # see CMakePresets.json! --prefix stagedir
 
       - name: Test
         working-directory: build
-        run: ctest --output-on-failure --no-tests=error -C Debug -j 4
+        run: ctest --output-on-failure --no-tests=error -C Release -j 4
 
   docs:
     # Deploy docs only when builds succeed
