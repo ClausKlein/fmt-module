@@ -142,6 +142,7 @@
       "inherits": "gen-Linux",
       "hidden": true,
       "cacheVariables": {
+        "CMAKE_CXX_SCAN_FOR_MODULES": false,
         "FMT_ENABLE_COVERAGE": true,
         "CMAKE_BUILD_TYPE": "Coverage",
         "CMAKE_CONFIGURATION_TYPES": "Coverage",
@@ -169,6 +170,7 @@
         "dev-mode"
       ],
       "cacheVariables": {
+        "CMAKE_CXX_SCAN_FOR_MODULES": false,
         "CMAKE_BUILD_TYPE": "Sanitize",
         "CMAKE_CONFIGURATION_TYPES": "Sanitize",
         "CMAKE_CXX_FLAGS_SANITIZE":
