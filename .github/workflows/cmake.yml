@@ -13,20 +13,20 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
+        with: {python-version: "3.14"}
 
       - name: Install codespell
-        run: pip3 install codespell
+        run: pip3 install codespell cmake
 
       # - name: Lint
       #   if: always()
-      #   run: cmake -D FORMAT_COMMAND=clang-format-18 -P cmake/lint.cmake || echo ignored
+      #   run: cmake -D FORMAT_COMMAND=clang-format-20 -P cmake/lint.cmake || echo ignored
 
       - name: Spell check
         if: always()
@@ -35,7 +35,7 @@ jobs:
   coverage:
     needs: [lint]
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     # To enable coverage, delete the last line from the conditional below and
     # edit the "<name>" placeholder to your GitHub name.
@@ -46,9 +46,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14"}
+
+      - name: Install codespell
+        run: pip3 install codespell cmake ninja
+
+
       - name: Install LCov
         run: sudo apt-get update -q
-          && sudo apt-get install ninja-build lcov -q -y
+          && sudo apt-get install lcov -q -y
 
       - name: Configure
         run: cmake --preset=ci-coverage
@@ -71,17 +78,18 @@ jobs:
   sanitize:
     needs: [lint]
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
-    env: {CXX: clang++-18}
+    env: {CXX: clang++-20}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup ninja build toolchain
-        uses: aminya/setup-cpp@v1
-        with:
-          ninja: true
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14"}
+
+      - name: Install codespell
+        run: pip3 install codespell cmake ninja
 
       - name: Configure
         run: cmake --preset=ci-sanitize
@@ -106,52 +114,49 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, ubuntu-24.04, windows-2022]
+        os: [macos-15, ubuntu-26.04, windows-2025-vs2026]
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup ninja build toolchain
-        uses: aminya/setup-cpp@v1
-        with:
-          ninja: true
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.14"}
+
+      - name: Install codespell
+        run: pip3 install codespell cmake ninja
 
       - name: Install static analyzers
-        if: matrix.os == 'ubuntu-24.04'
+        if: matrix.os == 'ubuntu-26.04'
         run: |
-          # Not used! sudo apt-get install cppcheck -y -q
+          # Install clang/llvm 22
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 19 all
+          sudo ./llvm.sh 22 all
           sudo update-alternatives --install \
             /usr/bin/clang-tidy clang-tidy \
-            /usr/bin/clang-tidy-19 150
+            /usr/bin/clang-tidy-22 150
 
-      - name: Install llvm-19
+      - name: Install gcc-16
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew install llvm@19
-          echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.envrc
-          echo 'export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"' >> /Users/runner/.envrc
-          echo 'export CPPFLAGS="-L/opt/homebrew/opt/llvm/include"' >> /Users/runner/.envrc
-
-      # see https://github.com/mathstuf/cxx-modules-sandbox/blob/master/.github/workflows/cmake.yml
-      - name: Visual Studio toolchain environment
-        uses: TheMrMilchmann/setup-msvc-dev@v1
-        if: matrix.os == 'windows-2022'
-        with:
-          arch: x64
+          brew install gcc
+          echo 'export CXX=g++-16' >> /Users/runner/.envrc
+          # brew install llvm@22
+          # echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.envrc
+          # echo 'export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"' >> /Users/runner/.envrc
+          # echo 'export CPPFLAGS="-L/opt/homebrew/opt/llvm/include"' >> /Users/runner/.envrc
 
       # # see https://github.com/marketplace/actions/enable-developer-command-prompt
-      # - uses: ilammy/msvc-dev-cmd@v1
-      #   if: matrix.os == 'windows-2022'
-      #   with:
-      #     vsversion: 2022
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: matrix.os == 'windows-2025-vs2026'
+        # with:
+        #   vsversion: 2026
+        #   arch: x64
 
       - name: Configure windows
-        if: matrix.os == 'windows-2022'
+        if: matrix.os == 'windows-2025-vs2026'
         run: |
           Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
           Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
@@ -162,13 +167,13 @@ jobs:
         shell: bash
         run: |
           source /Users/runner/.envrc
-          which clang++ && clang++ --version
-          CXX=$(brew --prefix llvm@19)/bin/clang++ cmake --preset=ci-macos
+          cmake --preset=ci-macos
+          # which clang++ && clang++ --version
+          # CXX=$(brew --prefix llvm@22)/bin/clang++ cmake --preset=ci-macos
 
       - name: Configure ubuntu
-        if: matrix.os == 'ubuntu-24.04'
-        env:
-          CXX: clang++-19
+        if: matrix.os == 'ubuntu-26.04'
+        # NOTE: see CMakePresets.json for env: CXX: clang++-22! CK
         run: cmake --preset=ci-ubuntu
 
       - name: Build
@@ -185,7 +190,7 @@ jobs:
     # Deploy docs only when builds succeed
     needs: [sanitize, test]
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     # To enable, first you have to create an orphaned gh-pages branch:
     #
@@ -206,10 +211,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
+        with: {python-version: "3.14"}
 
       - name: Install m.css dependencies
-        run: pip3 install ninja jinja2 Pygments
+        run: pip3 install ninja jinja2 Pygments cmake
 
       - name: Install Doxygen
         run: sudo apt-get update -q

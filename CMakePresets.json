@@ -1,8 +1,8 @@
 {
-  "version": 4,
+  "version": 9,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 23,
+    "minor": 30,
     "patch": 0
   },
   "configurePresets": [
@@ -18,7 +18,7 @@
       },
       "errors": {
         "dev": false,
-        "deprecated": true
+        "deprecated": false
       }
     },
     {
@@ -26,7 +26,10 @@
       "hidden": true,
       "inherits": "cmake-pedantic",
       "cacheVariables": {
-        "FMT_DEVELOPER_MODE": "ON"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_MESSAGE_LOG_LEVEL": "VERBOSE",
+        "CMAKE_VERIFY_INTERFACE_HEADER_SETS": true,
+        "FMT_DEVELOPER_MODE": true
       }
     },
     {
@@ -40,7 +43,7 @@
       "name": "clang-tidy",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy-18;--header-filter=^${sourceDir}/"
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/"
       }
     },
     {
@@ -49,21 +52,27 @@
           "This preset makes sure the project actually builds with at least the specified standard",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_EXTENSIONS": "ON",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_EXTENSIONS": false,
         "CMAKE_CXX_STANDARD": "23",
-        "CMAKE_CXX_STANDARD_REQUIRED": "ON"
+        "CMAKE_CXX_STANDARD_REQUIRED": true
       }
     },
     {
       "name": "flags-Linux",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS":
-            "-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fcf-protection=full -fstack-clash-protection -Wall -Wextra -Wpedantic -Wno-conversion -Wno-sign-conversion -Wcast-qual -Wformat=2 -Wundef -Wfloat-equal -Wshadow -Wcast-align -Wunused -Wnull-dereference -Wdouble-promotion -Wno-implicit-fallthrough -Wextra-semi -Woverloaded-virtual -Wnon-virtual-dtor -Wno-old-style-cast",
-        "CMAKE_EXE_LINKER_FLAGS":
+        "CMAKE_CXX_FLAGS_DEBUG":
+            "-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fcf-protection=full -fstack-clash-protection -Wall -Wextra -Wpedantic -Wno-conversion -Wno-sign-conversion -Wcast-qual -Wformat=2 -Wundef -Wno-float-equal -Wshadow -Wcast-align -Wunused -Wnull-dereference -Wdouble-promotion -Wno-implicit-fallthrough -Wextra-semi -Woverloaded-virtual -Wnon-virtual-dtor -Wno-old-style-cast",
+        "CMAKE_EXE_LINKER_FLAGS_DEBUG":
             "-Wl,--allow-shlib-undefined,--as-needed,-z,noexecstack,-z,relro,-z,now",
-        "CMAKE_SHARED_LINKER_FLAGS":
+        "CMAKE_SHARED_LINKER_FLAGS_DEBUG":
             "-Wl,--allow-shlib-undefined,--as-needed,-z,noexecstack,-z,relro,-z,now"
+      },
+      "environment": {
+        "CXX": "clang++-22",
+        "LLVM_DIR": "/usr/lib/llvm-22",
+        "PATH": "$env{LLVM_DIR}/bin:$penv{PATH}"
       },
       "condition": {
         "type": "equals",
@@ -75,8 +84,8 @@
       "name": "flags-Darwin",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS":
-            "-fstack-protector-strong -Wall -Wextra -Wpedantic -Wno-conversion -Wno-sign-conversion -Wcast-qual -Wformat=2 -Wundef -Wfloat-equal -Wshadow -Wcast-align -Wunused -Wnull-dereference -Wdouble-promotion -Wno-implicit-fallthrough -Wextra-semi -Woverloaded-virtual -Wnon-virtual-dtor -Wno-old-style-cast"
+        "CMAKE_CXX_FLAGS_DEBUG":
+            "-fstack-protector-strong -Wall -Wextra -Wpedantic -Wno-conversion -Wno-sign-conversion -Wcast-qual -Wformat=2 -Wundef -Wno-float-equal -Wshadow -Wcast-align -Wunused -Wnull-dereference -Wdouble-promotion -Wno-implicit-fallthrough -Wextra-semi -Woverloaded-virtual -Wnon-virtual-dtor -Wno-old-style-cast"
       },
       "condition": {
         "type": "equals",
@@ -90,11 +99,9 @@
           "Note that all the flags after /W3 are required for MSVC to conform to the language standard",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "cl",
-        "CMAKE_CXX_FLAGS_PEDANTIC":
-            "/sdl /guard:cf /utf-8 /diagnostics:caret /w14165 /w44242 /w44254 /w44263 /w34265 /w34287 /w44296 /w44365 /w44388 /w44464 /w14545 /w14546 /w14547 /w14549 /w14555 /w34619 /w34640 /w24826 /w14905 /w14906 /w14928 /w45038 /W3 /permissive- /volatile:iso /Zc:inline /Zc:preprocessor /Zc:enumTypes /Zc:lambda /Zc:__cplusplus /Zc:externConstexpr /Zc:throwingNew /EHsc",
-        "CMAKE_EXE_LINKER_FLAGS_PEDANTIC": "/machine:x64 /guard:cf"
+        "CMAKE_CXX_FLAGS_RELEASE":
+            "/W3 /permissive- /volatile:iso /Zc:inline /Zc:preprocessor /Zc:enumTypes /Zc:lambda /Zc:__cplusplus /Zc:externConstexpr /Zc:throwingNew /EHsc"
       },
       "condition": {
         "type": "equals",
@@ -109,10 +116,7 @@
       "inherits": [
         "flags-Linux",
         "ci-std"
-      ],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
+      ]
     },
     {
       "name": "gen-Darwin",
@@ -121,19 +125,16 @@
       "inherits": [
         "flags-Darwin",
         "ci-std"
-      ],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
+      ]
     },
     {
       "name": "gen-win64",
+      "generator": "Ninja",
+      "hidden": true,
       "inherits": [
         "flags-Windows",
         "ci-std"
-      ],
-      "generator": "Ninja",
-      "hidden": true
+      ]
     },
     {
       "name": "coverage-Linux",
@@ -141,7 +142,7 @@
       "inherits": "gen-Linux",
       "hidden": true,
       "cacheVariables": {
-        "FMT_ENABLE_COVERAGE": "ON",
+        "FMT_ENABLE_COVERAGE": true,
         "CMAKE_BUILD_TYPE": "Coverage",
         "CMAKE_CONFIGURATION_TYPES": "Coverage",
         "CMAKE_CXX_FLAGS_COVERAGE":
@@ -165,7 +166,6 @@
       "binaryDir": "${sourceDir}/build/sanitize",
       "inherits": [
         "gen-Linux",
-        "clang-tidy",
         "dev-mode"
       ],
       "cacheVariables": {

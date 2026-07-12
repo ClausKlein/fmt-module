@@ -8,6 +8,7 @@ cmake/coverage.cmake
 cmake/dev-mode.cmake
 cmake/docs-ci.cmake
 cmake/docs.cmake
+cmake/example.cmake
 cmake/folders.cmake
 cmake/install-config.cmake
 cmake/install-rules.cmake

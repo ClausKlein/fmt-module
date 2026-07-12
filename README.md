@@ -1,22 +1,23 @@
-# fmt
+# fmt-module
 
-## based on / use https://github.com/fmtlib/fmt
+## use [fmtlib/fmt](https://github.com/fmtlib/fmt)
 
-### This is a cmake fmt adapter project to test the fmt c++22 module
+### This is a cmake fmt adapter project to test the fmt C++20 Module
 
-- https://crascit.com/2024/04/04/cxx-modules-cmake-shared-libraries
-- https://anarthal.github.io/cppblog/modules2
-- [ C++ Modules and cross platform  - Daniela Engert - Meeting C++ 2023](https://www.youtube.com/watch?v=iMNML689qlU)
+- [import std in CMake 3.30](https://www.kitware.com/import-std-in-cmake-3-30/)
+- [C++20 Modules, CMake, And Shared Libraries](https://crascit.com/2024/04/04/cxx-modules-cmake-shared-libraries)
+- [C++20 modules and Boost: deep dive](https://anarthal.github.io/cppblog/modules2)
+- [C++ Modules and cross platform - Daniela Engert - Meeting C++ 2023](https://www.youtube.com/watch?v=iMNML689qlU)
 
-# Building and installing
+## Building and installing
 
 See the [BUILDING](BUILDING.md) document.
 
-# Contributing
+## Contributing
 
 See the [CONTRIBUTING](CONTRIBUTING.md) document.
 
-# Licensing
+## Licensing
 
 <!--
 Please go to https://choosealicense.com/licenses/ and choose a license that

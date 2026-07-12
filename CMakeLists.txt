@@ -1,143 +1,237 @@
-cmake_minimum_required(VERSION 3.25...3.31)
+# CMake 3.30 is required for C++23 `import std` support;
+cmake_minimum_required(VERSION 3.30...4.4)
+
+option(
+    CMAKE_CXX_SCAN_FOR_MODULES
+    "Whether to scan C++ source files for module dependencies"
+    ON
+)
 
 include(cmake/prelude.cmake)
 
-project(fmt
-        VERSION 11.1.1.1
-        DESCRIPTION "A modern formatting library"
-        HOMEPAGE_URL https://fmt.dev/11.0/
-        LANGUAGES CXX
+#==================================================
+project(
+    fmt
+    VERSION 12.2.0.2
+    DESCRIPTION "A modern formatting library"
+    HOMEPAGE_URL https://fmt.dev/12.0/
+    LANGUAGES CXX
 )
+#==================================================
 
 include(cmake/variables.cmake)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
-set(CMAKE_DEBUG_POSTFIX D)
-set(CPPdefinitions)
-
-option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_USE_MODULES "Export a CXX_MODULE fmt if possible" ${PROJECT_IS_TOP_LEVEL})
-option(FMT_IMPORT_STD "Import the all std header needed" NO)
-
-if(FMT_IMPORT_STD AND NOT FMT_USE_MODULES)
-  list(APPEND CPPdefinitions FMT_IMPORT_STD)
+if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 26)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
 
-if(FMT_USE_MODULES)
-  list(APPEND CPPdefinitions FMT_MODULE)
-  # XXX NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
-  # TODO: add_compile_options(-Wno-reserved-module-identifier -Wno-include-angled-in-module-purview)
+set(CMAKE_DEBUG_POSTFIX D)
+set(CMAKE_SKIP_TEST_ALL_DEPENDENCY OFF)
 
-  if(FMT_IMPORT_STD) # FIXME: clang++ only! AND $ENV{LLVM_ROOT})
-    if(UNIX)
-      set(CMAKE_CXX_COMPILER_IMPORT_STD 23)
-      add_compile_options(-fexperimental-library)
-      add_link_options(-lc++experimental)
-      add_compile_options(-stdlib=libc++)
-      add_link_options(-stdlib=libc++)
+option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+
+# FIXME: to prevent -Winclude-angled-in-module-purview in fmt/os.h
+# see /Users/clausklein/.cache/CPM/fmt/6226dc0d560c5dca8bcd81db09f7e2752ccb8cef/include/fmt/os.h:33
+set(CPPdefinitions FMT_USE_FCNTL=0)
+option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
+option(
+    FMT_USE_MODULES
+    "Export a CXX_MODULE fmt if possible"
+    ${CMAKE_CXX_SCAN_FOR_MODULES}
+)
+option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
+
+if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
+    list(APPEND CPPdefinitions FMT_MODULE)
+    # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
+
+    if(
+        CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+        AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0
+    )
+        if(APPLE)
+            execute_process(
+                OUTPUT_VARIABLE LLVM_PREFIX
+                COMMAND brew --prefix llvm
+                COMMAND_ECHO STDOUT
+            )
+            string(STRIP ${LLVM_PREFIX} LLVM_PREFIX)
+        elseif(LINUX)
+            set(LLVM_PREFIX $ENV{LLVM_DIR})
+        endif()
+
+        # # /usr/local/opt/llvm/share/libc++/v1/std.cppm
+        # # or /usr/lib/llvm-19/share/libc++/v1/std.cppm
+        # set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
+        # file(REAL_PATH ${LLVM_PREFIX} LLVM_DIR)
+        # set(LLVM_DIR ${LLVM_DIR} CACHE PATH "")
+        # message(STATUS "LLVM_DIR=${LLVM_DIR}")
+
+        # add_compile_options(-fexperimental-library)
+        # add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
+        add_compile_options(-stdlib=libc++)
+        add_link_options(-stdlib=libc++)
+    elseif(
+        CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+        AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15.0
+    )
+        add_compile_options(-stdlib=libstdc++)
+        add_link_options(-stdlib=libstdc++)
     endif()
 
-    message(STATUS "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}")
-  endif()
+    # Tell CMake that we explicitly want `import std`.
+    # This will initialize the property on all targets declared after this to 1
+    if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
+        set(CMAKE_CXX_MODULE_STD ON)
+    endif()
 
-  message(STATUS "CPPdefinitions=${CPPdefinitions}")
+    if(CMAKE_CXX_MODULE_STD)
+        list(APPEND CPPdefinitions FMT_IMPORT_STD)
+    endif()
+
+    message(
+        STATUS
+        "CMAKE_CXX_COMPILER_IMPORT_STD=${CMAKE_CXX_COMPILER_IMPORT_STD}"
+    )
+    message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
+    message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
+    message(STATUS "CPPdefinitions=${CPPdefinitions}")
 else()
-  set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL})
+    option(CMAKE_VERIFY_INTERFACE_HEADER_SETS "" ${PROJECT_IS_TOP_LEVEL})
 endif()
 
 # ---- add dependency libraries ----
 
 include(cmake/CPM.cmake)
 
-# cmake-format: off
 cpmaddpackage(
-  NAME fmt
-  GITHUB_REPOSITORY fmtlib/fmt
-  GIT_TAG 11.1.1
-  VERSION 11.1.1
-  DOWNLOAD_ONLY YES
+    NAME fmt
+    GITHUB_REPOSITORY fmtlib/fmt
+    GIT_TAG 12.2.0
+    VERSION 12.2.0
+    DOWNLOAD_ONLY ON
+    # NO! PATCH_COMMAND git apply -p 1 ${CMAKE_CURRENT_SOURCE_DIR}/fmt.patch
 )
-# cmake-format: on
 
-# ---- Declare library ----
+# -----------------------------------------
+# ---- Collect the fmt library sources ----
+# -----------------------------------------
 
-# TODO: only if needed (compare) and possible!
-if(EXISTS ${fmt_SOURCE_DIR}/src/fmt.cc AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm)
-  configure_file(${fmt_SOURCE_DIR}/src/fmt.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm COPYONLY)
+# TODO(CK): manually  apply the patch if needed (compare) and possible!
+if(
+    EXISTS ${fmt_SOURCE_DIR}/src/fmt.cc
+    AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm
+)
+    configure_file(
+        ${fmt_SOURCE_DIR}/src/fmt.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm
+        COPYONLY
+    )
 endif()
 
-configure_file(${fmt_SOURCE_DIR}/src/format.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/format.cc COPYONLY)
-configure_file(${fmt_SOURCE_DIR}/src/os.cc ${CMAKE_CURRENT_SOURCE_DIR}/module/os.cc COPYONLY)
-file(GLOB_RECURSE _fmt_all_sources "module/*.cc")
+configure_file(
+    ${fmt_SOURCE_DIR}/src/format.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/module/format.cc
+    COPYONLY
+)
+configure_file(
+    ${fmt_SOURCE_DIR}/src/os.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/module/os.cc
+    COPYONLY
+)
 
-# fmt interface library
+file(
+    GLOB_RECURSE _fmt_all_sources
+    CONFIGURE_DEPENDS
+    RELATIVE ${CMAKE_CURRENT_LIST_DIR}
+    module/*.cc
+)
+
+# -----------------------------------------
+# -----------------------------------------
+
+#
+# build the fmt interface library
+#
 add_library(fmt-header-only INTERFACE)
 add_library(fmt::fmt-header-only ALIAS fmt-header-only)
 
-file(GLOB_RECURSE _fmt_public_header "${fmt_SOURCE_DIR}/include/fmt/*.h")
+file(
+    GLOB_RECURSE _fmt_public_header
+    CONFIGURE_DEPENDS
+    # NO! RELATIVE ${fmt_SOURCE_DIR}/include
+    ${fmt_SOURCE_DIR}/include/fmt/*.h
+)
 target_sources(
-  fmt-header-only INTERFACE FILE_SET HEADERS BASE_DIRS ${fmt_SOURCE_DIR}/include FILES ${_fmt_public_header}
+    fmt-header-only
+    INTERFACE
+        FILE_SET HEADERS
+            BASE_DIRS ${fmt_SOURCE_DIR}/include
+            FILES ${_fmt_public_header}
 )
 
-target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY)
-target_compile_features(
-  fmt-header-only INTERFACE "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>"
-                            "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
+set_target_properties(
+    fmt-header-only
+    PROPERTIES VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL}
 )
+target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY)
+target_compile_features(fmt-header-only INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
 # Unicode support requires compiling with /utf-8.
-target_compile_options(fmt-header-only INTERFACE $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
+target_compile_options(
+    fmt-header-only
+    INTERFACE $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
+)
 
+#
+# build the fmt library
+#
 if(FMT_SEPARATE_COMPILATION)
-  # file(GLOB_RECURSE _fmt_all_sources "${fmt_SOURCE_DIR}/src/*.cc")
-
-  add_library(fmt)
-  add_library(fmt::fmt ALIAS fmt)
-  target_sources(
-    fmt PUBLIC FILE_SET public_headers TYPE HEADERS BASE_DIRS ${fmt_SOURCE_DIR}/include FILES ${_fmt_public_header}
-  )
-
-  target_compile_features(
-    fmt INTERFACE "$<$<COMPILE_FEATURES:cxx_std_23>:cxx_std_23>" "$<$<NOT:$<COMPILE_FEATURES:cxx_std_23>>:cxx_std_20>"
-  )
-
-  target_compile_options(fmt PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>)
-
-  if(FMT_USE_MODULES)
-    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
-    # cmake-format: off
-    target_sources(fmt PUBLIC
-        FILE_SET public_modules
-        TYPE CXX_MODULES
-        BASE_DIRS
-            ${CMAKE_CURRENT_SOURCE_DIR}/module
-        FILES
-            ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm
+    add_library(fmt)
+    add_library(fmt::fmt ALIAS fmt)
+    target_compile_options(
+        fmt
+        PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
     )
-    # cmake-format: on
-  else()
-    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
-    target_sources(fmt PUBLIC ${_fmt_all_sources})
-  endif()
+    target_compile_features(fmt PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
 
-  if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
-    target_compile_options(fmt PUBLIC -Werror)
-  endif()
+    if(FMT_USE_MODULES)
+        message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
+        target_sources(
+            fmt
+            PUBLIC
+                FILE_SET public_modules
+                    TYPE CXX_MODULES
+                    BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/module
+                    FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm
+        )
+        target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
+    else()
+        message(WARNING "Missing or disabled support for CXX_MODULES!")
+        target_sources(fmt PRIVATE ${_fmt_all_sources})
+    endif()
+
+    target_link_libraries(fmt PUBLIC fmt-header-only)
+
+    if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
+        target_compile_options(fmt PRIVATE -Werror)
+    endif()
 endif()
 
 # ---- Install rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
-  include(cmake/install-rules.cmake)
+    include(cmake/install-rules.cmake)
 endif()
 
 # ---- Developer mode ----
 
 if(NOT FMT_DEVELOPER_MODE)
-  return()
+    return()
 elseif(NOT PROJECT_IS_TOP_LEVEL)
-  message(AUTHOR_WARNING "Developer mode is intended for developers of fmt")
+    message(AUTHOR_WARNING "Developer mode is intended for developers of fmt")
 endif()
 
 include(cmake/dev-mode.cmake)
