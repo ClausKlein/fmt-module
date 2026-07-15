@@ -31,7 +31,7 @@ if(FMT_USE_MODULES)
                 ${FMT_INSTALL_CMAKEDIR}/bmi-${CMAKE_CXX_COMPILER_ID}_$<CONFIG>
     )
 else()
-    install(TARGETS fmt EXPORT fmtTargets)
+    install(TARGETS fmt EXPORT fmtTargets FILE_SET HEADERS)
 endif()
 install(FILES module/fmt.cppm DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)
 install(FILES ${_fmt_all_sources} DESTINATION ${FMT_INSTALL_CMAKEDIR}/module)

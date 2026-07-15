@@ -200,7 +200,14 @@ if(FMT_USE_MODULES)
     set_target_properties(fmt PROPERTIES VERIFY_INTERFACE_HEADER_SETS OFF)
 else()
     message(WARNING "Missing or disabled support for CXX_MODULES!")
-    target_sources(fmt PRIVATE ${_fmt_all_sources})
+    target_sources(
+        fmt
+        PRIVATE ${_fmt_all_sources}
+        PUBLIC
+            FILE_SET HEADERS
+                BASE_DIRS ${fmt_SOURCE_DIR}/include
+                FILES ${_fmt_public_header}
+    )
 endif()
 
 #NO! target_link_libraries(fmt PUBLIC fmt-header-only)
