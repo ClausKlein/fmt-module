@@ -17,6 +17,7 @@ if(PROJECT_IS_TOP_LEVEL)
         set(CMAKE_CXX_STANDARD 26)
         set(CMAKE_CXX_EXTENSIONS OFF)
         set(CMAKE_CXX_STANDARD_REQUIRED ON)
+        set(CMAKE_CXX_SCAN_FOR_MODULES ON)
     endif()
 
     if(CMAKE_GENERATOR STREQUAL "Ninja")
@@ -27,8 +28,7 @@ if(PROJECT_IS_TOP_LEVEL)
             set(USE_MODULES ON)
             # see https://releases.llvm.org/15.0.0/projects/libcxx/docs/ReleaseNotes.html
             # Always use libc++
-            # add_compile_options(-fexperimental-library)
-            # add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
+            # add_link_options(-L${LLVM_DIR}/lib/c++)
             add_compile_options(-stdlib=libc++)
             add_link_options(-stdlib=libc++)
         elseif(

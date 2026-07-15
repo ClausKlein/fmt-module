@@ -25,6 +25,7 @@ if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 26)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 endif()
 
 set(CMAKE_DEBUG_POSTFIX D)
@@ -34,8 +35,7 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
 # FIXME: to prevent -Winclude-angled-in-module-purview in fmt/os.h
 # see /Users/clausklein/.cache/CPM/fmt/6226dc0d560c5dca8bcd81db09f7e2752ccb8cef/include/fmt/os.h:33
-set(CPPdefinitions FMT_USE_FCNTL=0)
-option(FMT_SEPARATE_COMPILATION "build fmt lib too" ${PROJECT_IS_TOP_LEVEL})
+# XXX set(CPPdefinitions FMT_USE_FCNTL=0)
 option(
     FMT_USE_MODULES
     "Export a CXX_MODULE fmt if possible"
@@ -62,15 +62,6 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
             set(LLVM_PREFIX $ENV{LLVM_DIR})
         endif()
 
-        # # /usr/local/opt/llvm/share/libc++/v1/std.cppm
-        # # or /usr/lib/llvm-19/share/libc++/v1/std.cppm
-        # set(LLVM_LIBC_SOURCE ${LLVM_PREFIX}/share/libc++/v1 CACHE PATH "")
-        # file(REAL_PATH ${LLVM_PREFIX} LLVM_DIR)
-        # set(LLVM_DIR ${LLVM_DIR} CACHE PATH "")
-        # message(STATUS "LLVM_DIR=${LLVM_DIR}")
-
-        # add_compile_options(-fexperimental-library)
-        # add_link_options(-L${LLVM_DIR}/lib/c++ -lc++experimental)
         add_compile_options(-stdlib=libc++)
         add_link_options(-stdlib=libc++)
     elseif(
@@ -100,8 +91,6 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
     message(STATUS "CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}")
     message(STATUS "CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}")
     message(STATUS "CPPdefinitions=${CPPdefinitions}")
-else()
-    option(CMAKE_VERIFY_INTERFACE_HEADER_SETS "" ${PROJECT_IS_TOP_LEVEL})
 endif()
 
 # ---- add dependency libraries ----
@@ -190,36 +179,38 @@ target_compile_options(
 #
 # build the fmt library
 #
-if(FMT_SEPARATE_COMPILATION)
-    add_library(fmt)
-    add_library(fmt::fmt ALIAS fmt)
-    target_compile_options(
+add_library(fmt)
+add_library(fmt::fmt ALIAS fmt)
+target_compile_options(
+    fmt
+    PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
+)
+target_compile_features(fmt PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+
+if(FMT_USE_MODULES)
+    message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
+    target_sources(
         fmt
-        PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
+        PUBLIC
+            FILE_SET public_modules
+                TYPE CXX_MODULES
+                BASE_DIRS module
+                FILES module/fmt.cppm
+            FILE_SET HEADERS
+                BASE_DIRS ${fmt_SOURCE_DIR}/include
+                FILES ${_fmt_public_header}
     )
-    target_compile_features(fmt PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
+    set_target_properties(fmt PROPERTIES VERIFY_INTERFACE_HEADER_SETS OFF)
+else()
+    message(WARNING "Missing or disabled support for CXX_MODULES!")
+    target_sources(fmt PRIVATE ${_fmt_all_sources})
+endif()
 
-    if(FMT_USE_MODULES)
-        message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
-        target_sources(
-            fmt
-            PUBLIC
-                FILE_SET public_modules
-                    TYPE CXX_MODULES
-                    BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/module
-                    FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/fmt.cppm
-        )
-        target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
-    else()
-        message(WARNING "Missing or disabled support for CXX_MODULES!")
-        target_sources(fmt PRIVATE ${_fmt_all_sources})
-    endif()
+#NO! target_link_libraries(fmt PUBLIC fmt-header-only)
 
-    target_link_libraries(fmt PUBLIC fmt-header-only)
-
-    if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
-        target_compile_options(fmt PRIVATE -Werror)
-    endif()
+if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
+    target_compile_options(fmt PRIVATE -Werror)
 endif()
 
 # ---- Install rules ----

@@ -23,6 +23,7 @@ if(FMT_USE_MODULES)
     install(
         TARGETS fmt
         EXPORT fmtTargets
+        FILE_SET HEADERS
         FILE_SET public_modules DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
         # There's currently no convention for this location
         CXX_MODULES_BMI

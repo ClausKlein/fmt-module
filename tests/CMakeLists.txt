@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.30...4.4)
 
+include(../cmake/prelude.cmake)
+
 project(fmt_test LANGUAGES CXX)
 
 include(../cmake/folders.cmake OPTIONAL)
@@ -10,16 +12,15 @@ include(../cmake/windows-set-path.cmake OPTIONAL)
 if(PROJECT_IS_TOP_LEVEL)
     enable_testing()
 
-    set(CMAKE_CXX_MODULE_STD OFF)
+    set(CMAKE_CXX_MODULE_STD ON)
     set(CMAKE_CXX_STANDARD 26)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
     find_package(fmt 12.2.0.2 EXACT REQUIRED HINT ../stagedir/lib)
-    # find_package(fmt 12.2.0.2 REQUIRED)
 
-    #XXX add_subdirectory(.. fmt_module)
+    #XXX add_subdirectory(.. fmt-module)
 endif()
 
 # -------------------------------------------
@@ -41,8 +42,8 @@ endif()
 add_executable(header-only-test header-only-test.cc)
 
 if(CMAKE_CXX_SCAN_FOR_MODULES)
-    if(TARGET fmt::fmt-module)
-        target_link_libraries(header-only-test fmt::fmt-module)
+    if(TARGET fmt::fmt)
+        target_link_libraries(header-only-test fmt::fmt)
         # FIXME: message(WARNING "Add to header-only-test CPPdefinitions=${CPPdefinitions}")
         # FIXME: target_compile_definitions(header-only-test PRIVATE ${CPPdefinitions})
     else()
@@ -67,7 +68,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
         NAME find-package-test
         COMMAND
             ${CMAKE_CTEST_COMMAND} -C Release --build-and-test
-            "${CMAKE_SOURCE_DIR}/module/tests"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../module/tests"
             "${CMAKE_CURRENT_BINARY_DIR}/find-package-test"
             --build-generator ${CMAKE_GENERATOR}
             --build-makeprogram ${CMAKE_MAKE_PROGRAM}

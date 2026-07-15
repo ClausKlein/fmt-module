@@ -4,7 +4,6 @@
 
 MAKEFLAGS+= --no-builtin-rules  # Disable the built-in implicit rules.
 MAKEFLAGS+= --warn-undefined-variables        # Warn when an undefined variable is referenced.
-# MAKEFLAGS+= --include-dir=$(CURDIR)/conan     # Search DIRECTORY for included makefiles (*.mk).
 
 export hostSystemName:=$(shell uname)
 
@@ -15,7 +14,7 @@ ifeq (${hostSystemName},Darwin)
 
   export CMAKE_CXX_STDLIB_MODULES_JSON:=${LLVM_DIR}/lib/c++/libc++.modules.json
   export CXX:=clang++
-  export LDFLAGS:=-L$(LLVM_DIR)/lib/c++ -lc++abi -lc++ # -lc++experimental
+  export LDFLAGS:=-L$(LLVM_DIR)/lib/c++ -lc++abi # -lc++ ## -lc++experimental
   export GCOV:="llvm-cov gcov"
 
   ### TODO: to test g++-16:
@@ -35,7 +34,7 @@ endif
 .PHONY: all check test format clean distclean
 all: .init
 	cmake --workflow --preset dev
-	#XXX cmake --build --preset dev --target all_verify_header_sets
+	#XXX cmake --build --preset dev --target all_verify_interface_header_sets
 
 format: distclean
 	codespell -w
@@ -52,7 +51,10 @@ test:
 	# cmake --preset ci-${hostSystemName} --fresh
 	# cmake --build build
 	# cmake --install build --prefix $(CURDIR)/stagedir
-	cmake -G Ninja -B build/tests -S tests -D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
+	cmake -G Ninja -B build/tests -S tests --fresh \
+		-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
+		-D CMAKE_CXX_SCAN_FOR_MODULES=1 -D CMAKE_CXX_MODULE_STD=1 -D CMAKE_BUILD_TYPE=Release \
+		-D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
 	cmake --build build/tests -- -v -j 1
 	ctest --test-dir build/tests
 
