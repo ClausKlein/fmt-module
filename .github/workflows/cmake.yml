@@ -80,7 +80,7 @@ jobs:
 
     runs-on: ubuntu-26.04
 
-    env: {CXX: clang++-20}
+    env: {CXX: clang++-22}
 
     steps:
       - uses: actions/checkout@v4
@@ -91,8 +91,18 @@ jobs:
       - name: Install codespell
         run: pip3 install codespell cmake ninja
 
+      - name: Install static analyzers
+        run: |
+          # Install clang/llvm 22
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 22 all
+          sudo update-alternatives --install \
+            /usr/bin/clang-tidy clang-tidy \
+            /usr/bin/clang-tidy-22 150
+
       - name: Configure
-        run: cmake --preset=ci-sanitize
+        run: cmake --preset=ci-sanitize --log-level=VERBOSE
 
       - name: Build
         run: cmake --build build/sanitize -j 4
@@ -160,21 +170,21 @@ jobs:
         run: |
           Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
           Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
-          cmake --preset=ci-windows
+          cmake --preset=ci-windows --log-level=VERBOSE
 
       - name: Configure macos
         if: matrix.os == 'macos-15'
         shell: bash
         run: |
           source /Users/runner/.envrc
-          gmake all
+          make all
           gmake clean
-          cmake --preset=ci-macos
+          cmake --preset=ci-macos --log-level=VERBOSE
 
       - name: Configure ubuntu
         if: matrix.os == 'ubuntu-26.04'
         # NOTE: see CMakePresets.json for env: CXX: clang++-22! CK
-        run: cmake --preset=ci-ubuntu
+        run: cmake --preset=ci-ubuntu --log-level=VERBOSE
 
       - name: Build
         run: cmake --build build --config Release -j 4
