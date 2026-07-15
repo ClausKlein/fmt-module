@@ -25,7 +25,6 @@ if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 26)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 endif()
 
 set(CMAKE_DEBUG_POSTFIX D)
@@ -33,9 +32,6 @@ set(CMAKE_SKIP_TEST_ALL_DEPENDENCY OFF)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
-# FIXME: to prevent -Winclude-angled-in-module-purview in fmt/os.h
-# see /Users/clausklein/.cache/CPM/fmt/6226dc0d560c5dca8bcd81db09f7e2752ccb8cef/include/fmt/os.h:33
-# XXX set(CPPdefinitions FMT_USE_FCNTL=0)
 option(
     FMT_USE_MODULES
     "Export a CXX_MODULE fmt if possible"

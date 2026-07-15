@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.30...4.4)
 
+option(
+    CMAKE_CXX_SCAN_FOR_MODULES
+    "Whether to scan C++ source files for module dependencies"
+    ON
+)
+
 include(../cmake/prelude.cmake)
 
 project(fmt_test LANGUAGES CXX)
@@ -16,7 +22,6 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CMAKE_CXX_STANDARD 26)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
-    set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
     find_package(fmt 12.2.0.2 EXACT REQUIRED HINT ../stagedir/lib)
 
@@ -63,7 +68,7 @@ endif()
 # NOTE: For an INTERFACE library and multi config generators, we may always use
 # the -C Release config type instead of $<CONFIG> to prevent problems! CK
 # gersemi: off
-if(NOT CMAKE_BUILD_TYPE MATCHES "^(Sanitize|Coverage)$")
+if(CMAKE_BUILD_TYPE MATCHES "^(Debug|Release)$" AND CMAKE_CXX_SCAN_FOR_MODULES)
     add_test(
         NAME find-package-test
         COMMAND

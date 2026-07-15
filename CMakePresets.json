@@ -54,7 +54,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_EXTENSIONS": false,
-        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD": "26",
         "CMAKE_CXX_STANDARD_REQUIRED": true
       }
     },
@@ -84,6 +84,7 @@
       "name": "flags-Darwin",
       "hidden": true,
       "cacheVariables": {
+        "CMAKE_CXX_SCAN_FOR_MODULES": false,
         "CMAKE_CXX_FLAGS_DEBUG":
             "-fstack-protector-strong -Wall -Wextra -Wpedantic -Wno-conversion -Wno-sign-conversion -Wcast-qual -Wformat=2 -Wundef -Wno-float-equal -Wshadow -Wcast-align -Wunused -Wnull-dereference -Wdouble-promotion -Wno-implicit-fallthrough -Wextra-semi -Woverloaded-virtual -Wnon-virtual-dtor -Wno-old-style-cast"
       },
