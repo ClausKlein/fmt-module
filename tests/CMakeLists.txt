@@ -63,11 +63,11 @@ endif()
 # NOTE: For an INTERFACE library and multi config generators, we may always use
 # the -C Release config type instead of $<CONFIG> to prevent problems! CK
 # gersemi: off
-if(CMAKE_BUILD_TYPE STREQUAL Release)
+#XXX if(CMAKE_BUILD_TYPE STREQUAL Release)
     add_test(
         NAME find-package-test
         COMMAND
-            ${CMAKE_CTEST_COMMAND} -C Release --build-and-test
+            ${CMAKE_CTEST_COMMAND} -C $<CONFIG> --build-and-test
             "${CMAKE_CURRENT_SOURCE_DIR}/../module/tests"
             "${CMAKE_CURRENT_BINARY_DIR}/find-package-test"
             --build-generator ${CMAKE_GENERATOR}
@@ -77,7 +77,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
             "-D CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}"
             "-D CMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}"
             "-D CMAKE_CXX_STANDARD_REQUIRED=${CMAKE_CXX_STANDARD_REQUIRED}"
-            "-D CMAKE_BUILD_TYPE=Release"
+            "-D CMAKE_BUILD_TYPE=$<CONFIG>"
             "-D CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
             "-D CPPdefinitions=${CPPdefinitions}"
             "-D CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}"
@@ -85,7 +85,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
             "-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON}"
             "-D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=${CMAKE_EXPERIMENTAL_CXX_IMPORT_STD}"
     )
-endif()
+#XXX endif()
 # gersemi: on
 
 # ---- Setup strict Compiler Warnings ----

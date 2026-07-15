@@ -39,7 +39,7 @@ all: .init
 format: distclean
 	codespell -w
 	git ls-files ::*CMakeLists.txt ::*.cmake ::*.cmake.in | xargs gersemi -i
-	git ls-files ::*.cxx ::*.cpp ::*.hpp ::*.cppm  ::*.json | xargs clang-format -i
+	git ls-files ::*.c ::*.h ::*.cc ::*.hh ::*.cxx ::*.cpp ::*.hpp ::*.cppm ::*.json | xargs clang-format -i
 
 check: .init
 	run-clang-tidy -p build/dev -checks='-*,misc-header-*,misc-include-*' \

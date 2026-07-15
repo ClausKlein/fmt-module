@@ -109,8 +109,7 @@ import std;
 //  - all library symbols are mangled traditionally
 //  - you can mix TUs with either importing or #including the {fmt} API
 #ifdef FMT_ATTACH_TO_GLOBAL_MODULE
-extern "C++"
-{
+extern "C++" {
 #endif
 
 #ifndef FMT_OS
@@ -143,8 +142,7 @@ module :private;
 #endif
 
 #ifdef FMT_ATTACH_TO_GLOBAL_MODULE
-extern "C++"
-{
+extern "C++" {
 #endif
 
 #if FMT_HAS_INCLUDE("format.cc")

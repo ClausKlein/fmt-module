@@ -19,8 +19,7 @@ import fmt;
 #endif
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
-auto main() -> int
-{
-  constexpr std::string_view text {"constexpr"};
+auto main() -> int {
+  constexpr std::string_view text{"constexpr"};
   fmt::print(text);
 }
