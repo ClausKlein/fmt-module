@@ -63,7 +63,7 @@ endif()
 # NOTE: For an INTERFACE library and multi config generators, we may always use
 # the -C Release config type instead of $<CONFIG> to prevent problems! CK
 # gersemi: off
-#XXX if(CMAKE_BUILD_TYPE STREQUAL Release)
+if(NOT CMAKE_BUILD_TYPE STREQUAL Sanitize)
     add_test(
         NAME find-package-test
         COMMAND
@@ -85,7 +85,7 @@ endif()
             "-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON}"
             "-D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=${CMAKE_EXPERIMENTAL_CXX_IMPORT_STD}"
     )
-#XXX endif()
+endif()
 # gersemi: on
 
 # ---- Setup strict Compiler Warnings ----
