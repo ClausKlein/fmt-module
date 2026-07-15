@@ -63,7 +63,7 @@ endif()
 # NOTE: For an INTERFACE library and multi config generators, we may always use
 # the -C Release config type instead of $<CONFIG> to prevent problems! CK
 # gersemi: off
-if(NOT CMAKE_BUILD_TYPE STREQUAL Sanitize)
+if(NOT CMAKE_BUILD_TYPE MATCHES "^(Sanitize|Coverage)$")
     add_test(
         NAME find-package-test
         COMMAND

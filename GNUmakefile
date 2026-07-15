@@ -53,7 +53,7 @@ test:
 	# cmake --install build --prefix $(CURDIR)/stagedir
 	cmake -G Ninja -B build/tests -S tests --fresh \
 		-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
-		-D CMAKE_CXX_SCAN_FOR_MODULES=1 -D CMAKE_CXX_MODULE_STD=1 -D CMAKE_BUILD_TYPE=Release \
+		-D CMAKE_CXX_SCAN_FOR_MODULES=1 -D CMAKE_CXX_MODULE_STD=1 -D CMAKE_BUILD_TYPE=Debug \
 		-D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
 	cmake --build build/tests -- -v -j 1
 	ctest --test-dir build/tests

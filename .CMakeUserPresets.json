@@ -14,7 +14,7 @@
         "dev-mode"
       ],
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
@@ -80,7 +80,7 @@
     {
       "name": "dev",
       "configurePreset": "dev",
-      "configuration": "Release",
+      "configuration": "Debug",
       "jobs": 1,
       "verbose": true,
       "targets": [
@@ -93,7 +93,7 @@
     {
       "name": "dev",
       "configurePreset": "dev",
-      "configuration": "Release",
+      "configuration": "Debug",
       "output": {
         "outputOnFailure": true
       },
