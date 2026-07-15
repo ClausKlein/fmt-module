@@ -167,9 +167,9 @@ jobs:
         shell: bash
         run: |
           source /Users/runner/.envrc
+          gmake all
+          gmake clean
           cmake --preset=ci-macos
-          # which clang++ && clang++ --version
-          # CXX=$(brew --prefix llvm@22)/bin/clang++ cmake --preset=ci-macos
 
       - name: Configure ubuntu
         if: matrix.os == 'ubuntu-26.04'

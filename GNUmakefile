@@ -3,30 +3,51 @@
 .SUFFIXES:
 
 MAKEFLAGS+= --no-builtin-rules  # Disable the built-in implicit rules.
-MAKEFLAGS+= --warn-undefined-variables        # Warn when an undefined variable is referenced.
+MAKEFLAGS+= --warn-undefined-variables  # Warn when an undefined variable is referenced.
+
+# TODO: export CMAKE_CXX_COMPILER_LAUNCHER=ccache
+# TODO: export CMAKE_C_COMPILER_LAUNCHER=ccache
+export CMAKE_CONFIG_TYPE=Release
+export CMAKE_CONFIGURATION_TYPES="Release;Debug"
+export CMAKE_EXPORT_COMPILE_COMMANDS=YES
+export CMAKE_GENERATOR=Ninja
+# XXX export CMAKE_INSTALL_PREFIX="${HOME}/.local"
+# XXX export CMAKE_PREFIX_PATH="${HOME}/.local"
+
+# NOTE: only to use experimental cmake versions:
+# TODO: export PATH="${HOME}/.local/bin:${PATH}"
 
 export hostSystemName:=$(shell uname)
 
 ifeq (${hostSystemName},Darwin)
-  export LLVM_PREFIX:=$(shell brew --prefix llvm)
-  export LLVM_DIR:=$(shell realpath ${LLVM_PREFIX})
-  export PATH:=${LLVM_DIR}/bin:${PATH}
 
-  export CMAKE_CXX_STDLIB_MODULES_JSON:=${LLVM_DIR}/lib/c++/libc++.modules.json
-  export CXX:=clang++
-  export LDFLAGS:=-L$(LLVM_DIR)/lib/c++ -lc++abi # -lc++ ## -lc++experimental
-  export GCOV:="llvm-cov gcov"
+  ### NOTE: to test clang++-22:
+  ifeq (${CXX},clang++)
+    STDLIB:=libc++
+    SYSROOT:=$(shell xcrun --show-sdk-path)
+    export LLVM_PREFIX:=$(shell brew --prefix llvm)
+    export LLVM_DIR:=$(shell realpath ${LLVM_PREFIX})
+    export PATH:=${LLVM_DIR}/bin:${PATH}
+    export CMAKE_CXX_STDLIB_MODULES_JSON:=${LLVM_DIR}/lib/c++/$(STDLIB).modules.json
+    export CXXFLAGS:=-stdlib=$(STDLIB) --sysroot=$(SYSROOT)
+    export LDFLAGS:=-L$(LLVM_DIR)/lib/c++ # XXX -lc++abi
+    # XXX export CXX:=clang++
+    # XXX export GCOV:="llvm-cov gcov"
+  endif
 
-  ### TODO: to test g++-16:
-  export GCC_PREFIX:=$(shell brew --prefix gcc)
-  export GCC_DIR:=$(shell realpath ${GCC_PREFIX})
+  ### NOTE: to test g++-16:
+  ifeq (${CXX},g++-16)
+    STDLIB:=libstdc++
+    export GCC_PREFIX:=$(shell brew --prefix gcc)
+    export GCC_DIR:=$(shell realpath ${GCC_PREFIX})
+    export CMAKE_CXX_STDLIB_MODULES_JSON:=${GCC_DIR}/lib/gcc/current/$(STDLIB).modules.json
+    export CXXFLAGS:=-stdlib=$(STDLIB)
+    # XXX export CXX:=g++-16
+    # XXX export GCOV:="gcov"
+  endif
 
-  # export CMAKE_CXX_STDLIB_MODULES_JSON:=${GCC_DIR}/lib/gcc/current/libstdc++.modules.json
-  # export CXX:=g++-16
-  # export CXXFLAGS:=-stdlib=libstdc++
-  # export GCOV:="gcov"
 else ifeq (${hostSystemName},Linux)
-	export LLVM_DIR:=/usr/lib/llvm-22
+  export LLVM_DIR:=/usr/lib/llvm-22
   export PATH:=${LLVM_DIR}/bin:${PATH}
   export CXX:=clang++-22
 endif
@@ -69,7 +90,8 @@ clean:
 	rm -rf build
 
 distclean: clean
-	rm -rf stagedir .cache .init CMakeUserPresets.json compile_commands.json tags *.bak *~ .*~
+	rm -rf stagedir .cache .init CMakeUserPresets.json compile_commands.json tags *.bak .*~
+	find . -name '*~' -delete
 
 GNUmakefile :: ;
 *.txt :: ;

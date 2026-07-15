@@ -54,8 +54,9 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_EXTENSIONS": false,
-        "CMAKE_CXX_STANDARD": "26",
-        "CMAKE_CXX_STANDARD_REQUIRED": true
+        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD_REQUIRED": true,
+        "CMAKE_CXX_SCAN_FOR_MODULES": true
       }
     },
     {
@@ -71,7 +72,9 @@
       },
       "environment": {
         "CXX": "clang++-22",
+        "CXXFLAGS": "-stdlib=libc++",
         "LLVM_DIR": "/usr/lib/llvm-22",
+        "LDFLAGS": "$env{LLVM_DIR}/lib/c++",
         "PATH": "$env{LLVM_DIR}/bin:$penv{PATH}"
       },
       "condition": {
