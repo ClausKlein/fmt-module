@@ -70,11 +70,6 @@
         "CMAKE_SHARED_LINKER_FLAGS_DEBUG":
             "-Wl,--allow-shlib-undefined,--as-needed,-z,noexecstack,-z,relro,-z,now"
       },
-      "environment": {
-        "CXX": "clang++-23",
-        "LLVM_DIR": "/usr/lib/llvm-23",
-        "PATH": "$env{LLVM_DIR}/bin:$penv{PATH}"
-      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",

@@ -64,8 +64,10 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
         CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
         AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15.0
     )
-        add_compile_options(-stdlib=libstdc++)
-        add_link_options(-stdlib=libstdc++)
+        if(APPLE)
+            add_compile_options(-stdlib=libstdc++)
+            add_link_options(-stdlib=libstdc++)
+        endif()
     endif()
 
     # Tell CMake that we explicitly want `import std`.
