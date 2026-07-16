@@ -47,9 +47,20 @@ ifeq (${hostSystemName},Darwin)
   endif
 
 else ifeq (${hostSystemName},Linux)
-  export LLVM_DIR:=/usr/lib/llvm-22
+  # clang++ -print-file-name=libc++.modules.json
+  # /lib/x86_64-linux-gnu/libc++.modules.json
+  # /usr/lib/llvm-23/lib/libc++.modules.json -> ../../x86_64-linux-gnu/libc++.modules.json
+  # /usr/lib/llvm-23/share/libc++/v1/std.compat.cppm
+  # /usr/lib/llvm-23/share/libc++/v1/std.cppm
+  # QUICKFIX: /lib/share -> /usr/lib/llvm-23/share
+  STDLIB:=libc++
+  export LLVM_DIR:=/usr/lib/llvm-23
   export PATH:=${LLVM_DIR}/bin:${PATH}
-  export CXX:=clang++-22
+  export CXX:=clang++-23
+  export CXXFLAGS:=-stdlib=$(STDLIB)
+  export LDFLAGS:=-L$(LLVM_DIR)/lib/c++ # XXX -lc++abi
+  export CMAKE_CXX_STDLIB_MODULES_JSON:=$(shell clang++-23 -print-file-name=libc++.modules.json)
+  # export CMAKE_CXX_STDLIB_MODULES_JSON:=${LLVM_DIR}/lib/c++/$(STDLIB).modules.json
 endif
 
 .PHONY: all check test format clean distclean
