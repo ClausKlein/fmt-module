@@ -178,12 +178,11 @@ jobs:
         run: |
           source /Users/runner/.envrc
           make all
-          gmake clean
+          make clean
           cmake --preset=ci-macos --log-level=VERBOSE
 
       - name: Configure ubuntu
         if: matrix.os == 'ubuntu-26.04'
-        # NOTE: see CMakePresets.json for env: CXX: clang++-22! CK
         run: cmake --preset=ci-ubuntu --log-level=VERBOSE
 
       - name: Build
