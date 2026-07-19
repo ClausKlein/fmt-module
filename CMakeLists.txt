@@ -33,13 +33,13 @@ set(CMAKE_SKIP_TEST_ALL_DEPENDENCY OFF)
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
 option(
-    FMT_USE_MODULES
-    "Export a CXX_MODULE fmt if possible"
+    FMT_MODULE
+    "Export a CXX_MODULE fmt-module if possible"
     ${CMAKE_CXX_SCAN_FOR_MODULES}
 )
-option(FMT_IMPORT_STD "Import the module std" ${FMT_USE_MODULES})
+option(FMT_IMPORT_STD "Import the module std" ${FMT_MODULE})
 
-if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_USE_MODULES)
+if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_MODULE)
     list(APPEND CPPdefinitions FMT_MODULE)
     # FIXME: NO! list(APPEND CPPdefinitions FMT_ATTACH_TO_GLOBAL_MODULE)
 
@@ -177,18 +177,18 @@ target_compile_options(
 #
 # build the fmt library
 #
-add_library(fmt)
-add_library(fmt::fmt ALIAS fmt)
-target_compile_options(
-    fmt
-    PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
-)
-target_compile_features(fmt PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+if(FMT_MODULE)
+    add_library(fmt-module)
+    add_library(fmt::fmt-module ALIAS fmt-module)
+    target_compile_options(
+        fmt-module
+        PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
+    )
+    target_compile_features(fmt-module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
 
-if(FMT_USE_MODULES)
-    message(STATUS "FMT_USE_MODULES=${FMT_USE_MODULES}")
+    message(STATUS "FMT_MODULE=${FMT_MODULE}")
     target_sources(
-        fmt
+        fmt-module
         PUBLIC
             FILE_SET public_modules
                 TYPE CXX_MODULES
@@ -198,10 +198,20 @@ if(FMT_USE_MODULES)
                 BASE_DIRS ${fmt_SOURCE_DIR}/include
                 FILES ${_fmt_public_header}
     )
-    target_compile_definitions(fmt PUBLIC ${CPPdefinitions})
-    set_target_properties(fmt PROPERTIES VERIFY_INTERFACE_HEADER_SETS OFF)
+    target_compile_definitions(fmt-module PUBLIC ${CPPdefinitions})
+    set_target_properties(
+        fmt-module
+        PROPERTIES VERIFY_INTERFACE_HEADER_SETS OFF
+    )
+    #NO! target_link_libraries(fmt-module PUBLIC fmt-header-only)
+
+    if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
+        target_compile_options(fmt-module PRIVATE -Werror)
+    endif()
 else()
-    message(WARNING "Missing or disabled support for CXX_MODULES!")
+    add_library(fmt)
+    add_library(fmt::fmt ALIAS fmt)
+    message(WARNING "Missing or disabled support for FMT_MODULE!")
     target_sources(
         fmt
         PRIVATE ${_fmt_all_sources}
@@ -210,12 +220,10 @@ else()
                 BASE_DIRS ${fmt_SOURCE_DIR}/include
                 FILES ${_fmt_public_header}
     )
-endif()
-
-#NO! target_link_libraries(fmt PUBLIC fmt-header-only)
-
-if(FMT_WARNINGS_AS_ERRORS AND FMT_DEVELOPER_MODE AND UNIX)
-    target_compile_options(fmt PRIVATE -Werror)
+    target_compile_options(
+        fmt
+        PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
+    )
 endif()
 
 # ---- Install rules ----

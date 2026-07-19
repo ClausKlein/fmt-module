@@ -19,9 +19,9 @@ mark_as_advanced(FMT_INSTALL_CMAKEDIR)
 
 install(TARGETS fmt-header-only EXPORT fmtTargets FILE_SET HEADERS)
 
-if(FMT_USE_MODULES)
+if(FMT_MODULE)
     install(
-        TARGETS fmt
+        TARGETS fmt-module
         EXPORT fmtTargets
         FILE_SET HEADERS
         FILE_SET public_modules DESTINATION ${FMT_INSTALL_CMAKEDIR}/module
@@ -56,7 +56,7 @@ install(
     COMPONENT fmt_Development
 )
 
-if(FMT_USE_MODULES)
+if(FMT_MODULE)
     install(
         EXPORT fmtTargets
         NAMESPACE fmt::
@@ -64,13 +64,6 @@ if(FMT_USE_MODULES)
         COMPONENT fmt_Development
         CXX_MODULES_DIRECTORY
         .
-    )
-else()
-    install(
-        EXPORT fmtTargets
-        NAMESPACE fmt::
-        DESTINATION "${FMT_INSTALL_CMAKEDIR}"
-        COMPONENT fmt_Development
     )
 endif()
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30...4.4)
 
 project(fmt_moddule_examples LANGUAGES CXX)
 
-set(USE_MODULES ON)
+set(FMT_MODULE ON)
 
 if(PROJECT_IS_TOP_LEVEL)
     enable_testing()
@@ -10,8 +10,8 @@ if(PROJECT_IS_TOP_LEVEL)
     # Find the fmt package containing the function to build the module
     find_package(fmt 12.2.0.2 EXACT REQUIRED HINT ../../stagedir/lib)
 
-    # Use modules?
-    unset(USE_MODULES)
+    # Build cxx_module?
+    unset(FMT_MODULE)
 
     if(NOT CMAKE_CXX_STANDARD)
         set(CMAKE_CXX_STANDARD 26)
@@ -25,7 +25,7 @@ if(PROJECT_IS_TOP_LEVEL)
             CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
             AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0
         )
-            set(USE_MODULES ON)
+            set(FMT_MODULE ON)
             # see https://releases.llvm.org/15.0.0/projects/libcxx/docs/ReleaseNotes.html
             # Always use libc++
             # add_link_options(-L${LLVM_DIR}/lib/c++)
@@ -35,13 +35,13 @@ if(PROJECT_IS_TOP_LEVEL)
             CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
             AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15.0
         )
-            set(USE_MODULES ON)
+            set(FMT_MODULE ON)
             if(APPLE)
                 add_compile_options(-stdlib=libstdc++)
                 add_link_options(-stdlib=libstdc++)
             endif()
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-            set(USE_MODULES ON)
+            set(FMT_MODULE ON)
         endif()
         message(
             STATUS
@@ -60,8 +60,8 @@ foreach(_file ${ALL_TESTS})
     add_executable(module_${_file})
     target_sources(module_${_file} PRIVATE ${_file}.cc)
 
-    if(USE_MODULES)
-        target_link_libraries(module_${_file} fmt::fmt)
+    if(FMT_MODULE)
+        target_link_libraries(module_${_file} fmt::fmt-module)
     else()
         message(FATAL_ERROR "Missing or disabled support for CXX_MODULES!")
         return()
