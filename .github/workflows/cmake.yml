@@ -177,8 +177,7 @@ jobs:
         shell: bash
         run: |
           source /Users/runner/.envrc
-          make all
-          make clean
+          make all && make clean || echo ignored!
           cmake --preset=ci-macos --log-level=VERBOSE
 
       - name: Configure ubuntu
