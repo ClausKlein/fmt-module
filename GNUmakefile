@@ -2,7 +2,8 @@
 
 .SUFFIXES:
 
-MAKEFLAGS+= --no-builtin-rules  # Disable the built-in implicit rules.
+MAKEFLAGS+= --no-builtin-rules          # Disable the built-in implicit rules.
+MAKEFLAGS+= --no-builtin-variables      # Disable the built-in variable settings.
 MAKEFLAGS+= --warn-undefined-variables  # Warn when an undefined variable is referenced.
 
 # TODO: export CMAKE_CXX_COMPILER_LAUNCHER=ccache
@@ -64,22 +65,23 @@ else ifeq (${hostSystemName},Linux)
 endif
 
 .PHONY: all check test format clean distclean
-all: .init
+all: .init ## Default make all
 	cmake --workflow --preset dev
-	#XXX cmake --build --preset dev --target all_verify_interface_header_sets
+	#XXX cmake --build --preset dev --target all_verify_header_sets
 
-format: distclean
+format: distclean ## Format all files
 	codespell -w
 	git ls-files ::*CMakeLists.txt ::*.cmake ::*.cmake.in | xargs gersemi -i
 	git ls-files ::*.c ::*.h ::*.cc ::*.hh ::*.cxx ::*.cpp ::*.hpp ::*.cppm ::*.json | xargs clang-format -i
 
-check: .init
-	run-clang-tidy -p build/dev -checks='-*,misc-header-*,misc-include-*' \
-		$(CURDIR)/tests \
-		#TODO: $(CURDIR)/module
+check: .init ## Run clang-tidy
+	run-clang-tidy -p build/dev \
+	  -checks='-*,-misc-header-*,-misc-include-*,readability-identifier-*,-readability-identifier-length' \
+	  $(CURDIR)/tests \
+	  #TODO: $(CURDIR)/module
 	-ninja -C build/dev spell-check
 
-test:
+test: ## Run tests as standalone project
 	# cmake --preset ci-${hostSystemName} --fresh
 	# cmake --build build
 	# cmake --install build --prefix $(CURDIR)/stagedir
@@ -90,21 +92,29 @@ test:
 	cmake --build build/tests -- -v -j 1
 	ctest --test-dir build/tests
 
-.init: requirements.txt .CMakeUserPresets.json CMakePresets.json CMakeLists.txt GNUmakefile
+.init: requirements.txt .CMakeUserPresets.json CMakePresets.json CMakeLists.txt ## Cmake configure in VERBOSE mode
 	perl -p -e 's/<hostSystemName>/${hostSystemName}/;' .CMakeUserPresets.json > CMakeUserPresets.json
 	#XXX -pip3 install --upgrade -r requirements.txt
-	cmake --preset dev -D CMAKE_CXX_SCAN_FOR_MODULES=ON -D FMT_USE_MODULES==ON --fresh --log-level=VERBOSE
+	cmake --preset dev -D CMAKE_CXX_SCAN_FOR_MODULES=YES -D FMT_USE_MODULES=YES --fresh --log-level=VERBOSE
 	ln -sf build/dev/compile_commands.json .
 	touch .init
 
-clean:
+clean: ## Remove build directory
 	rm -rf build
 
-distclean: clean
+distclean: clean ## Remove all build arthefacts
 	rm -rf stagedir .cache .init CMakeUserPresets.json compile_commands.json tags *.bak .*~
 	find . -name '*~' -delete
 
-GNUmakefile :: ;
+# Helper targets
+.PHONY: env info
+
+env: ## Show env
+	$(foreach v, $(.VARIABLES), $(info $(v) = $($(v))))
+
+info: ## Show this help.
+	@awk 'BEGIN {FS = ":.*?## "} /^[.a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+
 *.txt :: ;
 *.json :: ;
 
