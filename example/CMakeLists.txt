@@ -7,7 +7,7 @@
 #   -D DISABLE_STDLIB_SET_ENV=YES
 #   -D USE_STDLIB_OPTIONS=YES
 
-cmake_minimum_required(VERSION 3.30...4.4)
+cmake_minimum_required(VERSION 3.31...4.4)
 
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "4.4.0")
     set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
@@ -47,8 +47,9 @@ if(NOT DISABLE_STDLIB_SET_ENV)
     set(ENV{CXXFLAGS} "-stdlib=libstdc++")
 endif()
 
-set(CMAKE_CXX_MODULE_STD ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_MODULE_STD ON)
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 set(CMAKE_SKIP_TEST_ALL_DEPENDENCY OFF)
 
 ##################################################
@@ -56,7 +57,7 @@ project("use_module_std" LANGUAGES CXX)
 ##################################################
 
 if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 26)
+    set(CMAKE_CXX_STANDARD 23)
 endif()
 
 set(CMAKE_CXX_STANDARD_REQUIRED YES)

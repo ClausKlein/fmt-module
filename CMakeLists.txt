@@ -1,5 +1,5 @@
 # CMake 3.30 is required for C++23 `import std` support;
-cmake_minimum_required(VERSION 3.30...4.4)
+cmake_minimum_required(VERSION 3.31...4.4)
 
 option(
     CMAKE_CXX_SCAN_FOR_MODULES
@@ -22,7 +22,7 @@ project(
 include(cmake/variables.cmake)
 
 if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 26)
+    set(CMAKE_CXX_STANDARD 23)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
@@ -166,7 +166,7 @@ set_target_properties(
     PROPERTIES VERIFY_INTERFACE_HEADER_SETS ${PROJECT_IS_TOP_LEVEL}
 )
 target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY)
-target_compile_features(fmt-header-only INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+target_compile_features(fmt-header-only INTERFACE cxx_std_23)
 
 # Unicode support requires compiling with /utf-8.
 target_compile_options(
@@ -184,7 +184,16 @@ if(FMT_MODULE)
         fmt-module
         PUBLIC $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:MSVC>>:/utf-8>
     )
-    target_compile_features(fmt-module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+
+    # FIXME: workaround for CMake error:
+    #   Target requires "CXX26" but CMake does not know the flags to enable it
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_compile_features(fmt-module PUBLIC cxx_std_23)
+        target_compile_options(fmt-module PUBLIC /std:c++latest)
+    else()
+        target_compile_features(fmt-module PUBLIC cxx_std_26)
+        # TODO(CK): target_compile_features(fmt-module PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+    endif()
 
     message(STATUS "FMT_MODULE=${FMT_MODULE}")
     target_sources(

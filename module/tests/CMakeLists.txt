@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30...4.4)
+cmake_minimum_required(VERSION 3.31...4.4)
 
 project(fmt_moddule_examples LANGUAGES CXX)
 
@@ -14,7 +14,7 @@ if(PROJECT_IS_TOP_LEVEL)
     unset(FMT_MODULE)
 
     if(NOT CMAKE_CXX_STANDARD)
-        set(CMAKE_CXX_STANDARD 26)
+        set(CMAKE_CXX_STANDARD 23)
         set(CMAKE_CXX_EXTENSIONS OFF)
         set(CMAKE_CXX_STANDARD_REQUIRED ON)
         set(CMAKE_CXX_SCAN_FOR_MODULES ON)

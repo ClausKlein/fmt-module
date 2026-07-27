@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30...4.4)
+cmake_minimum_required(VERSION 3.31...4.4)
 
 option(
     CMAKE_CXX_SCAN_FOR_MODULES
@@ -19,7 +19,7 @@ if(PROJECT_IS_TOP_LEVEL)
     enable_testing()
 
     set(CMAKE_CXX_MODULE_STD ON)
-    set(CMAKE_CXX_STANDARD 26)
+    set(CMAKE_CXX_STANDARD 23)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
