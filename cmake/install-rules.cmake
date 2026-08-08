@@ -56,16 +56,14 @@ install(
     COMPONENT fmt_Development
 )
 
-if(FMT_MODULE)
-    install(
-        EXPORT fmtTargets
-        NAMESPACE fmt::
-        DESTINATION "${FMT_INSTALL_CMAKEDIR}"
-        COMPONENT fmt_Development
-        CXX_MODULES_DIRECTORY
-        .
-    )
-endif()
+install(
+    EXPORT fmtTargets
+    NAMESPACE fmt::
+    DESTINATION "${FMT_INSTALL_CMAKEDIR}"
+    COMPONENT fmt_Development
+    CXX_MODULES_DIRECTORY
+    .
+)
 
 if(PROJECT_IS_TOP_LEVEL)
     set(CPACK_GENERATOR TGZ)

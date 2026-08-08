@@ -70,16 +70,18 @@ if(CMAKE_GENERATOR STREQUAL "Ninja" AND FMT_MODULE)
         endif()
     endif()
 
-    # Tell CMake that we explicitly want `import std`.
-    # This will initialize the property on all targets declared after this to 1
-    if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
-        set(CMAKE_CXX_MODULE_STD ON)
-    else()
-        set(CMAKE_CXX_MODULE_STD OFF)
-    endif()
+    if(FMT_MODULE)
+        # Tell CMake that we explicitly want `import std`.
+        # This will initialize the property on all targets declared after this to 1
+        if(${CMAKE_CXX_STANDARD} IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
+            set(CMAKE_CXX_MODULE_STD ON)
+        else()
+            set(CMAKE_CXX_MODULE_STD OFF)
+        endif()
 
-    if(CMAKE_CXX_MODULE_STD)
-        list(APPEND CPPdefinitions FMT_IMPORT_STD)
+        if(CMAKE_CXX_MODULE_STD)
+            list(APPEND CPPdefinitions FMT_IMPORT_STD)
+        endif()
     endif()
 
     message(
