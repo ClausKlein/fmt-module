@@ -1,4 +1,12 @@
-cmake_minimum_required(VERSION 3.25...3.31)
+cmake_minimum_required(VERSION 3.31...4.4)
+
+option(
+    CMAKE_CXX_SCAN_FOR_MODULES
+    "Whether to scan C++ source files for module dependencies"
+    ON
+)
+
+include(../cmake/prelude.cmake)
 
 project(fmt_test LANGUAGES CXX)
 
@@ -8,69 +16,82 @@ include(../cmake/windows-set-path.cmake OPTIONAL)
 # ---- Dependencies ----
 
 if(PROJECT_IS_TOP_LEVEL)
-  enable_testing()
+    enable_testing()
 
-  find_package(fmt 11.1.1.1 EXACT REQUIRED)
-  include(../cmake/CPM.cmake)
+    set(CMAKE_CXX_MODULE_STD ON)
+    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+    find_package(fmt 12.2.0.2 EXACT REQUIRED HINT ../stagedir/lib)
+
+    #XXX add_subdirectory(.. fmt-module)
 endif()
 
-# cmake-format: off
-cpmaddpackage(
-  NAME googletest
-  GITHUB_REPOSITORY google/googletest
-  GIT_TAG v1.15.2
-  VERSION 1.15.2
-  EXCLUDE_FROM_ALL YES
-  OPTIONS "INSTALL_GTEST OFF" "gtest_force_shared_crt"
+# -------------------------------------------
+# -- OPTIONAL: Collect the fmt test sources --
+# -------------------------------------------
+if(
+    EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc
+    AND NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/header-only-test.cc
 )
-# cmake-format: on
+    configure_file(
+        ${fmt_SOURCE_DIR}/test/header-only-test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/header-only-test.cc
+        COPYONLY
+    )
+endif()
 
 # ---- Tests ----
 
-if(NOT TARGET GTest::gtest)
-  message(WARNING "Missing alias for gtest!")
-  add_library(GTest::gtest ALIAS gtest)
-endif()
-
-if(EXISTS ${fmt_SOURCE_DIR}/test/header-only-test.cc AND NOT EXISTS ${PROJECT_SOURCE_DIR}/header-only-test.cc)
-  configure_file(${fmt_SOURCE_DIR}/test/header-only-test.cc ${PROJECT_SOURCE_DIR}/header-only-test.cc COPYONLY)
-endif()
 add_executable(header-only-test header-only-test.cc)
 
-if(FMT_USE_MODULES)
-  target_link_libraries(header-only-test fmt::fmt)
+if(CMAKE_CXX_SCAN_FOR_MODULES)
+    if(TARGET fmt::fmt-module)
+        target_link_libraries(header-only-test fmt::fmt-module)
+        # FIXME: message(WARNING "Add to header-only-test CPPdefinitions=${CPPdefinitions}")
+        # FIXME: target_compile_definitions(header-only-test PRIVATE ${CPPdefinitions})
+    else()
+        # XXX message(FATAL_ERROR "NOT TARGET fmt::fmt-module!")
+        target_link_libraries(header-only-test fmt::fmt-header-only)
+    endif()
 else()
-  target_link_libraries(header-only-test fmt::fmt-header-only)
+    message(WARNING "Missing or disabled support for CXX_MODULES!")
+    target_link_libraries(header-only-test fmt::fmt-header-only)
 endif()
 
-if(NOT PROJECT_IS_TOP_LEVEL)
-  if(NOT DEFINED CMAKE_PREFIX_PATH)
+if(NOT DEFINED CMAKE_PREFIX_PATH)
     set(CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
-  endif()
-
-  # test if the targets are findable from the build directory
-  # NOTE: For an INTERFACE library and multi config generators, we may always use
-  # the -C Debug config type instead of  $<CONFIG> to prevent problems! CK
-  # cmake-format: off
-  if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    add_test(
-      NAME find-package-test
-      COMMAND ${CMAKE_CTEST_COMMAND}
-        --verbose
-        --output-on-failure -C Debug
-        --build-and-test
-          "${CMAKE_SOURCE_DIR}/module/tests" "${CMAKE_CURRENT_BINARY_DIR}/find-package-test"
-        --build-generator ${CMAKE_GENERATOR}
-        --build-makeprogram ${CMAKE_MAKE_PROGRAM}
-        --build-options
-          "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
-          "-DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}"
-          "-DCMAKE_BUILD_TYPE=Debug"
-          "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
-    )
-  endif()
-  # cmake-format: on
 endif()
+
+# test if the targets are findable from the install prefix directory
+# NOTE: For an INTERFACE library and multi config generators, we may always use
+# the -C Release config type instead of $<CONFIG> to prevent problems! CK
+# gersemi: off
+if(CMAKE_BUILD_TYPE MATCHES "^(Debug|Release)$" AND CMAKE_CXX_SCAN_FOR_MODULES)
+    add_test(
+        NAME find-package-test
+        COMMAND
+            ${CMAKE_CTEST_COMMAND} -C $<CONFIG> --build-and-test
+            "${CMAKE_CURRENT_SOURCE_DIR}/../module/tests"
+            "${CMAKE_CURRENT_BINARY_DIR}/find-package-test"
+            --build-generator ${CMAKE_GENERATOR}
+            --build-makeprogram ${CMAKE_MAKE_PROGRAM}
+            --build-options
+            "-D CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+            "-D CMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}"
+            "-D CMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}"
+            "-D CMAKE_CXX_STANDARD_REQUIRED=${CMAKE_CXX_STANDARD_REQUIRED}"
+            "-D CMAKE_BUILD_TYPE=$<CONFIG>"
+            "-D CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
+            "-D CPPdefinitions=${CPPdefinitions}"
+            "-D CMAKE_CXX_MODULE_STD=${CMAKE_CXX_MODULE_STD}"
+            "-D CMAKE_CXX_SCAN_FOR_MODULES=${CMAKE_CXX_SCAN_FOR_MODULES}"
+            "-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON}"
+            "-D CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=${CMAKE_EXPERIMENTAL_CXX_IMPORT_STD}"
+    )
+endif()
+# gersemi: on
 
 # ---- Setup strict Compiler Warnings ----
 
@@ -79,5 +100,5 @@ add_test(NAME header-only-test COMMAND header-only-test)
 # ---- End-of-file commands ----
 
 if(NOT PROJECT_IS_TOP_LEVEL)
-  add_folders(Tests)
+    add_folders(Tests)
 endif()

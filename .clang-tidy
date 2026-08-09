@@ -1,22 +1,53 @@
 ---
+# All C++ code must adhere to [Google C++ Style Guide](
+# https://google.github.io/styleguide/cppguide.html) with the following
+# exceptions:
+#
+# * Exceptions are permitted
+# * snake_case should be used instead of UpperCamelCase for function and type
+#   names
+#
+# clang-tidy checks:
 # Enable ALL the things! Except not really
 # misc-non-private-member-variables-in-classes: the options don't do anything
 Checks: "*,\
-  -google-readability-todo,\
-  -google-build-using-namespace,\
+  -altera-*,\
   -altera-unroll-loops,\
+  -android-cloexec-dup,\
+  -android-cloexec-pipe,\
+  -bugprone-*,\
+  -bugprone-easily-swappable-parameters,\
+  -cert-*,\
+  -cert-err33-c,\
+  -cert-int09-c,\
+  -concurrency-mt-unsafe,\
+  -cppcoreguidelines-*,\
+  -cppcoreguidelines-avoid-do-while,\
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,\
   -fuchsia-*,\
-  fuchsia-multiple-inheritance,\
+  -fuchsia-multiple-inheritance,\
+  -google-*,\
+  -google-build-using-namespace,\
+  -google-readability-todo,\
+  -hicpp-*,\
+  -llvm-*,\
   -llvm-header-guard,\
   -llvm-include-order,\
   -llvmlibc-*,\
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,\
-  -cppcoreguidelines-avoid-do-while,\
-  -*-magic-numbers,\
-  -performance-avoid-endl,
+  -misc-*,\
+  -misc-const-correctness,\
+  -misc-header-include-cycle,\
   -misc-include-cleaner,\
-  misc-header-include-cycle,\
-  -misc-non-private-member-variables-in-classes"
+  -misc-non-private-member-variables-in-classes,\
+  -modernize-*,\
+  -performance-avoid-endl,\
+  -performance-enum-size,\
+  -performance-noexcept-move-constructor,\
+  -readability-*,\
+  -*-braces-around-statements,\
+  -*-magic-numbers,\
+  -readability-identifier-length,\
+  readability-identifier-naming"
 WarningsAsErrors: ''
 CheckOptions:
   - key: 'bugprone-argument-comment.StrictMode'
@@ -129,8 +160,8 @@ CheckOptions:
     value: 'lower_case'
   - key: 'readability-identifier-naming.ProtectedMemberCase'
     value: 'lower_case'
-  - key: 'readability-identifier-naming.ProtectedMemberPrefix'
-    value: 'm_'
+  # - key: 'readability-identifier-naming.ProtectedMemberPrefix'
+  #   value: 'm_'
   - key: 'readability-identifier-naming.ProtectedMethodCase'
     value: 'lower_case'
   - key: 'readability-identifier-naming.PublicMemberCase'

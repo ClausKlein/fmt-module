@@ -23,6 +23,8 @@ test-driver
 /*.cpp
 /*.hpp
 ### cmake-init generated:
+compile_commands.json
+.cache/
 .git
 .github/
 .idea/

@@ -1,60 +1,126 @@
 # Standard stuff
 
 .SUFFIXES:
-$(VERBOSE).SILENT:
 
-MAKEFLAGS+= --no-builtin-rules
-MAKEFLAGS+= --warn-undefined-variables
+MAKEFLAGS+= --no-builtin-rules          # Disable the built-in implicit rules.
+MAKEFLAGS+= --no-builtin-variables      # Disable the built-in variable settings.
+MAKEFLAGS+= --warn-undefined-variables  # Warn when an undefined variable is referenced.
 
-export hostSystemName=$(shell uname)
+# TODO: export CMAKE_CXX_COMPILER_LAUNCHER=ccache
+# TODO: export CMAKE_C_COMPILER_LAUNCHER=ccache
+export CMAKE_CONFIG_TYPE=Release
+export CMAKE_CONFIGURATION_TYPES="Release;Debug"
+export CMAKE_EXPORT_COMPILE_COMMANDS=YES
+export CMAKE_GENERATOR=Ninja
+# XXX export CMAKE_INSTALL_PREFIX="${HOME}/.local"
+# XXX export CMAKE_PREFIX_PATH="${HOME}/.local"
+
+# NOTE: only to use experimental cmake versions:
+# TODO: export PATH="${HOME}/.local/bin:${PATH}"
+
+export hostSystemName:=$(shell uname)
 
 ifeq (${hostSystemName},Darwin)
-  export LLVM_PREFIX:=$(shell brew --prefix llvm@19)
-  export LLVM_ROOT:=$(shell realpath ${LLVM_PREFIX})
 
-  export LDFLAGS?=-L${LLVM_ROOT}/lib/c++
-  export PATH:=${LLVM_ROOT}/bin:${PATH}
-  export CXX:=clang++
-else ifeq (${UNAME},Linux)
-  export LLVM_ROOT:=/usr/lib/llvm-19
+  ### NOTE: to test clang++-22:
+  ifeq (${CXX},clang++)
+    STDLIB:=libc++
+    SYSROOT:=$(shell xcrun --show-sdk-path)
+    export LLVM_PREFIX:=$(shell brew --prefix llvm)
+    export LLVM_DIR:=$(shell realpath ${LLVM_PREFIX})
+    export PATH:=${LLVM_DIR}/bin:${PATH}
+    export CMAKE_CXX_STDLIB_MODULES_JSON:=${LLVM_DIR}/lib/c++/$(STDLIB).modules.json
+    export CXXFLAGS:=-stdlib=$(STDLIB) --sysroot=$(SYSROOT)
+    export LDFLAGS:=-L$(LLVM_DIR)/lib/c++ # XXX -lc++abi
+    # XXX export CXX:=clang++
+    # XXX export GCOV:="llvm-cov gcov"
+  endif
+
+  ### NOTE: to test g++-16:
+  ifeq (${CXX},g++-16)
+    STDLIB:=libstdc++
+    export GCC_PREFIX:=$(shell brew --prefix gcc)
+    export GCC_DIR:=$(shell realpath ${GCC_PREFIX})
+    export CMAKE_CXX_STDLIB_MODULES_JSON:=${GCC_DIR}/lib/gcc/current/$(STDLIB).modules.json
+    export CXXFLAGS:=-stdlib=$(STDLIB)
+    # XXX export CXX:=g++-16
+    # XXX export GCOV:="gcov"
+  endif
+
+else ifeq (${hostSystemName},Linux)
+  # clang++ -print-file-name=libc++.modules.json
+  # /lib/x86_64-linux-gnu/libc++.modules.json
+  # /usr/lib/llvm-23/lib/libc++.modules.json -> ../../x86_64-linux-gnu/libc++.modules.json
+  # /usr/lib/llvm-23/share/libc++/v1/std.compat.cppm
+  # /usr/lib/llvm-23/share/libc++/v1/std.cppm
+  # QUICKFIX: /lib/share -> /usr/lib/llvm-23/share
+  STDLIB:=libc++
+  export LLVM_DIR:=/usr/lib/llvm-23
+  export PATH:=${LLVM_DIR}/bin:${PATH}
+  export CXX:=clang++-23
+  export CXXFLAGS:=-stdlib=$(STDLIB)
+  export LDFLAGS:=-L$(LLVM_DIR)/lib/c++ # XXX -lc++abi
+  export CMAKE_CXX_STDLIB_MODULES_JSON:=$(shell clang++-23 -print-file-name=libc++.modules.json)
+  # export CMAKE_CXX_STDLIB_MODULES_JSON:=${LLVM_DIR}/lib/c++/$(STDLIB).modules.json
 endif
 
-.PHONY: all check test format clean distclean
-all: .init
-	cmake --workflow --preset dev --fresh
+.PHONY: all release check test format clean distclean
+all: .init ## Default make all
+	cmake --workflow --preset dev
+	#XXX cmake --build --preset dev --target all_verify_header_sets
 
-format:
-	git ls-files ::*.cmake ::*CMakeLists.txt | xargs cmake-format -i
-	git clang-format master
+format: distclean ## Format all files
+	codespell -w
+	git ls-files ::*CMakeLists.txt ::*.cmake ::*.cmake.in | xargs gersemi -i
+	git ls-files ::*.c ::*.h ::*.cc ::*.hh ::*.cxx ::*.cpp ::*.hpp ::*.cppm ::*.json | xargs clang-format -i
 
-check: all
-	run-clang-tidy -p build/dev -checks='-*,misc-header-*,misc-include-*' tests
+check: .init ## Run clang-tidy
+	run-clang-tidy -p build/dev \
+	  -checks='-*,-misc-header-*,-misc-include-*,readability-identifier-*,-readability-identifier-length' \
+	  $(CURDIR)/tests \
+	  #TODO: $(CURDIR)/module
 	-ninja -C build/dev spell-check
 
-test:
-	cmake --preset ci-${hostSystemName}
-	cmake --build build
-	cmake --install build --prefix $(CURDIR)/stagedir
-	cmake -G Ninja -B build/tests -S tests -D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
-	cmake --build build/tests
+release: ## Make a CI release build
+	cmake --preset ci-${hostSystemName} -D CMAKE_CXX_SCAN_FOR_MODULES=1 # XXX --fresh
+	ln -sf build/release/compile_commands.json .
+	cmake --build build/release --target all
+	cmake --install build/release --prefix $(CURDIR)/stagedir
+
+test: release ## Run tests as standalone project
+	cmake -G Ninja -B build/tests -S tests --fresh \
+		-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
+		-D CMAKE_CXX_SCAN_FOR_MODULES=1 -D CMAKE_BUILD_TYPE=Release \
+		-D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
+	cmake --build build/tests -- -v -j 1
 	ctest --test-dir build/tests
 
-.init: requirements.txt .CMakeUserPresets.json
+.init: requirements.txt .CMakeUserPresets.json CMakePresets.json CMakeLists.txt ## Cmake configure in VERBOSE mode
 	perl -p -e 's/<hostSystemName>/${hostSystemName}/;' .CMakeUserPresets.json > CMakeUserPresets.json
-	-pip3 install --user --upgrade -r requirements.txt
+	#XXX -pip3 install --upgrade -r requirements.txt
+	cmake --preset dev -D CMAKE_CXX_SCAN_FOR_MODULES=YES -D FMT_USE_MODULES=YES --fresh --log-level=VERBOSE
+	ln -sf build/dev/compile_commands.json .
 	touch .init
 
-clean:
+clean: ## Remove build directory
 	rm -rf build
 
-distclean: clean
-	rm -rf stagedir .init tags *.bak
+distclean: clean ## Remove all build arthefacts
+	rm -rf stagedir .cache .init CMakeUserPresets.json compile_commands.json tags *.bak .*~
+	find . -name '*~' -delete
 
-GNUmakefile :: ;
+# Helper targets
+.PHONY: env info
+
+env: ## Show env
+	$(foreach v, $(.VARIABLES), $(info $(v) = $($(v))))
+
+info: ## Show this help.
+	@awk 'BEGIN {FS = ":.*?## "} /^[.a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
+
 *.txt :: ;
 *.json :: ;
 
 # Anything we don't know how to build will use this rule.
-# The command is a do-nothing command.
-#
-% :: ;
+% ::
+	ninja -C build/dev $(@)
