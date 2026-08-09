@@ -23,7 +23,7 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CMAKE_CXX_EXTENSIONS OFF)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-    find_package(fmt 12.2.0.2 EXACT REQUIRED HINT ../stagedir/lib)
+    find_package(fmt 12.2.0.3 EXACT REQUIRED HINT ../stagedir/lib)
 
     #XXX add_subdirectory(.. fmt-module)
 endif()
