@@ -192,13 +192,13 @@ jobs:
         run: cmake --preset=ci-ubuntu --log-level=VERBOSE
 
       - name: Build
-        run: cmake --build build --config Release -j 4
+        run: cmake --build build/release --config Release -j 4
 
       - name: Install
-        run: cmake --install build --config Release  # see CMakePresets.json! --prefix stagedir
+        run: cmake --install build/release --config Release  # see CMakePresets.json! --prefix stagedir
 
       - name: Test
-        working-directory: build
+        working-directory: build/release
         run: ctest --output-on-failure --no-tests=error -C Release -j 4
 
   docs:
