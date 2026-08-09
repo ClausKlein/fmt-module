@@ -56,7 +56,7 @@
         "CMAKE_CXX_EXTENSIONS": false,
         "CMAKE_CXX_STANDARD": "23",
         "CMAKE_CXX_STANDARD_REQUIRED": true,
-        "CMAKE_CXX_SCAN_FOR_MODULES": false
+        "CMAKE_CXX_SCAN_FOR_MODULES": true
       }
     },
     {
@@ -176,7 +176,7 @@
     },
     {
       "name": "ci-build",
-      "binaryDir": "${sourceDir}/build",
+      "binaryDir": "${sourceDir}/build/release",
       "installDir": "${sourceDir}/stagedir",
       "cacheVariables": {
         "CMAKE_PREFIX_PATH": {

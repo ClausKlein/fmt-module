@@ -64,7 +64,7 @@ else ifeq (${hostSystemName},Linux)
   # export CMAKE_CXX_STDLIB_MODULES_JSON:=${LLVM_DIR}/lib/c++/$(STDLIB).modules.json
 endif
 
-.PHONY: all check test format clean distclean
+.PHONY: all release check test format clean distclean
 all: .init ## Default make all
 	cmake --workflow --preset dev
 	#XXX cmake --build --preset dev --target all_verify_header_sets
@@ -81,13 +81,16 @@ check: .init ## Run clang-tidy
 	  #TODO: $(CURDIR)/module
 	-ninja -C build/dev spell-check
 
-test: ## Run tests as standalone project
-	# cmake --preset ci-${hostSystemName} --fresh
-	# cmake --build build
-	# cmake --install build --prefix $(CURDIR)/stagedir
+release: ## Make a CI release build
+	cmake --preset ci-${hostSystemName} -D CMAKE_CXX_SCAN_FOR_MODULES=1 # XXX --fresh
+	ln -sf build/release/compile_commands.json .
+	cmake --build build/release --target all
+	cmake --install build/release --prefix $(CURDIR)/stagedir
+
+test: release ## Run tests as standalone project
 	cmake -G Ninja -B build/tests -S tests --fresh \
 		-D CMAKE_CXX_STDLIB_MODULES_JSON=${CMAKE_CXX_STDLIB_MODULES_JSON} \
-		-D CMAKE_CXX_SCAN_FOR_MODULES=1 -D CMAKE_CXX_MODULE_STD=1 -D CMAKE_BUILD_TYPE=Debug \
+		-D CMAKE_CXX_SCAN_FOR_MODULES=1 -D CMAKE_BUILD_TYPE=Release \
 		-D CMAKE_PREFIX_PATH=$(CURDIR)/stagedir
 	cmake --build build/tests -- -v -j 1
 	ctest --test-dir build/tests
