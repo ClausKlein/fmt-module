@@ -22,7 +22,7 @@ export hostSystemName:=$(shell uname)
 
 ifeq (${hostSystemName},Darwin)
 
-  ### NOTE: to test clang++-22:
+  ### NOTE: to test clang++-23:
   ifeq (${CXX},clang++)
     STDLIB:=libc++
     SYSROOT:=$(shell xcrun --show-sdk-path)
