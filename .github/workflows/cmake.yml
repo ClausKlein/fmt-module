@@ -124,7 +124,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, ubuntu-26.04, windows-2025-vs2026]
+        os: [macos-latest, ubuntu-26.04, windows-2025-vs2026]
 
     runs-on: ${{ matrix.os }}
 
@@ -180,7 +180,7 @@ jobs:
           cmake --preset=ci-windows --log-level=VERBOSE
 
       - name: Configure macos
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-latest'
         shell: bash
         run: |
           source /Users/runner/.envrc

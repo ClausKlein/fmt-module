@@ -12,7 +12,7 @@ include(cmake/prelude.cmake)
 #==================================================
 project(
     fmt
-    VERSION 12.2.0.2
+    VERSION 12.2.0.3
     DESCRIPTION "A modern formatting library"
     HOMEPAGE_URL https://fmt.dev/12.0/
     LANGUAGES CXX

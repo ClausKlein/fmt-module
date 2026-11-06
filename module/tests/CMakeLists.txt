@@ -8,7 +8,7 @@ if(PROJECT_IS_TOP_LEVEL)
     enable_testing()
 
     # Find the fmt package containing the function to build the module
-    find_package(fmt 12.2.0.2 EXACT REQUIRED HINT ../../stagedir/lib)
+    find_package(fmt 12.2.0.3 EXACT REQUIRED HINT ../../stagedir/lib)
 
     # Build cxx_module?
     unset(FMT_MODULE)
