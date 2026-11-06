@@ -28,7 +28,7 @@ Running clang-tidy in 12 threads for 1 files out of 20 in compilation database .
 /Users/clausklein/Workspace/cpp/cxx20/fmt-module/tests/header-only-test.cc:17:1: warning: included header ostream.h is not used directly [misc-include-cleaner]
    17 | #  include "fmt/ostream.h"
       | ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   18 | 
+   18 |
 3 warnings generated.
 
 ninja -C build/dev spell-check
